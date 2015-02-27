@@ -1,0 +1,99 @@
+Initialize engine version: 4.5.3f3 (fca41a4fabea)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 9.0c [nvd3dumx.dll 9.18.13.4475]
+    Renderer: NVIDIA GeForce GT 440 
+    Vendor:   NVIDIA
+    VRAM:     971 MB (via DXGI)
+    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=0 INTZ=1 RAWZ=0 NULL=1 RESZ=0 SlowINTZ=0
+Default GameObject BitMask: UI already registered
+ 
+(Filename:  Line: 168)
+
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.ClipperLib.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.ClipperLib.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.Poly2Tri.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.Poly2Tri.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.Ionic.Zip.Reduced.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.Ionic.Zip.Reduced.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.JsonFx.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Pathfinding.JsonFx.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\MySql.Data.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\MySql.Data.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Data.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Data.dll into Unity Child Domain
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Drawing.dll (this message is harmless)
+Loading C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Drawing.dll into Unity Child Domain
+- Completed reload, in  0.111 seconds
+desktop: 1920x1080 60Hz; virtual: 3840x1080 at -1920,0
+<RI> Initializing input.
+<RI> Input initialized.
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.dll (this message is harmless)
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1633)
+
+A script behaviour has a different serialization layout when loading. (Read 24 bytes but expected 36 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1170)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1633)
+
+A script behaviour has a different serialization layout when loading. (Read 24 bytes but expected 36 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1170)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1633)
+
+A script behaviour has a different serialization layout when loading. (Read 24 bytes but expected 52 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1170)
+
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\Boo.Lang.dll (this message is harmless)
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Configuration.dll (this message is harmless)
+Platform assembly: C:\Users\Robert\Documents\UnityProject\Build\Ancient Kemet_Data\Managed\System.Xml.dll (this message is harmless)
+Connected to login server.
+ 
+(Filename: C:/BuildAgent/work/d63dfc6385190b60/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 49)
+
+Loaded interfaces.
+ 
+(Filename: C:/BuildAgent/work/d63dfc6385190b60/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 49)
+
+recieved datakey: -170021088063152071008098027119019121162031160050-
+ 
+(Filename: C:/BuildAgent/work/d63dfc6385190b60/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 49)
+
+Recieved play page data: ${"name":"beta world","type":"Beta testing","online":"0","IP":"localhost"}
+ 
+(Filename: C:/BuildAgent/work/d63dfc6385190b60/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 49)
+
+Ping: Error performing ICMP transmission. Possibly because of a timeout
+Connected to world: localhost
+ 
+(Filename: C:/BuildAgent/work/d63dfc6385190b60/artifacts/StandalonePlayerGenerated/UnityEngineDebug.cpp Line: 49)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1633)
+
+A script behaviour has a different serialization layout when loading. (Read 36 bytes but expected 108 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1170)
+

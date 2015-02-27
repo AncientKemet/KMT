@@ -1,0 +1,56 @@
+# AngelCode Bitmap Font Generator configuration file
+fileVersion=1
+
+# font settings
+fontName=Gadugi
+fontFile=
+charSet=0
+fontSize=35
+aa=2
+scaleH=100
+useSmoothing=1
+isBold=0
+isItalic=0
+useUnicode=1
+disableBoxChars=1
+outputInvalidCharGlyph=0
+dontIncludeKerningPairs=0
+useHinting=1
+renderFromOutline=0
+useClearType=1
+
+# character alignment
+paddingDown=0
+paddingUp=0
+paddingRight=0
+paddingLeft=0
+spacingHoriz=6
+spacingVert=6
+useFixedHeight=0
+forceZero=0
+
+# output file
+outWidth=512
+outHeight=512
+outBitDepth=32
+fontDescFormat=0
+fourChnlPacked=0
+textureFormat=png
+textureCompression=0
+alphaChnl=1
+redChnl=0
+greenChnl=0
+blueChnl=0
+invA=0
+invR=0
+invG=0
+invB=0
+
+# outline
+outlineThickness=3
+
+# selected chars
+chars=13,32-126,160-255,305,321-322,338-339,352-353,376,381-382,402,710-711,713,728-733,5024-5108,8260
+chars=8364
+
+# imported icon images

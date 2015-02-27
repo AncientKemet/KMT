@@ -1,0 +1,88 @@
+fileFormatVersion: 2
+guid: 473654300817ca9449bdfff1d44c3f54
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Cube
+    100002: flax
+    100004: pappyrus
+    100006: //RootNode
+    100008: sralouch
+    100010: take_jak_pupava
+    400000: Cube
+    400002: flax
+    400004: pappyrus
+    400006: //RootNode
+    400008: sralouch
+    400010: take_jak_pupava
+    2300000: Cube
+    2300002: flax
+    2300004: pappyrus
+    2300006: sralouch
+    2300008: take_jak_pupava
+    3300000: Cube
+    3300002: flax
+    3300004: pappyrus
+    3300006: sralouch
+    3300008: take_jak_pupava
+    4300000: Cube
+    4300002: flax
+    4300004: pappyrus
+    4300006: take_jak_pupava
+    4300008: sralouch
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

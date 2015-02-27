@@ -1,0 +1,398 @@
+fileFormatVersion: 2
+guid: db9e762d27aad2c408c62e41efda8e18
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Bird
+    100004: Bone
+    100006: Bone_001
+    100008: Bone_002
+    100010: Bone_003
+    100012: Bone_006
+    100014: Bone_007
+    100016: Bone_008
+    100018: Bone_009
+    100020: Bone_012
+    100022: Bone_013
+    100024: Bone_014
+    100026: Bone_015
+    100028: Bone_016
+    100030: //RootNode
+    100032: chest
+    100034: Neck
+    400000: Armature
+    400002: Bird
+    400004: Bone
+    400006: Bone_001
+    400008: Bone_002
+    400010: Bone_003
+    400012: Bone_006
+    400014: Bone_007
+    400016: Bone_008
+    400018: Bone_009
+    400020: Bone_012
+    400022: Bone_013
+    400024: Bone_014
+    400026: Bone_015
+    400028: Bone_016
+    400030: //RootNode
+    400032: chest
+    400034: Neck
+    4300000: Bird
+    7400000: Default Take
+    7400002: Rest
+    7400004: Run
+    7400006: TPose
+    7400008: Idle
+    7400010: Walk
+    7400012: Walk0
+    7400014: Run0
+    7400016: Idle0
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Bird
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Idle0
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_001
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Bone/Bone_006
+        weight: 1
+      - path: Armature/Bone/Bone_006/Bone_008
+        weight: 1
+      - path: Armature/Bone/Bone_007
+        weight: 1
+      - path: Armature/Bone/Bone_007/Bone_009
+        weight: 1
+      - path: Armature/Bone/Bone_012
+        weight: 1
+      - path: Armature/Bone/Bone_012/Bone_014
+        weight: 1
+      - path: Armature/Bone/Bone_013
+        weight: 1
+      - path: Armature/Bone/Bone_013/Bone_015
+        weight: 1
+      - path: Armature/Bone/Bone_016
+        weight: 1
+      - path: Bird
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Rest
+      takeName: Rest
+      firstFrame: 0
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_001
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Bone/Bone_006
+        weight: 1
+      - path: Armature/Bone/Bone_006/Bone_008
+        weight: 1
+      - path: Armature/Bone/Bone_007
+        weight: 1
+      - path: Armature/Bone/Bone_007/Bone_009
+        weight: 1
+      - path: Armature/Bone/Bone_012
+        weight: 1
+      - path: Armature/Bone/Bone_012/Bone_014
+        weight: 1
+      - path: Armature/Bone/Bone_013
+        weight: 1
+      - path: Armature/Bone/Bone_013/Bone_015
+        weight: 1
+      - path: Armature/Bone/Bone_016
+        weight: 1
+      - path: Bird
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Run
+      takeName: Run
+      firstFrame: 0
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_001
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Bone/Bone_006
+        weight: 1
+      - path: Armature/Bone/Bone_006/Bone_008
+        weight: 1
+      - path: Armature/Bone/Bone_007
+        weight: 1
+      - path: Armature/Bone/Bone_007/Bone_009
+        weight: 1
+      - path: Armature/Bone/Bone_012
+        weight: 1
+      - path: Armature/Bone/Bone_012/Bone_014
+        weight: 1
+      - path: Armature/Bone/Bone_013
+        weight: 1
+      - path: Armature/Bone/Bone_013/Bone_015
+        weight: 1
+      - path: Armature/Bone/Bone_016
+        weight: 1
+      - path: Bird
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_001
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002
+        weight: 1
+      - path: Armature/Bone/Bone_001/Bone_002/Bone_003
+        weight: 1
+      - path: Armature/Bone/Bone_006
+        weight: 1
+      - path: Armature/Bone/Bone_006/Bone_008
+        weight: 1
+      - path: Armature/Bone/Bone_007
+        weight: 1
+      - path: Armature/Bone/Bone_007/Bone_009
+        weight: 1
+      - path: Armature/Bone/Bone_012
+        weight: 1
+      - path: Armature/Bone/Bone_012/Bone_014
+        weight: 1
+      - path: Armature/Bone/Bone_013
+        weight: 1
+      - path: Armature/Bone/Bone_013/Bone_015
+        weight: 1
+      - path: Armature/Bone/Bone_016
+        weight: 1
+      - path: Bird
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Walk
+      takeName: Walk
+      firstFrame: 0
+      lastFrame: 20
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_001
+        weight: 1
+      - path: Armature/Bone/Bone_001/chest
+        weight: 1
+      - path: Armature/Bone/Bone_001/chest/Neck
+        weight: 1
+      - path: Armature/Bone/Bone_006
+        weight: 1
+      - path: Armature/Bone/Bone_006/Bone_008
+        weight: 1
+      - path: Armature/Bone/Bone_007
+        weight: 1
+      - path: Armature/Bone/Bone_007/Bone_009
+        weight: 1
+      - path: Armature/Bone/Bone_012
+        weight: 1
+      - path: Armature/Bone/Bone_012/Bone_014
+        weight: 1
+      - path: Armature/Bone/Bone_013
+        weight: 1
+      - path: Armature/Bone/Bone_013/Bone_015
+        weight: 1
+      - path: Armature/Bone/Bone_016
+        weight: 1
+      - path: Bird
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
