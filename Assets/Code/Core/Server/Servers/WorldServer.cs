@@ -20,7 +20,7 @@ namespace Server.Servers
 
             //WebClient webClient = new WebClient();
             //IpAdress = webClient.DownloadString("http://ifconfig.me/ip");
-            IpAdress = "192.168.1.6";
+			IpAdress = "127.0.0.1";
         }
 
         public override void StartServer()
