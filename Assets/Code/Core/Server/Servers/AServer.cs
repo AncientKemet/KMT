@@ -24,7 +24,7 @@ namespace Server.Servers
         {
             Socket newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             newSocket.Blocking = false;
-            newSocket.Bind(new IPEndPoint(IPAddress.Parse("192.168.1.6"), port));
+			newSocket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), port));
             newSocket.Listen(10);
             return newSocket;
         }
