@@ -54,6 +54,26 @@ namespace Server.Model.Extensions.PlayerExtensions
                     {
                         ServerSpawnManager.Instance(Player.CurrentWorld).Spawn<LimestoneMother>(Player.Movement.Position);
                     }
+                    if (p.text.Contains("kill"))
+                    {
+                        if (Player.Focus.FocusedUnit != null)
+                        {
+                            if (Player.Focus.FocusedUnit.Combat != null)
+                            {
+                                Player.Focus.FocusedUnit.Combat.ReduceHealth(Player.Combat, 50000);
+                            }
+                        }
+                    }
+                    if (p.text.Contains("revive"))
+                    {
+                        if (Player.Focus.FocusedUnit != null)
+                        {
+                            if (Player.Focus.FocusedUnit.Combat != null)
+                            {
+                                Player.Focus.FocusedUnit.Combat.Revive(100);
+                            }
+                        }
+                    }
                 }
                 else
                     Say(p.text);

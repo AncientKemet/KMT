@@ -272,6 +272,7 @@
      <None Include="Assets\Code\Libaries\AstarPathfindingProject\Plugins\JsonFx\License.txt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Tonemapper.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BrightPassFilter.shader" />
+     <None Include="Assets\Code\Core\Client\Shaders\Matcap.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA2.shader" />
      <None Include="Assets\Code\Libaries\AstarPathfindingProject\Plugins\JsonFx\Readme.txt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrection3DLut.shader" />
@@ -308,6 +309,9 @@
  </Reference>
  <Reference Include="tk2dSkin">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/TK2DROOT/tk2d/Editor/tk2dSkin.dll</HintPath>
+ </Reference>
+ <Reference Include="tk2dSkin">
+ <HintPath>D:/KMT/Assets/Code/Libaries/TK2DROOT/tk2d/Editor/tk2dSkin.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>

@@ -34,12 +34,35 @@ namespace Server.Model.Extensions.UnitExts
         public float Energy { get; private set; }
         public float EnergyRatio { get { return Energy / 100f; } }
 
-        public bool Dead { get; private set; }
+        public bool Dead
+        {
+            get { return _dead; }
+            private set
+            {
+                if (_dead != value)
+                {
+                    if (value)
+                    {
+                        if (Unit.Anim != null)
+                        {
+                            Unit.Anim.SetDefaults();
+                            Unit.Anim.StandAnimation = "Death";
+                        }
+                    }
+                    else
+                    {
+                        Unit.Anim.SetDefaults();
+                    }
+                }
+                _dead = value;
+            }
+        }
 
         private int RegenTick = 0;
 
         private UnitAttributes _unitAttributes;
         private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
+        private bool _dead;
 
         const int RegenUpdateTick = 20;
 
@@ -140,7 +163,8 @@ namespace Server.Model.Extensions.UnitExts
                     Health = Mathf.Clamp(Health, 0, 100);
                     _wasUpdate = true;
                     Dead = true;
-                    OnDeath(_damageRecieved);
+                    if(OnDeath != null)
+                        OnDeath(_damageRecieved);
                     return;
                 }
             }
