@@ -7,6 +7,7 @@ namespace Libaries.Net.Packets.ForClient
 {
     public class UDPUnprecieseMovement : DatagramPacket
     {
+        public float Face { get; set; }
 
         public const float DistanceTo256Ratio = 100f;
 
@@ -34,6 +35,7 @@ namespace Libaries.Net.Packets.ForClient
             int IdMask = b.GetUnsignedShort();
             UnitID = b.GetIdMask2BID(IdMask);
             Angle = b.GetAngle1B();
+            Face = b.GetAngle1B();
             Distance = b.GetUnsignedByte() / DistanceTo256Ratio;
             //Mask = b.GetIdMask2BMASK(IdMask); // this works but is not neccecary
         }
@@ -51,6 +53,7 @@ namespace Libaries.Net.Packets.ForClient
             
             b.AddIdMask2B(UnitID, Mask == null ? new bool[4] : Mask);
             b.AddAngle1B(Angle);
+            b.AddAngle1B(Face);
             b.AddByte((int) (Distance * DistanceTo256Ratio));
         }
     }

@@ -237,7 +237,7 @@ namespace Client.Units
 
             OnRightClick += () =>
             {
-                if(!CreateCharacterInterface.IsNull)
+                if (!CreateCharacterInterface.IsNull)
                     return;
 
                 if (this == null)
@@ -287,7 +287,7 @@ namespace Client.Units
             distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(movementTargetPosition.x, movementTargetPosition.z));
             _visualSpeed = Mathf.Clamp(distanceToTarget, 0f, _basemovementSpeed) ;
 
-            smoothedTargetPosition = Vector3.Lerp(smoothedTargetPosition, movementTargetPosition, 0.3f);
+            smoothedTargetPosition = Vector3.Lerp(smoothedTargetPosition, movementTargetPosition, 1.3f);
 
             Vector3 calculatedPosition = transform.localPosition;
 
@@ -632,6 +632,7 @@ namespace Client.Units
             float angleInRadians = p.Angle / (180 / Mathf.PI);
             Vector3 vector = new Vector3(Mathf.Cos(angleInRadians), 0, Mathf.Sin(angleInRadians));
             movementTargetPosition = movementTargetPosition + (vector * p.Distance);
+            TargetRotation = p.Face;
         }
     }
 }

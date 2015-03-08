@@ -54,13 +54,14 @@ namespace Server.Model.Extensions.UnitExts
             get { return _offHand; }
         }
 
-        public void EquipItem(Item item)
+        public bool EquipItem(Item item)
         {
             EquipmentItem equipmentItem = item.GetComponent<EquipmentItem>();
             if (equipmentItem != null)
             {
-                EquipItem(equipmentItem);
+                return EquipItem(equipmentItem);
             }
+            return false;
         }
 
         public void UnequipItem(EquipmentItem.Type type)
@@ -119,32 +120,26 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        public void EquipItem(EquipmentItem item)
+        public bool EquipItem(EquipmentItem item)
         {
             switch (item.EquipType)
             {
                 case EquipmentItem.Type.Helm:
-                    _EquipItem(item, ref _head);
-                    break;
+                    return _EquipItem(item, ref _head);
                 case EquipmentItem.Type.Boots:
-                    _EquipItem(item, ref _boots);
-                    break;
+                    return _EquipItem(item, ref _boots);
                 case EquipmentItem.Type.Body:
-                    _EquipItem(item, ref _body);
-                    break;
+                    return _EquipItem(item, ref _body);
                 case EquipmentItem.Type.Legs:
-                    _EquipItem(item, ref _legs);
-                    break;
+                    return _EquipItem(item, ref _legs);
                 case EquipmentItem.Type.MainHand:
-                    _EquipItem(item, ref _mainHand);
-                    break;
+                    return _EquipItem(item, ref _mainHand);
                 case EquipmentItem.Type.OffHand:
-                    _EquipItem(item, ref _offHand);
-                    break;
+                    return _EquipItem(item, ref _offHand);
                 case EquipmentItem.Type.TwoHand:
-                    _EquipItem(item, ref _mainHand);
-                    break;
+                    return _EquipItem(item, ref _mainHand);
             }
+            return false;
         }
 
         #region Private Handling
@@ -153,7 +148,7 @@ namespace Server.Model.Extensions.UnitExts
         /// </summary>
         /// <param name="item"></param>
         /// <param name="_itemRef"></param>
-        private void _EquipItem(EquipmentItem item, ref EquipmentItem _itemRef, bool unequip = true)
+        private bool _EquipItem(EquipmentItem item, ref EquipmentItem _itemRef, bool unequip = true)
         {
             if (_itemRef != null)
             {
@@ -161,26 +156,31 @@ namespace Server.Model.Extensions.UnitExts
                 if (_UnequipItem(ref _itemRef, unequip))
                 {
                     _itemRef = item;
-                    if (item != null)
+                    if (item != null && item.Spells != null)
                     {
-                        Unit.Actions.EquipSpells(_itemRef.Spells);
+                        Unit.Actions.EquipSpells(item.Spells);
                     }
                     _wasUpdate = true;
+                    return true;
                 }
                 else
                 {
                     //todo couldnt unequip item
                    Debug.Log("Couldnt unequip item.");
+                    return false;
                 }
             }
             else
             {
                 _itemRef = item;
-                
-                Unit.Actions.EquipSpells(_itemRef.Spells);
+
+                if(item != null && item.Spells != null)
+                    Unit.Actions.EquipSpells(item.Spells);
 
                 _wasUpdate = true;
+                return true;
             }
+            return false;
         }
 
         private bool _UnequipItem(ref EquipmentItem _itemRef, bool unequip)
@@ -206,11 +206,15 @@ namespace Server.Model.Extensions.UnitExts
                     }
                     else
                     {
-                        Unit.Actions.UnEquipSpells(_itemRef.Spells);
-                        _itemRef = null;
+                        if(_itemRef.Spells != null)
+                            Unit.Actions.UnEquipSpells(_itemRef.Spells);
+
                         DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
                         droppedItem.Item = _itemRef.Item;
                         droppedItem.Movement.Teleport(Unit.Movement.Position);
+                        Unit.CurrentWorld.AddEntity(droppedItem);
+                       
+                        _itemRef = null;
                         _wasUpdate = true;
                         return true;
                     }

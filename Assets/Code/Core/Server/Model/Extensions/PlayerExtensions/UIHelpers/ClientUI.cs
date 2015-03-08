@@ -290,7 +290,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
                 Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID);
                 return;
             }
-            throw new Exception("Unhandled item drag.");
+            throw new Exception("Unhandled item drag. p.BeingDragInterfaceID == " + p.BeingDragInterfaceID + " p.DropOnInterfaceID =="+ p.DropOnInterfaceID);
         }
 
         public bool IsOpened(InterfaceType type)

@@ -477,6 +477,7 @@
      <Compile Include="Assets\Code\Libaries\UnityExtensions\TK2DExt\BoundsFittingSlicedSprite.cs" />
      <Compile Include="Assets\Code\Scripts\Fire.cs" />
      <Compile Include="Assets\Code\Scripts\GFX\SelfDestroy.cs" />
+     <Compile Include="Assets\Code\Scripts\GridMovement.cs" />
      <Compile Include="Assets\Code\Scripts\PlayAnimScript.cs" />
      <Compile Include="Assets\Development\Libary\Buffs\Codes\RestBuff.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\BlockSpell.cs" />
@@ -631,25 +632,25 @@
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendForBloom.shader" />
  <Reference Include="Pathfinding.ClipperLib">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.JsonFx">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Poly2Tri">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

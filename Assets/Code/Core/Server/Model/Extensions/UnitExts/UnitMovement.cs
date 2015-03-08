@@ -1,3 +1,4 @@
+using System;
 using Libaries.Net.Packets.ForClient;
 #if SERVER
 using Shared.Content.Types;
@@ -26,7 +27,7 @@ namespace Server.Model.Extensions.UnitExts
         private Vector3 _position = Vector3.one;
         private float _rotation = 0;
 
-        public float _baseSpeed = 5f;
+        public float _baseSpeed = 2.5f;
 
         private Vector3 _force = Vector3.zero;
 
@@ -67,7 +68,24 @@ namespace Server.Model.Extensions.UnitExts
             {
                _position = value;
                _positionUpdate = true;
-               _wasUpdate = true;
+               bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
+               if (_correction)
+                    _wasUpdate = true;
+               else
+               {
+                       float distance = Vector3.Distance(_lastPositionSent, _position);
+                       Vector3 difference = _position - _lastPositionSent;
+                       float angleInDegrees = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
+
+                       UnprecieseMovementPacket = new UDPUnprecieseMovement();
+
+                       UnprecieseMovementPacket.Angle = angleInDegrees;
+                       UnprecieseMovementPacket.Face = Rotation;
+                       UnprecieseMovementPacket.Distance = distance;
+                       UnprecieseMovementPacket.UnitID = Unit.ID;
+
+                       _lastPositionSent = _position;
+                }
             }
         }
 
@@ -150,37 +168,57 @@ namespace Server.Model.Extensions.UnitExts
 
         private void MoveAndRotate()
         {
-            Vector3 waypoint = _path.vectorPath[_currentWaypoint];
-            Vector3 dir = waypoint - _position;
-
-            float dirMagnitude = dir.magnitude;
-
-            if (dirMagnitude > 0.3f)
+            try
             {
-                if (
+                //Check if we are close enough to the next waypoint
+                //If we are, proceed to follow the next waypoint
+                for (int i = 0; i < 3; i++)
+                {
+                    Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
+                    if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
+                        Unit.Display.Size*0.75f)
+                    {
+                        _currentWaypoint++;
+                    }
+                }
+
+                Vector3 waypoint = _path.vectorPath[_currentWaypoint];
+                Vector3 dir = waypoint - _position;
+
+                float dirMagnitude = dir.magnitude;
+
+                if (dirMagnitude > 0.3f)
+                {
+                    /*if (
                     RotateTo(
                         Quaternion.LookRotation(dir * _rotationSpeed * (1.0f + Unit.Attributes[UnitAttributeProperty.Mobility]) *
                                                 Time.fixedDeltaTime +
                                                 (Quaternion.Euler(new Vector3(0, _rotation, 0)) * Vector3.forward)).eulerAngles.y))
-                {
+                {*/
+                    RotateTo(Quaternion.LookRotation(dir).eulerAngles.y);
                     //eq holding space
-                    if (!_dontWalk &&
-                        Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint))
+                    if (!_dontWalk /*&&
+                        Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint)*/)
                     {
-                        MoveForward(CurrentSpeed * Time.fixedDeltaTime);
-                        _position.y += (waypoint.y - _position.y) / 5f;
+                        MoveForward(CurrentSpeed*Time.fixedDeltaTime);
+                        _position.y += (waypoint.y - _position.y)/5f;
+                    }
+
+                }
+
+                //Check if we are close enough to the next waypoint
+                //If we are, proceed to follow the next waypoint
+                for (int i = 0; i < 3; i++)
+                {
+                    Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
+                    if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
+                        Unit.Display.Size*0.75f)
+                    {
+                        _currentWaypoint++;
                     }
                 }
-            }
-
-            //Check if we are close enough to the next waypoint
-            //If we are, proceed to follow the next waypoint
-            Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
-            if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
-                Unit.Display.Size * 0.75f)
-            {
-                _currentWaypoint++;
-            }
+            }catch(ArgumentOutOfRangeException e)
+            { }
         }
 
         private void MoveForward(float speed)
@@ -209,7 +247,6 @@ namespace Server.Model.Extensions.UnitExts
             {
                 _force += (newPosition - _position) * ForceWeight;
                 Position = newPosition;
-                _wasUpdate = true;
             }
         }
 
@@ -273,7 +310,6 @@ namespace Server.Model.Extensions.UnitExts
             if (CanRotate)
             {
                 Rotation = newRotation;
-                _wasUpdate = true;
                 return true;
             }
             return false;
@@ -325,7 +361,6 @@ namespace Server.Model.Extensions.UnitExts
             {
                 Teleport(new Vector3(512, 10, 512));
                 WalkTo(new Vector3(512, 11, 512));
-
             }
 
             if (!(Unit is Plant))
@@ -361,20 +396,6 @@ namespace Server.Model.Extensions.UnitExts
                     packet.AddAngle1B(_rotation);
                 }
             }
-            else
-            {
-                float distance = Vector3.Distance(_lastPositionSent, _position);
-                Vector3 difference = _position - _lastPositionSent;
-                float angleInDegrees = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
-
-                UnprecieseMovementPacket = new UDPUnprecieseMovement();
-
-                UnprecieseMovementPacket.Angle = angleInDegrees;
-                UnprecieseMovementPacket.Distance = distance;
-                UnprecieseMovementPacket.UnitID = Unit.ID;
-
-                _lastPositionSent = _position;
-            }
 
             Teleported = false;
         }
@@ -397,6 +418,7 @@ namespace Server.Model.Extensions.UnitExts
                 Teleport(_position + new Vector3(strenght.x, 0, strenght.z));
             }
             MoveTo(_position + new Vector3(strenght.x, 0, strenght.z));
+            _path = null;
         }
 
         public void PushForward(float strenght)

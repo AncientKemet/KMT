@@ -14,10 +14,8 @@ namespace Server.Model.Extensions
 
 	    public override void Progress()
         {
-            if(Time.deltaTime > 0.01)
-                return;
             Vector2 pos1 = new Vector2(unit.Movement.Position.x, unit.Movement.Position.z);
-	        foreach (var o in unit.IsStatic() ? unit.CurrentBranch.StaticObjectsVisible : unit.CurrentBranch.ObjectsVisible)
+            foreach (var o in unit.IsStatic() ? unit.CurrentBranch.StaticObjectsVisible : unit.CurrentBranch.StaticObjectsVisible)
 	        {
 	            ServerUnit u = o as ServerUnit;
                 if(u != unit )
