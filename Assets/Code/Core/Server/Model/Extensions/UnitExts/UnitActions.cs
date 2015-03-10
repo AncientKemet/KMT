@@ -5,9 +5,6 @@ using Shared.Content.Types;
 using Code.Code.Libaries.Net;
 using Server.Model.Entities.Animals;
 using System.Collections.Generic;
-using Code.Core.Client.UI;
-using Code.Libaries.Net.Packets.ForServer;
-using Code.Libaries.UnityExtensions.Independent;
 using Server.Model.Entities;
 using Server.Model.Entities.Human;
 using Server.Model.Entities.Items;
@@ -205,7 +202,14 @@ namespace Server.Model.Extensions.UnitExts
                     }
                     if (actionName == "Pick-up")
                     {
-                        item.Display.PickupingUnit = fromUnit;
+                        UnitEquipment eq = fromUnit.GetExt<UnitEquipment>();
+                        if (eq != null)
+                        {
+                            if (eq.EquipItem(item.Item))
+                            {
+                                item.Display.PickupingUnit = fromUnit;
+                            }
+                        }
                         return;
                     }
                 }

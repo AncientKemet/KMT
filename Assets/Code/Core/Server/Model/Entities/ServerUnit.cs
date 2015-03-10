@@ -86,6 +86,16 @@ namespace Server.Model.Entities
             {
                 SendPacketToPlayersAround(_updatePacket);
             }
+            if (Movement.UnprecieseMovementPacket != null)
+            {
+                foreach (IQuadTreeObject objectAround in CurrentBranch.ActiveObjectsVisible)
+                {
+                    Player playerAround = objectAround as Player;
+                    if (playerAround != null)
+                        playerAround.PlayerUdp.Send(Movement.UnprecieseMovementPacket);
+                }
+                Movement.UnprecieseMovementPacket = null;
+            }
 
             base.Progress();
 
@@ -100,14 +110,11 @@ namespace Server.Model.Entities
                 if (playerAround != null)
                 {
                     playerAround.Client.ConnectionHandler.SendPacket(packet);
-                    if (Movement.UnprecieseMovementPacket != null)
-                    {
-                        playerAround.PlayerUdp.Send(Movement.UnprecieseMovementPacket);
-                    }
                 }
             }
-            Movement.UnprecieseMovementPacket = null;
+            
         }
+
         #region SERIALIZATION
 
         public virtual void Serialize(ByteStream bytestream)
@@ -191,6 +198,9 @@ namespace Server.Model.Entities
                     int mask = 0;
                     foreach (UnitUpdateExt updateExtension in _updateExtensions)
                     {
+                        if(updateExtension is UnitMovement)
+                            mask = mask | updateExtension.UpdateFlag();
+                        else
                         mask = mask | updateExtension.UpdateFlag();
                     }
 

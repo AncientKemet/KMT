@@ -103,34 +103,37 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             HPWing.SetActive(data.HasCombat);
 
             SetText(UnitNameLabel, data.UnitName);
-            try
+            if (data.Attributes != null)
             {
-                SetText(Armor, data.Attributes[UnitAttributeProperty.Armor]);
-            }
-            catch (KeyNotFoundException e)
-            {
-            }
-            try
-            {
-                SetText(MagicResist, data.Attributes[UnitAttributeProperty.MagicResist]);
-            }
-            catch (KeyNotFoundException e)
-            {
-            }
+                try
+                {
+                    SetText(Armor, data.Attributes[UnitAttributeProperty.Armor]);
+                }
+                catch (KeyNotFoundException e)
+                {
+                }
+                try
+                {
+                    SetText(MagicResist, data.Attributes[UnitAttributeProperty.MagicResist]);
+                }
+                catch (KeyNotFoundException e)
+                {
+                }
 
-            try
-            {
-                SetText(MovementSpeed, data.Attributes[UnitAttributeProperty.MovementSpeed]);
-            }
-            catch (KeyNotFoundException e)
-            {
-            }
-            try
-            {
-                SetText(CooldownSpeed, data.Attributes[UnitAttributeProperty.ChargeSpeed]);
-            }
-            catch (KeyNotFoundException e)
-            {
+                try
+                {
+                    SetText(MovementSpeed, data.Attributes[UnitAttributeProperty.MovementSpeed]);
+                }
+                catch (KeyNotFoundException e)
+                {
+                }
+                try
+                {
+                    SetText(CooldownSpeed, data.Attributes[UnitAttributeProperty.ChargeSpeed]);
+                }
+                catch (KeyNotFoundException e)
+                {
+                }
             }
             if (Unit != null)
                 Unit.Name = data.UnitName;

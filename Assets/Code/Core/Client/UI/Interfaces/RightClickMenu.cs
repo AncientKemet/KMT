@@ -2,6 +2,7 @@
 using System.Linq;
 using Client.UI.Controls;
 using Client.UI.Scripts;
+using Client.Units;
 using Code.Core.Client.UI.Controls;
 using UnityEngine;
 
@@ -43,8 +44,11 @@ namespace Client.UI.Interfaces
                 Close();
 
             Vector3 wp = tk2dUIManager.Instance.camera.ScreenToWorldPoint(Input.mousePosition);
-
-            Vector3 pos = new Vector3(wp.x, wp.y, clickable.transform.position.z - 50) + OFFSET;
+            Vector3 pos;
+            if(clickable is PlayerUnit)
+                pos = new Vector3(wp.x, wp.y, -100) + OFFSET;
+            else
+                pos = new Vector3(wp.x, wp.y, clickable.transform.position.z - 50) + OFFSET;
 
             
             
