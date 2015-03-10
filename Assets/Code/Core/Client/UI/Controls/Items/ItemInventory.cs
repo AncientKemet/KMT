@@ -2,6 +2,7 @@
 using Client.UI.Controls.Items;
 using Code.Core.Shared.Content.Types;
 using Code.Libaries.Generic.Managers;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Controls.Items

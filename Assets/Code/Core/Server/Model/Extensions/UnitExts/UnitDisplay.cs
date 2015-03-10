@@ -1,3 +1,4 @@
+using Shared.Content.Types;
 #if SERVER
 using System.Collections.Generic;
 

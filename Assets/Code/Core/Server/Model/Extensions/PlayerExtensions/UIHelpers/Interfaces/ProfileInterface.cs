@@ -1,3 +1,4 @@
+using Server.Model.Extensions.UnitExts;
 #if SERVER
 using Code.Core.Shared.Content.Types.ItemExtensions;
 
@@ -47,11 +48,15 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             packet.HasEquipmentTab = _unit == player;
             packet.HasLevelsTab = _unit is Player;
-            packet.HasMainTab = true;
-            packet.HasPvPTab = _unit is Player;
-            packet.HasQuestTab = false;
+            packet.HasMainTab = _unit is Player;
+            packet.HasDialogueTab = _unit is Player;
+            packet.HasVendorTradeTab = false;
+            packet.HasInventoryTab = _unit.GetExt<UnitInventory>() != null && _unit.Access != null && _unit.Access.GetAccessFor(player).View_Inventory;
+            packet.HasAccessTab = _unit.Access != null;
             packet.HasTradeTab = _unit is Player;
             packet.UnitID = Unit.ID;
+
+            if (_unit.Access != null) packet.Access = _unit.Access.GetAccessFor(player);
 
             player.Client.ConnectionHandler.SendPacket(packet);
         }

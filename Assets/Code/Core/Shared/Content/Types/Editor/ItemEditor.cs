@@ -1,5 +1,6 @@
 ﻿using Code.Core.Shared.Content.Types;
 using Code.Libaries.Generic.Managers;
+using Shared.Content.Types;
 using UnityEditor;
 using UnityEngine;
 using System.Collections;

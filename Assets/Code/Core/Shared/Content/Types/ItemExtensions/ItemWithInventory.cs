@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 #endif
+using Shared.Content.Types;
 
 namespace Code.Core.Shared.Content.Types.ItemExtensions
 {

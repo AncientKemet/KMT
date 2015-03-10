@@ -9,11 +9,11 @@ namespace Server.Model.Entities.Minerals
     public abstract class MineralBlock : Mineral
     {
 
-        public UnitOwnership Ownership { get; private set; }
+        public UnitAccessOwnership AccessOwnership { get; private set; }
 
         public override void Awake()
         {
-            AddExt(Ownership = new UnitOwnership());
+            AddExt(AccessOwnership = new UnitAccessOwnership());
             base.Awake();
             
             Display.ModelID = Config.ChildModel;
@@ -23,9 +23,9 @@ namespace Server.Model.Entities.Minerals
                 if (newHealth < 66f && newHealth > 33f)
                 {
                     DroppedItem item = DroppedItem.Spawn(Config.BrickItemId, Movement.Position, CurrentWorld);
-                    if (Ownership.Owner != null)
+                    if (AccessOwnership.Owner != null)
                     {
-                        item.AccessList.Add(Ownership.Owner);
+                        item.AccessList.Add(AccessOwnership.Owner);
                         item.AccessType = DroppedItem.DroppedItemAccessType.List;
                         item.AccessDelay = 60f;
                     }
@@ -39,9 +39,9 @@ namespace Server.Model.Entities.Minerals
                 for (int i = 0; i < 3; i++)
                 {
                     DroppedItem item = DroppedItem.Spawn(Config.BrokenItemId, Movement.Position, CurrentWorld);
-                    if (Ownership.Owner != null)
+                    if (AccessOwnership.Owner != null)
                     {
-                        item.AccessList.Add(Ownership.Owner);
+                        item.AccessList.Add(AccessOwnership.Owner);
                         item.AccessType = DroppedItem.DroppedItemAccessType.List;
                         item.AccessDelay = 60f;
                     }

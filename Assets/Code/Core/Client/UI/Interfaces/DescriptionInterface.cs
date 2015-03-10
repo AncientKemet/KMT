@@ -61,7 +61,7 @@ namespace Client.UI.Interfaces
             Vector3 vpSize = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.size);
             Vector3 finalPos = mousePos;
 
-            finalPos.x += - vpSize.x/2f;
+            //finalPos.x += - vpSize.x/2f;
             finalPos.z = 0;
             
             //Calculate final position

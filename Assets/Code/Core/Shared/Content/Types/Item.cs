@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections;
-using Client.Units;
-using Code.Core.Client.Units;
-using Code.Core.Shared.Content.Types.ItemExtensions;
-using Code.Libaries.Generic.Managers;
-using Shared.Content.Types;
-using Shared.Content.Types.ItemExtensions;
-#if UNITY_EDITOR
-using UnityEditor;
+﻿#if UNITY_EDITOR
 #endif
-using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using Client.Units;
+using Code.Core.Shared.Content;
+using Code.Libaries.Generic.Managers;
+using UnityEngine;
 
-namespace Code.Core.Shared.Content.Types
+namespace Shared.Content.Types
 {
     [Serializable]
     [ExecuteInEditMode]

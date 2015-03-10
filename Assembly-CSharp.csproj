@@ -113,11 +113,17 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRight.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\InventoryInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\LowerRightBase.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\AccessTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\Attribute.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\DialogTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\EquipmentTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\InventoryTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\LevelTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\MainTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\ProfileInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\ProfileTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\TradeTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\VendorTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\RightClickMenu.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\SpellDescription.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\StatsBar\BuffControl.cs" />
@@ -199,6 +205,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\LoginInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\ProfileInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UserChat.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitAccessOwnership.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitActions.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitAnim.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitAttributes.cs" />
@@ -208,7 +215,6 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitFocus.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitInventory.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitMovement.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitOwnership.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitUpdateExt.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Pathfinding\PathFindingController.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\World.cs" />
@@ -237,6 +243,7 @@
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitAttributeProperty.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitVisual.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\UI\PlayerFeedMessage.cs" />
+     <Compile Include="Assets\Code\Core\Shared\Content\UnitAccess.cs" />
      <Compile Include="Assets\Code\Core\Shared\NET\NetworkConfig.cs" />
      <Compile Include="Assets\Code\Core\Shared\NET\PacketEnums.cs" />
      <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\Damage.cs" />

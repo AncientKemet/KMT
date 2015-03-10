@@ -23,6 +23,8 @@ namespace Server.Model.Entities
 
         public UnitAttributes Attributes;
 
+        public UnitAccessOwnership Access;
+
         public UnitFocus Focus;
 
         public UnitActions Actions;
