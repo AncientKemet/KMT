@@ -1,28 +1,27 @@
 fileFormatVersion: 2
-guid: aa6b027b62f4abe46812e520a88d01f3
+guid: dcda59eae47a8934d89637516d6c8253
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: Armature
-    100002: Bone
-    100004: botom
+    100000: Cone
+    100002: Cylinder
+    100004: Plane
     100006: //RootNode
-    100008: top
-    400000: Armature
-    400002: Bone
-    400004: botom
+    400000: Cone
+    400002: Cylinder
+    400004: Plane
     400006: //RootNode
-    400008: top
-    2300000: botom
-    3300000: botom
-    4300000: top
-    4300002: botom
+    2300000: Cone
+    2300002: Cylinder
+    2300004: Plane
+    3300000: Cone
+    3300002: Cylinder
+    3300004: Plane
+    4300000: Plane
+    4300002: Cone
+    4300004: Cylinder
     7400000: Default Take
-    7400002: Idle
-    7400004: Open
     9500000: //RootNode
-    11100000: //RootNode
-    13700000: top
   materials:
     importMaterials: 1
     materialName: 0
@@ -74,6 +73,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
   additionalBone: 0
   userData: 
