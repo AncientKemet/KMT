@@ -2,6 +2,7 @@
 using Client.UI.Scripts;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
+using Libaries.UnityExtensions.Independent;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces

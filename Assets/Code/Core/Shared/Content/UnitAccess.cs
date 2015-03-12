@@ -6,6 +6,17 @@ namespace Shared.Content
 {
     public class UnitAccess
     {
+        public static UnitAccess Full = new UnitAccess()
+        {
+            Add_To_Inventory = true,
+            Manage_Accesses = true,
+            DatabaseID = -1,
+            Pick_Up = true,
+            Take_From_Inventory = true,
+            Use = true,
+            View_Inventory = true
+        };
+
         public bool View_Inventory, Add_To_Inventory, Take_From_Inventory, Use, Pick_Up, Manage_Accesses;
         public int DatabaseID;
 

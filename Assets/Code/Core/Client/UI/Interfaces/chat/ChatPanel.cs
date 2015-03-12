@@ -3,6 +3,7 @@ using Client.Net;
 using Client.UI.Scripts;
 using Code.Core.Client.Controls;
 using Code.Libaries.UnityExtensions.Independent;
+using Libaries.UnityExtensions.Independent;
 using UnityEngine;
 using Code.Libaries.Net.Packets.ForServer;
 

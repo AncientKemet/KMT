@@ -9,6 +9,7 @@ using Code.Core.Client.Units;
 using Code.Libaries.Net.Packets.InGame;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
+using Libaries.UnityExtensions.Independent;
 using Shared.Content.Types;
 using UnityEngine;
 

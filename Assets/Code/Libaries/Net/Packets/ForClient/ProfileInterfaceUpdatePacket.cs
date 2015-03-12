@@ -7,6 +7,10 @@ namespace Libaries.Net.Packets.ForClient
 {
     public class ProfileInterfaceUpdatePacket : BasePacket
     {
+        public enum PacketTab
+        {
+            Main, Levels, Equipment, Dialogue, Inventory, Vendor, Trade, Access
+        }
 
         public int UnitID { get; set; }
         public bool HasMainTab { get; set; }
@@ -18,6 +22,8 @@ namespace Libaries.Net.Packets.ForClient
         
         public bool HasVendorTradeTab { get; set; }
         public bool HasInventoryTab { get; set; }
+
+        public PacketTab Tab { get; set; }
         
         public UnitAccess Access { get; set; }
 
@@ -31,6 +37,8 @@ namespace Libaries.Net.Packets.ForClient
             b.AddShort(UnitID);
             b.AddBitArray(new BitArray(new []{HasMainTab, HasLevelsTab, HasEquipmentTab,HasTradeTab,HasAccessTab,HasDialogueTab,HasVendorTradeTab,HasInventoryTab}));
             
+            b.AddByte((int) Tab);
+
             if(HasAccessTab)
                 Access.Serialize(b);
         }
@@ -48,6 +56,8 @@ namespace Libaries.Net.Packets.ForClient
             HasDialogueTab = mask[5];
             HasVendorTradeTab = mask[6];
             HasInventoryTab = mask[7];
+
+            Tab = (PacketTab) b.GetByte();
 
             if (HasAccessTab)
             {

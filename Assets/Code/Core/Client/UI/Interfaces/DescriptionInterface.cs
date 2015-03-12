@@ -16,8 +16,13 @@ namespace Client.UI.Interfaces
         {
             gameObject.SetActive(true);
 
-            _title.text = title;
-            _title.ForceBuild();
+            bool enableTtitle = !string.IsNullOrEmpty(title);
+            _title.gameObject.SetActive(enableTtitle);
+            if (enableTtitle)
+            {
+                _title.text = title;
+                _title.ForceBuild();
+            }
 
             bool enableSubtitle = !string.IsNullOrEmpty(subtitle);
             _subtitle.gameObject.SetActive(enableSubtitle);
@@ -58,11 +63,18 @@ namespace Client.UI.Interfaces
             _mainSprite.RecalculateBounds();
 
             Vector3 vpCenter = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.center);
-            Vector3 vpSize = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.size);
+            Vector3 vpSize = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.size )- new Vector3(0.5f,0.5f,0);
+            vpSize *= 2f;
             Vector3 finalPos = mousePos;
 
-            //finalPos.x += - vpSize.x/2f;
+            //finalPos.x += - vpSize.x/4f;
             finalPos.z = 0;
+
+            Debug.Log("mousePos.x " + mousePos.x + " vpSize.x " + vpSize.x);
+            if (mousePos.x + vpSize.x > 1.0f)
+            {
+                finalPos.x = 1f - vpSize.x;
+            }
             
             //Calculate final position
             /*if (mousePos.x > 0.5f)

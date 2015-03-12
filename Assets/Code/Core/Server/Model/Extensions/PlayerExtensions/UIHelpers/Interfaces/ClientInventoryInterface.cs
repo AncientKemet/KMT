@@ -1,3 +1,4 @@
+using Libaries.Net.Packets.ForClient;
 using Shared.Content.Types;
 #if SERVER
 using System;
@@ -19,15 +20,11 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
         public Player Player { get; private set; }
 
-        private Dictionary<int, bool> InventoriesOpened = new Dictionary<int, bool>();
-
         public Item this[int id, int x, int y]
         {
             set
             {
-                bool isOpened = false;
-
-                InventoriesOpened.TryGetValue(id, out isOpened);
+                bool isOpened = Player.ClientUi.ProfileInterface.Unit != null && Player.ClientUi.ProfileInterface.Unit.ID == id;
 
                 if (!isOpened)
                 {
@@ -42,12 +39,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                 packet.X = x;
                 packet.Y = y;
 
-                try
-                {
-                    Player.Client.ConnectionHandler.SendPacket(packet);
-                }
-                catch
-                { }
+                Player.Client.ConnectionHandler.SendPacket(packet);
+                
             }
         }
 
@@ -58,7 +51,10 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             UnitInventory unitInventory = Player.CurrentWorld[id].GetExt<UnitInventory>();
             if (unitInventory == null)
+            {
                 Debug.LogError("Not an inventory.");
+                return;
+            }
             ShowInventory(unitInventory);
         }
 
@@ -71,6 +67,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             var packet = new UIInventoryInterfacePacket();
 
+            Player.ClientUi.ProfileInterface.Open(inventory.Unit, ProfileInterfaceUpdatePacket.PacketTab.Inventory);
+
             packet.type = UIInventoryInterfacePacket.PacketType.SHOW;
             packet.UnitID = inventory.Unit.ID;
             packet.X = inventory.Width;
@@ -78,11 +76,25 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             Player.Client.ConnectionHandler.SendPacket(packet);
 
-            if (InventoriesOpened.ContainsKey(inventory.Unit.ID))
-                InventoriesOpened[inventory.Unit.ID] = true;
-            else
-                InventoriesOpened.Add(inventory.Unit.ID, true);
+            int index = 0;
+            foreach (var item in inventory.GetItems())
+            {
+                var packet2 = new UIInventoryInterfacePacket();
 
+                packet2.type = UIInventoryInterfacePacket.PacketType.SetItem;
+                packet2.UnitID = inventory.Unit.ID;
+                packet2.Value = item == null ? -1 : item.InContentManagerIndex;
+                int y = index / inventory.Width;
+                int x = index - y * inventory.Width;
+                packet2.X = x;
+                packet2.Y = y;
+
+                Player.Client.ConnectionHandler.SendPacket(packet2);
+                index++;
+            }
+            
+            if(inventory.OnWasOpened != null)
+                inventory.OnWasOpened(Player);
         }
 
         public void CloseInventory(int id)
@@ -107,10 +119,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             Player.Client.ConnectionHandler.SendPacket(packet);
 
-            if (InventoriesOpened.ContainsKey(inventory.Unit.ID))
-                InventoriesOpened[inventory.Unit.ID] = false;
-            else
-                InventoriesOpened.Add(inventory.Unit.ID, false);
+            if (inventory.OnWasOpened != null)
+                inventory.OnWasOpened(Player);
         }
     }
 }

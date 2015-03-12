@@ -3,6 +3,7 @@ using Client.UI.Scripts;
 using Code.Core.Client.UI.Scripts;
 using Code.Core.Shared.Content.Types;
 using Code.Libaries.UnityExtensions.Independent;
+using Libaries.UnityExtensions.Independent;
 using Shared.Content.Types;
 using UnityEngine;
 

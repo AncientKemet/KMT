@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Code.Libaries.UnityExtensions.Independent
+namespace Libaries.UnityExtensions.Independent
 {
     public static class Ease 
     {

@@ -59,7 +59,7 @@ namespace Server.Model.Entities
             AddExt(Movement = new UnitMovement());
             if(Display == null)
             AddExt(Display = new UnitDisplay());
-            
+            AddExt(Access = new UnitAccessOwnership());
             AddExt(Actions = new UnitActions());
             AddExt(Focus = new UnitFocus());
 

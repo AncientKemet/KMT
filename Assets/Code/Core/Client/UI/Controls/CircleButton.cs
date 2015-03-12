@@ -3,6 +3,7 @@ using Code.Core.Client.Controls;
 using Code.Core.Client.UI.Controls;
 using Code.Libaries.Net.Packets.ForServer;
 using Code.Libaries.UnityExtensions.Independent;
+using Libaries.UnityExtensions.Independent;
 using UnityEngine;
 
 namespace Client.UI.Controls

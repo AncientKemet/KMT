@@ -58,6 +58,10 @@ namespace Server.Model.Extensions.UnitExts
         public UnitAccess GetAccessFor(ServerUnit unit)
         {
             Player p = unit as Player;
+
+            if (entity == unit)
+                return UnitAccess.Full;
+
             return GetAccess(p.Client.UserAccount.DatabaseID);
         }
 

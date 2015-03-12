@@ -59,6 +59,7 @@
      <Compile Include="Assets\Code\Core\Client\Settings\GlobalConstants.cs" />
      <Compile Include="Assets\Code\Core\Client\Settings\UserSettings.cs" />
      <Compile Include="Assets\Code\Core\Client\Settings\VideoSettings.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Controls\ButtonDescribtion.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Controls\ChannelBar.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Controls\CircleButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Controls\Clickable.cs" />
@@ -114,6 +115,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\InventoryInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\LowerRightBase.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\AccessTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\ArchievementButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\Attribute.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\DialogTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\EquipmentTab.cs" />
