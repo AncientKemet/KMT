@@ -7,6 +7,7 @@ using Code.Code.Libaries.Net;
 using Code.Code.Libaries.Net.Packets;
 using Code.Core.Client.UI.Controls.Items;
 using Code.Core.Client.UI.Interfaces;
+using Code.Core.Client.UI.Interfaces.LowerRightFaces;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
 using Code.Core.Client.Units;
 using Code.Core.Client.Units.Managed;
@@ -101,7 +102,31 @@ namespace Client.Net
             else if (packet is UIInventoryInterfacePacket)
             {
                 UIInventoryInterfacePacket p = packet as UIInventoryInterfacePacket;
-                ItemInventoryInterface.I.Handle(p);
+                //convert my inventory to the special one
+                if (p.UnitID == PlayerUnit.MyPlayerUnit.Id)
+                {
+                    switch (p.type)
+                    {
+                        case UIInventoryInterfacePacket.PacketType.SHOW:
+                            InventoryInterface.I.ItemInventory.Width = p.X;
+                            InventoryInterface.I.ItemInventory.Height = p.Y;
+                            InventoryInterface.I.ItemInventory.ForceRebuild();
+                            break;
+
+                        case UIInventoryInterfacePacket.PacketType.HIDE:
+                            InventoryInterface.I.Hide();
+                            break;
+
+                        case UIInventoryInterfacePacket.PacketType.SetItem:
+                            int itemID = p.Value;
+                            InventoryInterface.I.ItemInventory.SetItem(p.X, p.Y, itemID);
+                            break;
+                    }
+                }
+
+                //else do casual stuff in profile
+                else
+                    ProfileInterface.I.Handle(p);
             }
             else if (packet is ChatPacket)
             {

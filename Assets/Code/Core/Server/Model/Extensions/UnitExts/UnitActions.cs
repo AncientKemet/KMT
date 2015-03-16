@@ -221,12 +221,13 @@ namespace Server.Model.Extensions.UnitExts
 
             if (actionName == "Open")
             {
+                UnitAccessOwnership acc = Unit.Access;
                 UnitInventory inventory = Unit.GetExt<UnitInventory>();
 
                 if (inventory == null)
                     Debug.LogError("Not an inventory.");
 
-                if (inventory.HasAcces(Unit))
+                if (acc == null || acc.GetAccessFor(fromUnit).View_Inventory)
                 {
                     if (fromUnit is Player)
                     {
@@ -246,7 +247,7 @@ namespace Server.Model.Extensions.UnitExts
                 if (fromUnit is Player)
                 {
                     Player p = fromUnit as Player;
-                    p.ClientUi.ProfileInterface.Unit = Unit;
+                    p.ClientUi.ProfileInterface.Open(Unit, ProfileInterfaceUpdatePacket.PacketTab.Main);
                     p.ClientUi.ProfileInterface.Opened = true;
                 }
                 return;

@@ -48,7 +48,6 @@ namespace Server.Model.Entities.Human
             AddExt(PlayerInput = new PlayerInput());
             AddExt(PlayerUdp = new PlayerUDP());
 
-            Inventory.AccesType = UnitInventory.AccessType.ONLY_THIS_UNIT;
             Inventory.ListeningPlayers.Add(this);
         }
 

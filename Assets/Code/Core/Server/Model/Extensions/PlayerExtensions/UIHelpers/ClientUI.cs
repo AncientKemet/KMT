@@ -1,3 +1,6 @@
+using Libaries.Net.Packets.ForClient;
+using Server.Model.Extensions.UnitExts;
+using Shared.Content;
 #if SERVER
 using System;
 using Libaries.Net.Packets.ForServer;
@@ -12,7 +15,7 @@ using UnityEngine;
 
 namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
 {
-    
+
     public class ClientUI
     {
 
@@ -23,7 +26,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
         private ProfileInterface _profileInterface;
         private CreateCharacterInterface _createCharacterInterface;
 
-        public Player Player { get { return Client.Player; }}
+        public Player Player { get { return Client.Player; } }
 
         public ClientInventoryInterface Inventories
         {
@@ -87,18 +90,18 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
             if (e.interfaceId == InterfaceType.ActionBars)
             {
                 int spell = e.controlID;
-                    if (e._eventType == UIInterfaceEvent.EventType.Button_Down)
-                    {
-                        Player.Actions.StartSpell(spell);
-                        return;
-                    }
+                if (e._eventType == UIInterfaceEvent.EventType.Button_Down)
+                {
+                    Player.Actions.StartSpell(spell);
+                    return;
+                }
 
-                    if (e._eventType == UIInterfaceEvent.EventType.CLICK)
-                    {
-                        Player.Actions.FinishSpell(spell);
-                        return;
-                    }
-                
+                if (e._eventType == UIInterfaceEvent.EventType.CLICK)
+                {
+                    Player.Actions.FinishSpell(spell);
+                    return;
+                }
+
             }
             if (e.interfaceId == InterfaceType.MyCharacterInventory)
             {
@@ -118,26 +121,38 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
 
             if (e.interfaceId == InterfaceType.LowerLeftMenu)
             {
-                if (e.Action == "Open Inventory")
+                if (e._eventType == UIInterfaceEvent.EventType.CLICK)
                 {
-                    if (e._eventType == UIInterfaceEvent.EventType.CLICK)
+                    if (e.Action == "Open Bag")
                     {
+
                         OpenOrCloseInterface(InterfaceType.MyCharacterInventory);
                         return;
+
                     }
-                }
-                if (e.Action == "Open Profile")
-                {
-                    if (e._eventType == UIInterfaceEvent.EventType.CLICK)
+                    if (e.Action == "View Equipment")
                     {
+
                         if (ProfileInterface.Opened)
                         {
                             ProfileInterface.Opened = false;
                         }
                         else
                         {
-                            ProfileInterface.Unit = Player;
-                            ProfileInterface.Opened = true;
+                            ProfileInterface.Open(Player, ProfileInterfaceUpdatePacket.PacketTab.Equipment);
+                        }
+                        return;
+                    }
+                    if (e.Action == "View Profile")
+                    {
+
+                        if (ProfileInterface.Opened)
+                        {
+                            ProfileInterface.Opened = false;
+                        }
+                        else
+                        {
+                            ProfileInterface.Open(Player, ProfileInterfaceUpdatePacket.PacketTab.Main);
                         }
                         return;
                     }
@@ -182,7 +197,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
                 Lobby.OnEvent(e.Action, e.controlID);
             }
 
-            Debug.LogError("Unknown event: "+e.Action+ " "+e._eventType+" interface id: "+e.interfaceId+" control id: "+e.controlID);
+            Debug.LogError("Unknown event: " + e.Action + " " + e._eventType + " interface id: " + e.interfaceId + " control id: " + e.controlID);
         }
 
         internal void OpenOrCloseInterface(InterfaceType type)
@@ -287,10 +302,24 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
         {
             if (p.BeingDragInterfaceID == InterfaceType.MyCharacterInventory && p.DropOnInterfaceID == InterfaceType.MyCharacterInventory)
             {
-                Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID);
+                Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID, Player.Inventory);
                 return;
             }
-            throw new Exception("Unhandled item drag. p.BeingDragInterfaceID == " + p.BeingDragInterfaceID + " p.DropOnInterfaceID =="+ p.DropOnInterfaceID);
+            if (p.BeingDragInterfaceID == InterfaceType.MyCharacterInventory && p.DropOnInterfaceID == InterfaceType.ProfileInterface)
+            {
+                UnitAccess a = ProfileInterface.Unit.Access.GetAccessFor(Player);
+                if (a.View_Inventory && a.Add_To_Inventory && p.DropOnID > 500)
+                    Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID - 500, ProfileInterface.Unit.GetExt<UnitInventory>());
+                return;
+            }
+            if (p.BeingDragInterfaceID == InterfaceType.ProfileInterface && p.DropOnInterfaceID == InterfaceType.MyCharacterInventory)
+            {
+                UnitAccess a = ProfileInterface.Unit.Access.GetAccessFor(Player);
+                if (a.View_Inventory && a.Add_To_Inventory && p.BeingDragID > 500)
+                    ProfileInterface.Unit.GetExt<UnitInventory>().MoveItem(p.BeingDragID - 500, p.DropOnID, Player.Inventory);
+                return;
+            }
+            throw new Exception("Unhandled item drag. p.BeingDragInterfaceID == " + p.BeingDragInterfaceID + " p.DropOnInterfaceID ==" + p.DropOnInterfaceID);
         }
 
         public bool IsOpened(InterfaceType type)

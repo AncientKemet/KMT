@@ -2,6 +2,7 @@
 #endif
 using System;
 using System.Collections.Generic;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Shared.Content.Types.ItemExtensions

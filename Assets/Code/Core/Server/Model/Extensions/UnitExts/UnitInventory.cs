@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using Shared.Content.Types;
 #if SERVER
 using Server.Model.Content;
 
@@ -32,9 +34,11 @@ namespace Server.Model.Extensions.UnitExts
 
         public ServerUnit Unit { get; private set; }
 
-        public AccessType AccesType { get; set; }
-
         public List<Player> ListeningPlayers = new List<Player>();
+
+        public Action<ServerUnit> OnWasOpened;
+        public Action<ServerUnit> OnWasClosed;
+
 
         public int Width
         {
@@ -122,7 +126,6 @@ namespace Server.Model.Extensions.UnitExts
 
         public override void Serialize(ByteStream bytestream)
         {
-            bytestream.AddInt((int)AccesType);
             for (int i = 0; i < Width * Height; i++)
             {
                 bytestream.AddShort(_items[i] == null ? -1 : _items[i].InContentManagerIndex);
@@ -131,23 +134,13 @@ namespace Server.Model.Extensions.UnitExts
 
         public override void Deserialize(ByteStream bytestream)
         {
-            AccesType = (AccessType) bytestream.GetInt();
             for (int i = 0; i < Width * Height; i++)
             {
                 int id = bytestream.GetShort();
                 AddItem(id == -1 ? null : ContentManager.I.Items[id]);
             }
         }
-
-        public bool HasAcces(ServerUnit unit)
-        {
-            if (AccesType == AccessType.ALL)
-                return true;
-            if (AccesType == AccessType.ONLY_THIS_UNIT)
-                return unit == Unit;
-            return false;
-        }
-
+        
         public bool AddItem(Item item)
         {
             for (int y = 0; y < Height; y++)
@@ -184,7 +177,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public void OnInterfaceEvent(Player player, UIInterfaceEvent e)
         {
-            if (HasAcces(player))
+            if (Unit.Access == null || Unit.Access.GetAccessFor(player).Take_From_Inventory)
             {
                 int itemPtr = e.controlID - 1;
 
@@ -223,20 +216,25 @@ namespace Server.Model.Extensions.UnitExts
 
         }
 
-        public void MoveItem(int index, int targetIndex)
+        public void MoveItem(int index, int targetIndex, UnitInventory inventory)
         {
             index -= 1;
             targetIndex -= 1;
-            if (_items[index] != null && _items[targetIndex] == null)
+            if (_items[index] != null && inventory._items[targetIndex] == null)
             {
-                _items[targetIndex] = _items[index];
+                inventory._items[targetIndex] = _items[index];
                 _items[index] = null;
                 if (ListeningPlayers.Count > 0)
                 {
                     SendUpdateToPlayers(index);
-                    SendUpdateToPlayers(targetIndex);
+                    inventory.SendUpdateToPlayers(targetIndex);
                 }
             }
+        }
+
+        public ReadOnlyCollection<Item> GetItems()
+        {
+            return _items.AsReadOnly();
         }
     }
 }

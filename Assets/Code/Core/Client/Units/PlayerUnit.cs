@@ -17,6 +17,7 @@ using Code.Libaries.Net.Packets.ForClient;
 using Code.Libaries.Net.Packets.ForServer;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
+using Libaries.UnityExtensions.Independent;
 using Shared.Content.Types;
 using Shared.Content.Types.ItemExtensions;
 using UnityEngine;

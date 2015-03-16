@@ -52,9 +52,9 @@ namespace Server.Model.Entities.Minerals
                 for (int i = 0; i < 3; i++)
                 {
                     var block = CreateChild(i, 3);
-                    if (i == 0) block.Ownership.Owner = primary;
-                    if (i == 1) block.Ownership.Owner = secondary ?? primary;
-                    if (i == 2) block.Ownership.Owner = third ?? primary;
+                    if (i == 0) block.AccessOwnership.Owner = primary;
+                    if (i == 1) block.AccessOwnership.Owner = secondary ?? primary;
+                    if (i == 2) block.AccessOwnership.Owner = third ?? primary;
                 }
             };
         }

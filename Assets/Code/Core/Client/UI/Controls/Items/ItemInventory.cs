@@ -2,6 +2,7 @@
 using Client.UI.Controls.Items;
 using Code.Core.Shared.Content.Types;
 using Code.Libaries.Generic.Managers;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Controls.Items
@@ -114,7 +115,6 @@ namespace Code.Core.Client.UI.Controls.Items
 
                         button.Background = buttonBackGround;
 
-
                         step = buttonBackGround.renderer.bounds.size;
 
                         buttonBackGround.transform.parent = button.transform;
@@ -122,6 +122,9 @@ namespace Code.Core.Client.UI.Controls.Items
 
                         buttonBackGround.gameObject.layer = gameObject.layer;
                     }
+
+                    button.Button.Index = Index+1 + x + y*Width;
+                    button.Button.InterfaceId = InterfaceId;
 
                     button.gameObject.layer = gameObject.layer;
 

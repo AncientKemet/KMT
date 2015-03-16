@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Code.Core.Client.UI;
 using Code.Core.Client.UI.Controls;
 using Code.Libaries.UnityExtensions.Independent;
+using Libaries.UnityExtensions.Independent;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -140,11 +141,13 @@ namespace Client.UI.Scripts
 
                 Controls.Clear();
 
-                List<UIControl> list = new List<UIControl>();
-                foreach (var button in GetComponentsInChildren<UIControl>())
+                List<UIControl> list = new List<UIControl>(new UIControl[1024]);
+                foreach (var button in GetComponentsInChildren<UIControl>(true))
                 {
-                    list.Add(button);
+                    list[counter] = button;
+
                     button.InterfaceId = Type;
+
                     if (button.Index == -1)
                         button.Index = counter;
 

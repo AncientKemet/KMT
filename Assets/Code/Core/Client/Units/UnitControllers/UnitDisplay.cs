@@ -10,6 +10,8 @@ using Code.Libaries.GameObjects;
 using Code.Libaries.Generic.Managers;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Generic.Managers;
+using Libaries.UnityExtensions.Independent;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.Units.UnitControllers

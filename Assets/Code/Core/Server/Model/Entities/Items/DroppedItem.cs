@@ -1,3 +1,4 @@
+using Shared.Content.Types;
 #if SERVER
 using System.Collections.Generic;
 using Code.Libaries.Generic.Managers;
@@ -54,6 +55,12 @@ namespace Server.Model.Entities.Items
 
                 if (withInventory != null)
                 {
+                    if(withInventory.HasAnimation)
+                        AddExt(Anim = new UnitAnim());
+
+                    Anim.StandAnimation = "Idle";
+                    Anim.RunAnimation = "Idle";
+
                     UnitInventory inventory;
 
                     AddExt(inventory = new UnitInventory());
