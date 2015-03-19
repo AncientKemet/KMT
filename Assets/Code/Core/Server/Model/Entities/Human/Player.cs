@@ -27,7 +27,6 @@ namespace Server.Model.Entities.Human
             set
             {
                 _client = value;
-                AddExt(value);
             }
         }
 
@@ -45,8 +44,8 @@ namespace Server.Model.Entities.Human
         {
             base.Awake();
 
-            AddExt(PlayerInput = new PlayerInput());
-            AddExt(PlayerUdp = new PlayerUDP());
+            PlayerInput = AddExt<PlayerInput>();
+            PlayerUdp = AddExt<PlayerUDP>();
 
             Inventory.ListeningPlayers.Add(this);
         }

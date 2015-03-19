@@ -20,18 +20,18 @@ namespace Server.Model.Content.Spawns
 
         private void Start()
         {
-            if (Application.isPlaying)
+            /*if (Application.isPlaying)
             {
                 if (ServerSingleton.Instance.WorldServer != null)
                 {
                     ServerSpawnManager.Instance(ServerSingleton.Instance.WorldServer.World).AddItemSpawn(this);
                 }
-            }
+            }*/
         }
 
         public void Spawn()
         {
-            if (Application.isPlaying)
+            /*if (Application.isPlaying)
             {
                 if (ServerSingleton.Instance.WorldServer != null)
                 {
@@ -39,7 +39,7 @@ namespace Server.Model.Content.Spawns
                     //ServerSingleton.Instance.WorldServer.World.
                     OnSpawn(SpawnedEntity);
                 }
-            }
+            }*/
         }
 
         protected virtual void OnSpawn(WorldEntity spawnedEntity) { }

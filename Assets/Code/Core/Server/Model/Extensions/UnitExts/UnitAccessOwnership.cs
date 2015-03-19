@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Servers;
 using Shared.Content;
 #if SERVER
 using Code.Code.Libaries.Net;
@@ -24,7 +25,7 @@ namespace Server.Model.Extensions.UnitExts
                     if (_ownerDatabaseId != -1)
                     {
                         _owner =
-                            ServerSingleton.Instance.WorldServer.World.Players.Find(
+                            ServerSingleton.Instance.GetComponent<World>().Players.Find(
                                 player => player.Client.UserAccount.DatabaseID == _ownerDatabaseId);
                     }
                 }

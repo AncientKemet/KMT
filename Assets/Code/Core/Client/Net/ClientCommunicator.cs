@@ -70,12 +70,12 @@ namespace Client.Net
 
                             if (loginSocket.Connected)
                             {
+                                Debug.Log("Client has Connected to server.");
                             }
                             else
                             {
                                 Debug.LogError("Couldnt connect to server.");
                             }
-
                         });
                     thread.Start();
                 }

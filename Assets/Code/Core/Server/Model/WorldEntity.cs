@@ -53,14 +53,19 @@ namespace Server.Model
             }
         }
 
-        public void AddExt(EntityExtension extension)
+        public T AddExt<T>() where T : EntityExtension
         {
-            extension.entity = this;
-            extensions[extension.GetType()] = extension;
-            if (extension is CollisionExt)
+            if (GetExt<T>() == null)
             {
-                _collisionExt = extension as CollisionExt;
+                T extension = gameObject.AddComponent<T>();
+                extension.entity = this;
+                extensions[extension.GetType()] = extension;
+                if (extension is CollisionExt)
+                {
+                    _collisionExt = extension as CollisionExt;
+                }
             }
+            return GetExt<T>();
         }
 
         public T GetExt<T>() where T : EntityExtension

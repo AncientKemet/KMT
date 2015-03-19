@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Libaries.UnityExtensions.Independent
 {
-    public static class Ease 
+    public static class Ease
     {
         public enum EaseType
         {
@@ -23,12 +23,38 @@ namespace Libaries.UnityExtensions.Independent
                 t += Time.deltaTime;
 
                 if (Time.realtimeSinceStartup - startTime < time)
-                    onUpdate(start * (1f - Mathf.Max(t / time,0f)) + end * Mathf.Min((t / time),1f));
+                    onUpdate(start * (1f - Mathf.Max(t / time, 0f)) + end * Mathf.Min((t / time), 1f));
             }
 
             onUpdate(end);
-            if(onFinish != null)
-            onFinish();
+            if (onFinish != null)
+                onFinish();
+        }
+
+        public static IEnumerator Join(Transform start, Transform end, System.Action onFinish, float time)
+        {
+            float startTime = Time.realtimeSinceStartup;
+
+            float t = 0.001f;
+
+            while (Time.realtimeSinceStartup - startTime < time)
+            {
+                yield return new WaitForEndOfFrame();
+
+                t += Time.deltaTime;
+
+                if (Time.realtimeSinceStartup - startTime < time)
+                {
+                    start.position = start.position * (1f - Mathf.Max(t / time, 0f)) + end.position * Mathf.Min((t / time), 1f);
+                    start.rotation = Quaternion.Slerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
+                }
+            }
+
+
+            start.position = end.position;
+            start.rotation = end.rotation;
+            if (onFinish != null)
+                onFinish();
         }
 
         public static IEnumerator Color(Color start, Color end, System.Action<Color> onUpdate, System.Action onFinish, float time)
@@ -48,13 +74,13 @@ namespace Libaries.UnityExtensions.Independent
             }
 
             onUpdate(end);
-            if(onFinish != null)
-            onFinish();
+            if (onFinish != null)
+                onFinish();
         }
 
         private static Vector3 Bezier3(Vector3 s, Vector3 st, Vector3 et, Vector3 e, float t)
         {
-            return (((-s + 3*(st-et) + e)* t + (3*(s+et) - 6*st))* t + 3*(st-s))* t + s;
+            return (((-s + 3 * (st - et) + e) * t + (3 * (s + et) - 6 * st)) * t + 3 * (st - s)) * t + s;
         }
 
     }

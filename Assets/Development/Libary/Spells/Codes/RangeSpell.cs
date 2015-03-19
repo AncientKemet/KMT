@@ -16,21 +16,10 @@ namespace Development.Libary.Spells.Codes
 {
     public class RangeSpell : Spell
     {
-
-
         public MeleeSpell.RadiusType _radiusType;
-        [Range(0, 2f)]
-        public float CriticalAreaMultiplier = 1f;
 
-        public float RadiusSize = 1f;
-
-        public string PowerAnim = "OneHandThrowPower";
-        public string AttackAnim = "OneHandThrowAttack";
-
-        public float LowestDamage = 0;
-        public float HighestDamage = 0;
-
-        public Spell.DamageType DamageType = Spell.DamageType.Physical;
+        public string PowerAnim = "BowPower";
+        public string AttackAnim = "BowShot";
 
         public string GetDescription()
         {
@@ -41,14 +30,24 @@ namespace Development.Libary.Spells.Codes
 
         public override void OnFinishCasting(ServerUnit unit, float strenght)
         {
-
             unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "") + (strenght < 0.33 ? "Weak" : "");
 
             if (strenght > 0.66f)
                 unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 0.5f);
 
-
+            var e = unit.GetExt<UnitEquipment>();
+            var u = e.OffHandUnit;
             
+            e.DestroyItem(u.Item.EQ.EquipType);
+            
+            u.Movement.Parent = null;
+            u.Movement.Rotation = unit.Movement.Rotation - 90;
+            u.Movement._UnSafeMoveTo(unit.Movement.Position);
+            u.Movement.CanMove = true;
+
+            Vector3 direction = unit.Movement.Forward;
+
+            u.StartCoroutine(SEase.Action(() => u.Movement.Push(direction, 1f), 10));
         }
 
         public override void OnStartCasting(ServerUnit unit)

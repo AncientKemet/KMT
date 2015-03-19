@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Code.Libaries.Generic;
 using Server.Servers;
+using UnityEngine;
 
 namespace Server
 {
@@ -12,15 +13,12 @@ namespace Server
 
         public static List<Action> StuffToRunOnUnityThread;
 
-        public bool Master, World, Data, Login;
         public string DataServerIPAdress = "127.0.0.1";
         public string DataCertificate = "missing certificate";
         public string DataRootPath = "not initialized";
+
+        public Transform GOPool;
 #if SERVER
-        public MasterServer MasterServer { get; private set; }
-        public WorldServer WorldServer { get; private set; }
-        public DataServer DataServer { get; private set; }
-        public LoginServer LoginServer { get; private set; }
 
         protected override void OnAwake()
         {
@@ -33,39 +31,11 @@ namespace Server
             Destroy(gameObject);
 #endif
 #if SERVER
-            if (Data)
-            {
-                DataServer = new DataServer();
-                DataServer.StartServer();
-            }
-            if (Master)
-            {
-                MasterServer = new MasterServer();
-                MasterServer.StartServer();
-            }
-            if (World)
-            {
-                WorldServer = new WorldServer(0);
-                WorldServer.StartServer();
-            }
-            if (Login)
-            {
-                LoginServer = new LoginServer();
-                LoginServer.StartServer();
-            }
 #endif
         }
 #if SERVER
         private void OnDisable()
         {
-            if (World)
-                WorldServer.Stop();
-            if (Login)
-                LoginServer.Stop();
-            if (Data)
-                DataServer.Stop();
-            if (Master)
-                MasterServer.Stop();
         }
 	
         void FixedUpdate () {
@@ -89,12 +59,6 @@ namespace Server
                 StuffToRunOnUnityThread.Clear();
             }
 
-            if(World && WorldServer != null)
-                WorldServer.ServerUpdate();
-            if(Login && LoginServer != null)
-                LoginServer.ServerUpdate();
-            if(Data && DataServer != null)
-                DataServer.ServerUpdate();
         }
 
         private void OnDrawGizmos()

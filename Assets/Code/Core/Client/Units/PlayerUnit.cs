@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Client.Enviroment;
 using Client.Net;
 using Client.UI.Interfaces;
 using Code.Code.Libaries.Net;
@@ -70,6 +71,8 @@ namespace Client.Units
         protected float _visualSpeed;
 
         private bool _isStatic;
+        private int _parentId = -1;
+        private int _parentPlaneId = -1;
 
         public float Health { get; private set; }
         public float Energy { get; private set; }
@@ -91,6 +94,70 @@ namespace Client.Units
             set
             {
                 _id = value;
+            }
+        }
+
+        public int ParentId
+        {
+            get { return _parentId; }
+            set
+            {
+                if (_parentId != value)
+                {
+                    if (value == -1)
+                    {
+                        transform.parent = KemetMap.Instance.transform;
+                    }
+                    else
+                    {
+                        if (_parentPlaneId == -1)
+                        {
+                            if (UnitManager.Instance.HasUnit(value))
+                            {
+                                var parent = UnitManager.Instance[value];
+                                StartCoroutine(Ease.Join(
+                                    transform,
+                                    parent.transform,
+                                    () => { transform.parent = parent.transform; },
+                                    3f));
+                            }
+                            else
+                            {
+                                //todo wait for parent to come visible
+                            }
+                        }
+                    }
+                }
+                _parentId = value;
+            }
+        }
+
+        public int ParentPlaneId
+        {
+            get { return _parentPlaneId; }
+            set
+            {
+                if (_parentPlaneId != value)
+                {
+                    if (_parentId != -1)
+                    {
+                        if (UnitManager.Instance.HasUnit(_parentId))
+                        {
+                            var parent = UnitManager.Instance[_parentId];
+                            var plane = parent.Display.UnitPrefab.Planes[value];
+                            StartCoroutine(Ease.Join(
+                                    transform,
+                                    plane,
+                                    () => { transform.parent = plane; },
+                                    3f));
+                        }
+                        else
+                        {
+                            //todo wait for parent to come visible
+                        }
+                    }
+                }
+                _parentPlaneId = value;
             }
         }
 
@@ -285,6 +352,10 @@ namespace Client.Units
 
         protected virtual void OnUpdate()
         {
+
+            if(ParentId != -1)
+                return;
+            
             distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(movementTargetPosition.x, movementTargetPosition.z));
             _visualSpeed = Mathf.Clamp(distanceToTarget, 0f, _basemovementSpeed) ;
 
@@ -294,7 +365,6 @@ namespace Client.Units
 
             if (distanceToTarget > 0.017f)
             {// Process DirecionVector
-                //calculatedPosition = Vector3.MoveTowards(calculatedPosition, smoothedTargetPosition, Time.deltaTime * 500f);
                 calculatedPosition = Vector3.Lerp(calculatedPosition, smoothedTargetPosition, Time.deltaTime * 7.5f);
 
                 FixYOnTerrain(ref calculatedPosition);
@@ -304,15 +374,14 @@ namespace Client.Units
             Quaternion calculatedRotation;
 
             {// Process rotation
-
-                if (Mathf.Abs(targetRotation - transform.eulerAngles.y) > 5f)
+                if (Mathf.Abs(targetRotation - transform.localEulerAngles.y) > 1f)
                 {
                     calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
                     calculatedRotation.x = 0;
                     calculatedRotation.z = 0;
 
-                    calculatedRotation = Quaternion.Lerp(transform.rotation, calculatedRotation, 0.25f);
-                    transform.rotation = calculatedRotation;
+                    calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, 0.25f);
+                    transform.localRotation = calculatedRotation;
                 }
             }
         }
@@ -353,6 +422,7 @@ namespace Client.Units
                 bool rotationUpdate = bitArray[1];
                 bool teleported = bitArray[2];
                 bool correction = bitArray[3];
+                bool parented = bitArray[4];
                 if (correction)
                 {
                     if (positionUpdate)
@@ -377,6 +447,11 @@ namespace Client.Units
                         float rotation = b.GetAngle1B();
                         TargetRotation = rotation;
                     }
+                }
+                if (parented)
+                {
+                    this.ParentId = b.GetShort();
+                    this.ParentPlaneId = b.GetByte();
                 }
 
 #if DEBUG_NETWORK
@@ -439,10 +514,13 @@ namespace Client.Units
                     item.transform.parent = transform;
                     item.transform.localPosition = Vector3.zero;
 
-                    var rigid = item.GetComponent<ItemRigid>();
+                    if (_parentId == -1)
+                    {
+                        var rigid = item.GetComponent<ItemRigid>();
 
-                    rigid.ForwardClicksToParent();
-                    rigid.PhysicsEnabled = true;
+                        rigid.ForwardClicksToParent();
+                        rigid.PhysicsEnabled = true;
+                    }
 
                     if(collider != null)
                         collider.enabled = false;
@@ -597,7 +675,7 @@ namespace Client.Units
                 Display.EquipItems(b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort());
 
         }
-
+        
         public static bool GetBit(int byt, int index)
         {
             if (index < 0 || index > 7)

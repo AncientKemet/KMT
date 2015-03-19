@@ -186,7 +186,7 @@ namespace Code.Core.Client.Units.UnitControllers
             }
         }
 
-        private GameObject _InUseModel;
+        private UnitPrefab _InUseModel;
         public Action<int> OnModelChange;
 
         public int Model
@@ -207,12 +207,17 @@ namespace Code.Core.Client.Units.UnitControllers
                     {
                         Destroy(_InUseModel);
                     }
-                    _InUseModel = (GameObject) Instantiate(ContentManager.I.Models[_model]);
+                    _InUseModel = ((GameObject)Instantiate(ContentManager.I.Models[_model].gameObject)).GetComponent<UnitPrefab>();
                     SetModel(_InUseModel);
                     if (OnModelChange != null)
                         OnModelChange(value);
                 }
             }
+        }
+
+        public UnitPrefab UnitPrefab
+        {
+            get { return _InUseModel; }
         }
 
         public int HeadId { get; private set; }
@@ -357,9 +362,9 @@ namespace Code.Core.Client.Units.UnitControllers
             PlayAnimation(id, layer, 1f);
         }
 
-        public void SetModel(GameObject model)
+        public void SetModel(UnitPrefab model)
         {
-            _animation = model.GetComponent<Animation>();
+            _animation = model.Visual.GetComponent<Animation>();
 
             //Copy animations from male to female
             if (_model == 0)
@@ -375,13 +380,13 @@ namespace Code.Core.Client.Units.UnitControllers
             model.transform.parent = transform;
             model.transform.localPosition = Vector3.zero;
 
-            NeckBone = TransformHelper.FindTraverseChildren("Neck", model.transform);
-            BodyBone = TransformHelper.FindTraverseChildren("Body", model.transform);
+            NeckBone = TransformHelper.FindTraverseChildren("Neck", model.Visual.transform);
+            BodyBone = TransformHelper.FindTraverseChildren("Body", model.Visual.transform);
 
-            RightHand = TransformHelper.FindTraverseChildren("RightHand", model.transform);
-            LeftHand = TransformHelper.FindTraverseChildren("LeftHand", model.transform);
-            LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.transform);
-            RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.transform);
+            RightHand = TransformHelper.FindTraverseChildren("RightHand", model.Visual.transform);
+            LeftHand = TransformHelper.FindTraverseChildren("LeftHand", model.Visual.transform);
+            LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.Visual.transform);
+            RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.Visual.transform);
 
             if (_animation != null)
             {
@@ -397,25 +402,25 @@ namespace Code.Core.Client.Units.UnitControllers
                 Face = UnitFactory.Instance.CreateFace(this);
 
                 //Lets get the existing materials and create new instances of them so we can change the equipment
-                _chestRenderer = TransformHelper.FindTraverseChildren("BodyMesh", model.transform).GetComponent<SkinnedMeshRenderer>();
+                _chestRenderer = TransformHelper.FindTraverseChildren("BodyMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
                 _chest = (Material)Instantiate(_chestRenderer.materials[0]);
                 _chestRenderer.materials[0] = _chest;
                 _chestRenderer.enabled = false;
 
-                _bootsRenderer = TransformHelper.FindTraverseChildren("Boots", model.transform).GetComponent<SkinnedMeshRenderer>();
+                _bootsRenderer = TransformHelper.FindTraverseChildren("Boots", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
                 _boots = (Material)Instantiate(_bootsRenderer.materials[0]);
                 _bootsRenderer.materials[0] = _boots;
                 _bootsRenderer.enabled = false;
 
-                _skirtRenderer = TransformHelper.FindTraverseChildren("SkirtMesh", model.transform).GetComponent<SkinnedMeshRenderer>();
+                _skirtRenderer = TransformHelper.FindTraverseChildren("SkirtMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
                 _skirt = (Material)Instantiate(_skirtRenderer.materials[0]);
                 _skirtRenderer.materials[0] = _skirt;
                 _skirtRenderer.enabled = false;
 
-                SkinnedMeshRenderer skinMesh = TransformHelper.FindTraverseChildren("SkinMesh", model.transform).GetComponent<SkinnedMeshRenderer>();
+                SkinnedMeshRenderer skinMesh = TransformHelper.FindTraverseChildren("SkinMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
                 var mats = skinMesh.materials;
 
@@ -429,13 +434,14 @@ namespace Code.Core.Client.Units.UnitControllers
                 //Hence the skin should be same as on ears, pass the material
                 Face.EarMaterial = _skin;
 
-                var wep = TransformHelper.FindTraverseChildren("ExampleWeapon", model.transform);
-                var shield = TransformHelper.FindTraverseChildren("ExampleShield", model.transform);
+                var wep = TransformHelper.FindTraverseChildren("ExampleWeapon", model.Visual.transform);
+                var shield = TransformHelper.FindTraverseChildren("ExampleShield", model.Visual.transform);
+
                 //Remove Example weapons
                 if(wep != null)
-                Destroy(TransformHelper.FindTraverseChildren("ExampleWeapon", model.transform).gameObject);
+                    Destroy(wep.gameObject);
                 if(shield != null)
-                Destroy(TransformHelper.FindTraverseChildren("ExampleShield", model.transform).gameObject);
+                    Destroy(shield.gameObject);
                 
             }
         }
@@ -444,7 +450,7 @@ namespace Code.Core.Client.Units.UnitControllers
         {
             if (string.IsNullOrEmpty(id)) return false;
 
-            if ((id.Contains("Power") || id.Contains("Attack")) && !id.Contains("Full"))
+            if ((id.Contains("Power") || id.Contains("Attack")) && !id.Contains("Full") || id.Contains("Shot"))
             {
                 return true;
             }
@@ -499,12 +505,12 @@ namespace Code.Core.Client.Units.UnitControllers
         /// <summary>
         /// Update the units equipment.
         /// </summary>
-        /// <param name="head">item id</param>
-        /// <param name="body">item id</param>
-        /// <param name="legs">item id</param>
-        /// <param name="boots">item id</param>
-        /// <param name="mainHand">item id</param>
-        /// <param name="offHand">item id</param>
+        /// <param name="head">Unit id</param>
+        /// <param name="body">Unit id</param>
+        /// <param name="legs">Unit id</param>
+        /// <param name="boots">Unit id</param>
+        /// <param name="mainHand">Unit id</param>
+        /// <param name="offHand">Unit id</param>
         public void EquipItems(int head, int body, int legs, int boots, int mainHand, int offHand)
         {
             HeadId = head;
@@ -519,9 +525,9 @@ namespace Code.Core.Client.Units.UnitControllers
                 OnEquipmentChanged();
             }
 
-            EquipItemGameObject(head, NeckBone);
-            EquipItemGameObject(mainHand, RightHand);
-            EquipItemGameObject(offHand, LeftHand);
+            EquipItemUnit(head, NeckBone);
+            EquipItemUnit(mainHand, RightHand);
+            EquipItemUnit(offHand, LeftHand);
 
             if (BootsId == -1)
             {
@@ -561,8 +567,14 @@ namespace Code.Core.Client.Units.UnitControllers
             }
         }
 
-        private void EquipItemGameObject(int itemId, Transform rootBone)
+        private void EquipItemUnit(int itemId, Transform rootBone)
         {
+            //new unit is parented
+            if(true)
+                return;
+
+            //old
+
             Item item = rootBone.GetComponentInChildren<Item>();
             if (item != null)
             {

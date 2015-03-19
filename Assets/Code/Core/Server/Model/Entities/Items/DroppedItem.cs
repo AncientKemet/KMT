@@ -32,6 +32,7 @@ namespace Server.Model.Entities.Items
 
         public readonly List<ServerUnit> AccessList = new List<ServerUnit>();
         public DroppedItemAccessType AccessType = DroppedItemAccessType.ALL;
+        private int _amount = 1;
 
         /// <summary>
         /// The time that has to be gone, before this item becomes public.
@@ -56,18 +57,29 @@ namespace Server.Model.Entities.Items
                 if (withInventory != null)
                 {
                     if(withInventory.HasAnimation)
-                        AddExt(Anim = new UnitAnim());
+                        Anim = AddExt<UnitAnim>();
 
                     Anim.StandAnimation = "Idle";
                     Anim.RunAnimation = "Idle";
 
                     UnitInventory inventory;
 
-                    AddExt(inventory = new UnitInventory());
+                    inventory = AddExt<UnitInventory>();
 
                     inventory.Width = withInventory.Width;
                     inventory.Height = withInventory.Height;
                 }
+            }
+        }
+
+        public int Amount
+        {
+            get { return _amount; }
+            set
+            {
+                _amount = value;
+                if (value <= 0)
+                    Display.Destroy = true;
             }
         }
 

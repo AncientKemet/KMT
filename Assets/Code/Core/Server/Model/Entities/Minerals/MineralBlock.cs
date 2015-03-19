@@ -13,7 +13,7 @@ namespace Server.Model.Entities.Minerals
 
         public override void Awake()
         {
-            AddExt(AccessOwnership = new UnitAccessOwnership());
+            AccessOwnership = AddExt<UnitAccessOwnership>();
             base.Awake();
             
             Display.ModelID = Config.ChildModel;

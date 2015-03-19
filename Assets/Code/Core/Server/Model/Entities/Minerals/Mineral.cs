@@ -14,9 +14,9 @@ namespace Server.Model.Entities.Minerals
 
         public override void Awake()
         {
-            AddExt(new CollisionExt());
-            AddExt(Attributes = new UnitAttributes());
-            AddExt(Combat = new UnitCombat());
+            AddExt<CollisionExt>();
+            Attributes = AddExt<UnitAttributes>();
+            Combat = AddExt<UnitCombat>();
             Attributes.BaseArmor = Config.Resistance;
             Combat.OnHitT += (type, hitType, arg3) =>
             {

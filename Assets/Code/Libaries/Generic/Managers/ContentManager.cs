@@ -12,7 +12,7 @@ namespace Code.Libaries.Generic.Managers
     public class ContentManager : SIAsset<ContentManager>
     {
         public List<Item> Items;
-        public List<GameObject> Models;
+        public List<UnitPrefab> Models;
         public List<Spell> Spells;
         public List<Buff> Buffs;
         public List<GameObject> Effects;

@@ -25,7 +25,5 @@ namespace Code.Core.Shared.Content.Types.ItemExtensions
         public bool CanBeStoredInInventory = true;
 
         public Spell[] Spells;
-
-        public List<UnitAttributePropertySerializable> Attributes;
     }
 }

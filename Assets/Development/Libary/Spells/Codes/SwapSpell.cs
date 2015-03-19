@@ -1,5 +1,7 @@
 ﻿using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Generic.Managers;
+using Server.Model.Content;
+using Server.Model.Entities.Items;
 #if SERVER
 using Server.Model.Entities;
 using Server.Model.Extensions.UnitExts;
@@ -32,7 +34,14 @@ namespace Development.Libary.Spells.Codes
                     item = i.MainHand;
                     //Debug.Log("has: " + item.Item.InContentManagerIndex + " " + (item.Item.InContentManagerIndex + ItemIndex));
                     i.DestroyItem(item.EquipType);
-                    i.EquipItem(ContentManager.I.Items[item.Item.InContentManagerIndex + ItemIndex]);
+
+                    DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+
+                    droppedItem.Movement.Teleport(unit.Movement.Position);
+                    droppedItem.Item = ContentManager.I.Items[item.Item.InContentManagerIndex + ItemIndex];
+                    unit.CurrentWorld.AddEntity(droppedItem);
+
+                    i.EquipItem(droppedItem);
                 }
             }
         }

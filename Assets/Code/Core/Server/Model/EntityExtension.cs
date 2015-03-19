@@ -1,9 +1,11 @@
+using Server.Model.Content;
+using UnityEngine;
 #if SERVER
 using Code.Code.Libaries.Net;
 
 namespace Server.Model
 {
-    public abstract class EntityExtension
+    public abstract class EntityExtension : ServerMonoBehaviour
     {
 
         private WorldEntity _entity;
