@@ -13,7 +13,6 @@ namespace Server
 
         public IDataProvider DataProvider;
 
-        private float _updateRate = 0.5f;
 
         public override void StartServer()
         {
@@ -30,10 +29,6 @@ namespace Server
         {
             base.ServerUpdate();
             
-            _updateRate -= Time.deltaTime;
-
-            if (_updateRate <= 0)
-            {
                 scm.Get.AcceptConnections(socket);
                 lock (Clients)
                 {
@@ -42,8 +37,6 @@ namespace Server
                         client.Progress();
                     }
                 }
-                _updateRate = 0.5f;
-            }
         }
 
         public override void Stop()

@@ -26,12 +26,13 @@ namespace Server.Model.Entities.Human
 
         public override void Awake()
         {
-            AddExt(Attributes = new UnitAttributes());
-            AddExt(Anim = new UnitAnim());
-            AddExt(Combat = new UnitCombat());
-            AddExt(Inventory = new UnitInventory());
-            AddExt(Equipment = new UnitEquipment());
-            AddExt(new CollisionExt());
+            Anim = AddExt<UnitAnim>();
+            Attributes = AddExt<UnitAttributes>();
+            Combat = AddExt<UnitCombat>();
+            Inventory = AddExt<UnitInventory>();
+            Equipment = AddExt<UnitEquipment>();
+
+            AddExt<CollisionExt>();
 
             Inventory.Width = 3;
             Inventory.Height = 5;

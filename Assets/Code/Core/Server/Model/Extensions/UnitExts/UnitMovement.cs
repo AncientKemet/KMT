@@ -24,7 +24,9 @@ namespace Server.Model.Extensions.UnitExts
         private const float ForceWeight = 0.0f;
 
         //important variables
+        [SerializeField]
         private Vector3 _position = Vector3.one;
+        [SerializeField]
         private float _rotation = 0;
 
         public float _baseSpeed = 2.5f;
@@ -39,6 +41,7 @@ namespace Server.Model.Extensions.UnitExts
         private UnitCombat _combat;
         private bool _positionUpdate = false;
         private bool _rotationUpdate = false;
+        private bool _parentUpdate = false;
 
         //destination variables
         private Vector3 destination;
@@ -47,6 +50,19 @@ namespace Server.Model.Extensions.UnitExts
         private bool _dontWalk;
         public float _rotationSpeed = 10f;
         private System.Action OnArrive;
+
+        public UnitMovement Parent
+        {
+            get { return _parent; }
+            set
+            {
+                _parent = value;
+                _parentUpdate = true;
+                _wasUpdate = true;
+            }
+        }
+
+        public int ParentPlaneID = 0;
 
         #region CORRECTION
 
@@ -58,6 +74,9 @@ namespace Server.Model.Extensions.UnitExts
         #region UnprecieseMovement
 
         public UDPUnprecieseMovement UnprecieseMovementPacket;
+        [SerializeField]
+        private UnitMovement _parent;
+
         #endregion
 
         //property getters
@@ -66,25 +85,25 @@ namespace Server.Model.Extensions.UnitExts
             get { return _position; }
             private set
             {
-               _position = value;
-               _positionUpdate = true;
-               bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
-               if (_correction)
+                _position = value;
+                _positionUpdate = true;
+                bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
+                if (_correction)
                     _wasUpdate = true;
-               else
-               {
-                       float distance = Vector3.Distance(_lastPositionSent, _position);
-                       Vector3 difference = _position - _lastPositionSent;
-                       float angleInDegrees = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
+                else
+                {
+                    float distance = Vector3.Distance(_lastPositionSent, _position);
+                    Vector3 difference = _position - _lastPositionSent;
+                    float angleInDegrees = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
 
-                       UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                    UnprecieseMovementPacket = new UDPUnprecieseMovement();
 
-                       UnprecieseMovementPacket.Angle = angleInDegrees;
-                       UnprecieseMovementPacket.Face = Rotation;
-                       UnprecieseMovementPacket.Distance = distance;
-                       UnprecieseMovementPacket.UnitID = Unit.ID;
+                    UnprecieseMovementPacket.Angle = angleInDegrees;
+                    UnprecieseMovementPacket.Face = Rotation;
+                    UnprecieseMovementPacket.Distance = distance;
+                    UnprecieseMovementPacket.UnitID = Unit.ID;
 
-                       _lastPositionSent = _position;
+                    _lastPositionSent = _position;
                 }
             }
         }
@@ -126,6 +145,9 @@ namespace Server.Model.Extensions.UnitExts
         public override void Progress()
         {
             base.Progress();
+
+            if (Parent != null)
+                return;
 
             if (Running && Unit.Combat.Energy < 20)
             {
@@ -176,7 +198,7 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
                     if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
-                        Unit.Display.Size*0.75f)
+                        Unit.Display.Size * 0.75f)
                     {
                         _currentWaypoint++;
                     }
@@ -200,8 +222,8 @@ namespace Server.Model.Extensions.UnitExts
                     if (!_dontWalk /*&&
                         Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint)*/)
                     {
-                        MoveForward(CurrentSpeed*Time.fixedDeltaTime);
-                        _position.y += (waypoint.y - _position.y)/5f;
+                        MoveForward(CurrentSpeed * Time.fixedDeltaTime);
+                        _position.y += (waypoint.y - _position.y) / 5f;
                     }
 
                 }
@@ -212,12 +234,13 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
                     if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
-                        Unit.Display.Size*0.75f)
+                        Unit.Display.Size * 0.75f)
                     {
                         _currentWaypoint++;
                     }
                 }
-            }catch(ArgumentOutOfRangeException e)
+            }
+            catch (ArgumentOutOfRangeException e)
             { }
         }
 
@@ -373,16 +396,19 @@ namespace Server.Model.Extensions.UnitExts
         #region StateSerialization
         protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(true, true, true, true);
+            packet.AddFlag(true, true, true, true, true);
             packet.AddPosition6B(_position);
 
             packet.AddAngle1B(_rotation);
+            
+            packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
+            packet.AddByte(ParentPlaneID);
         }
 
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
         {
             bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
-            packet.AddFlag(_positionUpdate, _rotationUpdate, Teleported, _correction);
+            packet.AddFlag(_positionUpdate, _rotationUpdate, Teleported, _correction, _parentUpdate);
             if (_correction)
             {
                 if (_positionUpdate)
@@ -395,9 +421,15 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     packet.AddAngle1B(_rotation);
                 }
+                if (_parentUpdate)
+                {
+                    packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
+                    packet.AddByte(ParentPlaneID);
+                }
             }
 
             Teleported = false;
+            _parentUpdate = false;
         }
         #endregion StateSerialization
 
@@ -444,6 +476,10 @@ namespace Server.Model.Extensions.UnitExts
             _rotation = bytestream.GetFloat4B();
         }
 
+        public void _UnSafeMoveTo(Vector3 position)
+        {
+            Position = position;
+        }
     }
 }
 #endif

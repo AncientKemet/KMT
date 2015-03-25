@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Client.Units;
 using Code.Core.Shared.Content;
+using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Generic.Managers;
 using UnityEngine;
 
@@ -38,6 +39,7 @@ namespace Shared.Content.Types
         public Vector3 Scale = Vector3.one;
         
         private int _inContentManagerIndex = -1;
+        private EquipmentItem _eq;
 
         public int InContentManagerIndex
         {
@@ -111,6 +113,16 @@ namespace Shared.Content.Types
             }
 
             return Description + "\n" + s;
+        }
+
+        public EquipmentItem EQ
+        {
+            get
+            {
+                if(_eq == null)
+                    _eq = GetComponent<EquipmentItem>();
+                return _eq;
+            }
         }
     }
 

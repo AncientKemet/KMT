@@ -56,12 +56,11 @@ namespace Server.Model.Entities
         {
             _updateExtensions = new List<UnitUpdateExt>();
 
-            AddExt(Movement = new UnitMovement());
-            if(Display == null)
-            AddExt(Display = new UnitDisplay());
-            AddExt(Access = new UnitAccessOwnership());
-            AddExt(Actions = new UnitActions());
-            AddExt(Focus = new UnitFocus());
+            Movement = AddExt<UnitMovement>();
+            Display = AddExt<UnitDisplay>();
+            Access = AddExt<UnitAccessOwnership>();
+            Actions = AddExt<UnitActions>();
+            Focus = AddExt<UnitFocus>();
 
             //in the end find all updatable extensions
             foreach (EntityExtension extension in Extensions)

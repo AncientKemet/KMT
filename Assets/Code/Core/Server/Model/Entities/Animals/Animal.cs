@@ -207,12 +207,12 @@ namespace Server.Model.Entities.Animals
         {
             base.Awake();
 
-            AddExt(Anim = new UnitAnim());
-            AddExt(Attributes = new UnitAttributes());
-            AddExt(Combat = new UnitCombat());
-            AddExt(AMovement = new AnimalMovement());
+            Anim = AddExt<UnitAnim>();
+            Attributes = AddExt<UnitAttributes>();
+            Combat = AddExt<UnitCombat>();
+            AMovement = AddExt<AnimalMovement>();
 
-            AddExt(new CollisionExt());
+            AddExt<CollisionExt>();
 
             Display.ModelID = ModelId;
 

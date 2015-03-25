@@ -204,9 +204,16 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     UnitEquipment equipment = player.Equipment;
 
-                    this[x, y] = null;
+                    DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
 
-                    equipment.EquipItem(selectedItem);
+                    droppedItem.Movement.Teleport(player.Movement.Position);
+                    droppedItem.Item = selectedItem;
+                    player.CurrentWorld.AddEntity(droppedItem);
+
+                    if (equipment.EquipItem(droppedItem))
+                    {
+                        this[x, y] = null;
+                    }
                 }
             }
             else

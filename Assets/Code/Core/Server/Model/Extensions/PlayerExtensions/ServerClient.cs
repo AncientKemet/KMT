@@ -55,12 +55,13 @@ namespace Server.Model.Extensions.PlayerExtensions
 
         public override void Deserialize(ByteStream bytestream)
         { }
-
-        public ServerClient(Socket _socket)
+        
+        public void Initialize(Socket _socket)
         {
             this.socket = _socket;
             IpAdress = (socket.RemoteEndPoint as IPEndPoint).Address.ToString();
             connectionHandler = new ConnectionHandler(socket, new ServerClientPacketExecutor(this));
+            name = "C " + IpAdress;
         }
 
         public override void Progress()

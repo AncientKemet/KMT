@@ -1,3 +1,4 @@
+using UnityEngine;
 #if SERVER
 using Server.Servers;
 
@@ -29,9 +30,14 @@ namespace Server
 
             if (newConnection != null)
             {
-                var client = new ServerClient(newConnection);
-                client.Server = Server;
-                Server.AddClient(client);
+                ServerSingleton.StuffToRunOnUnityThread.Add(() =>
+                {
+                    var client = Server.GetFreeServerClient();
+                    client.Initialize(newConnection);
+                    client.Server = Server;
+                    Server.AddClient(client);
+                });
+                
             }
         }
 

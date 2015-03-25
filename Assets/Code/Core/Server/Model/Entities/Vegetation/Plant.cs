@@ -47,8 +47,7 @@ namespace Server.Model.Entities.Vegetation
         {
             SeedsLeft = Random.Range(MinSeeds, MaxSeeds);
 
-            if (Display == null)
-                AddExt(Display = new UnitDisplay());
+                Display = AddExt<UnitDisplay>();
 
             Display.ModelID = ModelID;
             name = PlantName;
@@ -59,7 +58,7 @@ namespace Server.Model.Entities.Vegetation
 
             if (Collides)
             {
-                AddExt(new CollisionExt());
+                AddExt<CollisionExt>();
             }
         }
 

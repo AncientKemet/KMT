@@ -205,9 +205,8 @@ namespace Server.Model.Extensions.UnitExts
                         UnitEquipment eq = fromUnit.GetExt<UnitEquipment>();
                         if (eq != null)
                         {
-                            if (eq.EquipItem(item.Item))
+                            if (eq.EquipItem(item))
                             {
-                                item.Display.PickupingUnit = fromUnit;
                             }
                         }
                         return;

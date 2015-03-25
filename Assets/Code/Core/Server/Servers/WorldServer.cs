@@ -10,19 +10,24 @@ namespace Server.Servers
 {
     public class WorldServer : AServer
     {
-        public string IpAdress { get; private set; }
+        [SerializeField]
+        private World _world;
 
-        public World World { get; private set; }
-
-        public WorldServer(int worldId)
+        [SerializeField]
+        private string _ipAdress;
+        
+        public string IpAdress
         {
-            World = ServerSingleton.Instance.GetComponent<World>();
-
-            //WebClient webClient = new WebClient();
-            //IpAdress = webClient.DownloadString("http://ifconfig.me/ip");
-			IpAdress = "127.0.0.1";
+            get { return _ipAdress; }
+            private set { _ipAdress = value; }
         }
 
+        public World World
+        {
+            get { return _world; }
+            private set { _world = value; }
+        }
+        
         public override void StartServer()
         {
             base.StartServer();
