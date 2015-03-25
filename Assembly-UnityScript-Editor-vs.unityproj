@@ -215,7 +215,7 @@
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/TK2DROOT/tk2d/Editor/tk2dSkin.dll</HintPath>
  </Reference>
  <Reference Include="JMOAssets">
- <HintPath>D:/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
