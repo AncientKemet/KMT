@@ -1,22 +1,27 @@
 fileFormatVersion: 2
-guid: 2271b4325b79f334db3238bf4e94a9c6
+guid: 77d974a2fbd11f449abbacb65549e3fd
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: Circle
-    100002: Cube
-    100004: //RootNode
-    400000: Circle
-    400002: Cube
-    400004: //RootNode
-    2300000: Circle
-    2300002: Cube
-    3300000: Circle
-    3300002: Cube
-    4300000: Cube
-    4300002: Circle
+    100000: Armature
+    100002: Bone
+    100004: botom
+    100006: //RootNode
+    100008: top
+    400000: Armature
+    400002: Bone
+    400004: botom
+    400006: //RootNode
+    400008: top
+    2300000: botom
+    3300000: botom
+    4300000: top
+    4300002: botom
     7400000: Default Take
+    7400002: Idle
+    7400004: Open
     9500000: //RootNode
+    13700000: top
   materials:
     importMaterials: 1
     materialName: 0
