@@ -36,6 +36,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             ui.Open(InterfaceType.ActionBars);
             ui.Open(InterfaceType.LowerLeftMenu);
             ui.Open(InterfaceType.StatsBars);
+            ui.Open(InterfaceType.MyCharacterInventory);
             ui.Open(InterfaceType.UnitSelectionInterface);
 
             ui.Close(InterfaceType.Chat);
@@ -54,6 +55,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             ui.Open(InterfaceType.ChatPanel);
             ui.Open(InterfaceType.ActionBars);
             ui.Open(InterfaceType.LowerLeftMenu);
+            ui.Open(InterfaceType.MyCharacterInventory);
             ui.Open(InterfaceType.StatsBars);
             ui.Open(InterfaceType.UnitSelectionInterface);
         }

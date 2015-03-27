@@ -1,6 +1,8 @@
-﻿using Client.Units;
+﻿using Client.Net;
+using Client.Units;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.Units;
+using Code.Libaries.Net.Packets.ForServer;
 using UnityEngine;
 
 namespace Client.UI.Interfaces.Profile
@@ -13,7 +15,18 @@ namespace Client.UI.Interfaces.Profile
         protected override void Start()
         {
             base.Start();
-            OnLeftClick += delegate { ProfileInterface.I.CurrentTab = this; };
+            OnLeftClick += delegate
+            {
+                ProfileInterface.I.CurrentTab = this;
+                UIInterfaceEvent packetEvent = new UIInterfaceEvent();
+
+                packetEvent.controlID = Index;
+                packetEvent.interfaceId = InterfaceId;
+                packetEvent._eventType = UIInterfaceEvent.EventType.CLICK;
+                packetEvent.Action = "View "+name;
+
+                ClientCommunicator.Instance.SendToServer(packetEvent);
+            };
             OnMouseIn += () =>
             {
                 DescriptionInterface.I.Show("", Describtion);

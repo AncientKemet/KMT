@@ -10,15 +10,25 @@ namespace Server.Model
 
         private WorldEntity _entity;
 
-        public WorldEntity entity { get { return _entity; }
-            set { _entity = value; OnExtensionWasAdded(); }
+        public WorldEntity entity 
+        {
+            get
+            {
+                return _entity;
+            }
+        }
+
+        private void Awake()
+        {
+            _entity = GetComponent<WorldEntity>();
+            OnExtensionWasAdded();   
         }
 
         protected virtual void OnExtensionWasAdded()
         {
 
         }
-
+        
         public abstract void Progress();
 
         public abstract void Serialize(ByteStream bytestream);

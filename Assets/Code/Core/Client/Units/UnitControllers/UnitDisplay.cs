@@ -43,7 +43,7 @@ namespace Code.Core.Client.Units.UnitControllers
         private Material _skirt;
         private Material _chest;
 
-        public Transform NeckBone, BodyBone, LeftHand, RightHand, LeftShoulder, RightShoulder;
+        public Transform NeckBone, BodyBone, Offhand, Mainhand, LeftShoulder, RightShoulder;
 
         private string _standAnimation = "Idle";
         private string _walkAnimation = "Walk";
@@ -68,7 +68,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     Item[] items = GetComponentsInChildren<Item>();
                     foreach (var item in items)
                     {
-                        if (item != null && (item.transform.parent == LeftHand || item.transform.parent ==  RightHand))
+                        if (item != null && (item.transform.parent == Offhand || item.transform.parent ==  Mainhand))
                         {
                             var rigid = item.GetComponent<Rigidbody>();
                             if (rigid != null)
@@ -205,7 +205,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     }
                     if (_InUseModel != null)
                     {
-                        Destroy(_InUseModel);
+                        Destroy(_InUseModel.gameObject);
                     }
                     _InUseModel = ((GameObject)Instantiate(ContentManager.I.Models[_model].gameObject)).GetComponent<UnitPrefab>();
                     SetModel(_InUseModel);
@@ -383,8 +383,8 @@ namespace Code.Core.Client.Units.UnitControllers
             NeckBone = TransformHelper.FindTraverseChildren("Neck", model.Visual.transform);
             BodyBone = TransformHelper.FindTraverseChildren("Body", model.Visual.transform);
 
-            RightHand = TransformHelper.FindTraverseChildren("RightHand", model.Visual.transform);
-            LeftHand = TransformHelper.FindTraverseChildren("LeftHand", model.Visual.transform);
+            Mainhand = TransformHelper.FindTraverseChildren("MainHand", model.Visual.transform);
+            Offhand = TransformHelper.FindTraverseChildren("OffHand", model.Visual.transform);
             LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.Visual.transform);
             RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.Visual.transform);
 
@@ -525,9 +525,9 @@ namespace Code.Core.Client.Units.UnitControllers
                 OnEquipmentChanged();
             }
 
-            EquipItemUnit(head, NeckBone);
-            EquipItemUnit(mainHand, RightHand);
-            EquipItemUnit(offHand, LeftHand);
+            /*EquipItemUnit(head, NeckBone);
+            EquipItemUnit(mainHand, Mainhand);
+            EquipItemUnit(offHand, Offhand);*/
 
             if (BootsId == -1)
             {
@@ -536,8 +536,16 @@ namespace Code.Core.Client.Units.UnitControllers
             else
             {
                 _bootsRenderer.enabled = true;
-                _boots.mainTexture =
-                    ContentManager.I.Items[BootsId].GetComponentInChildren<Renderer>().material.mainTexture;
+
+                try
+                {
+                    _boots.mainTexture =
+                        ContentManager.I.Items[BootsId].GetComponentInChildren<Renderer>().material.mainTexture;
+                }
+                catch  (ArgumentOutOfRangeException e)
+                {
+                    Debug.LogError("un existing boots item id: "+BootsId);
+                }
             }
 
             if (ChestId == -1)
@@ -547,8 +555,16 @@ namespace Code.Core.Client.Units.UnitControllers
             else
             {
                 _chestRenderer.enabled = true;
-                _chest.mainTexture =
-                    ContentManager.I.Items[ChestId].GetComponentInChildren<Renderer>().material.mainTexture;
+
+                try
+                {
+                    _chest.mainTexture =
+                        ContentManager.I.Items[ChestId].GetComponentInChildren<Renderer>().material.mainTexture;
+                }
+                catch  (ArgumentOutOfRangeException e)
+                {
+                    Debug.LogError("un existing chest item id: " + ChestId);
+                }
             }
 
             if (LegsId == -1)
@@ -558,7 +574,15 @@ namespace Code.Core.Client.Units.UnitControllers
             else
             {
 
-                Item item = ContentManager.I.Items[LegsId];
+                Item item = null;
+                try
+                {
+                    item = ContentManager.I.Items[LegsId];
+                }
+                catch  (ArgumentOutOfRangeException e)
+                {
+                    Debug.LogError("un existing legs item id: " + LegsId);
+                }
                 MeshRenderer renderer = item.transform.GetChild(0).GetComponent<MeshRenderer>();
                 Material material = renderer.material;
 
@@ -588,13 +612,13 @@ namespace Code.Core.Client.Units.UnitControllers
                 }
             }
             if(_animation != null)
-            if (rootBone == RightHand)
+            if (rootBone == Mainhand)
             {
                 try
                 {
                     string HoldAnimName = "HandRight" + (itemId == -1 ? "Free" : "Hold");
                     _animation[HoldAnimName].layer = 2;
-                    foreach (var v in RightHand)
+                    foreach (var v in Mainhand)
                     {
                         Transform t = (Transform) v;
                         _animation[HoldAnimName].AddMixingTransform(t);
@@ -618,7 +642,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     }
 
                 //Exceptions  hands
-                if (rootBone == LeftHand || rootBone == RightHand)
+                if (rootBone == Offhand || rootBone == Mainhand)
                 {
                     newItem.transform.localPosition = new Vector3(-0.1f, 0, -0.06f);
                     newItem.transform.localEulerAngles = new Vector3(270, 0, 0);

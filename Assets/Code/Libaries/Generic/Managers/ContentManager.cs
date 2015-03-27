@@ -19,14 +19,6 @@ namespace Code.Libaries.Generic.Managers
         public Spell RestSpell;
         public Buff OverpowerDebuff;
 
-        private void OnEnable()
-        {
-            foreach (var item in Items)
-            {
-                if(item != null)
-                if (item.GUID == null) { }
-            }
-        }
 
 #if UNITY_EDITOR
         [MenuItem("Kemet/ContentManager")]

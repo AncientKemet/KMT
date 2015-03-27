@@ -58,7 +58,6 @@ namespace Server.Model
             if (GetExt<T>() == null)
             {
                 T extension = gameObject.AddComponent<T>();
-                extension.entity = this;
                 extensions[extension.GetType()] = extension;
                 if (extension is CollisionExt)
                 {
