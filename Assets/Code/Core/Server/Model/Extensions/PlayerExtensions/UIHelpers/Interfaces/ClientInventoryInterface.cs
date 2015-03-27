@@ -20,7 +20,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
         public Player Player { get; private set; }
 
-        public Item this[int id, int x, int y]
+        public Item.ItemInstance this[int id, int x, int y]
         {
             set
             {
@@ -35,7 +35,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
                 packet.type = UIInventoryInterfacePacket.PacketType.SetItem;
                 packet.UnitID = id;
-                packet.Value = value == null ? -1 : value.InContentManagerIndex;
+                packet.Value = value == null ? -1 : value.Item.InContentManagerIndex;
+                packet.Amount = value == null ? 0 : value.Amount;
                 packet.X = x;
                 packet.Y = y;
 
@@ -83,7 +84,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
                 packet2.type = UIInventoryInterfacePacket.PacketType.SetItem;
                 packet2.UnitID = inventory.Unit.ID;
-                packet2.Value = item == null ? -1 : item.InContentManagerIndex;
+                packet2.Value = item == null ? -1 : item.Item.InContentManagerIndex;
+                packet.Amount = item == null ? 0 : item.Amount;
                 int y = index / inventory.Width;
                 int x = index - y * inventory.Width;
                 packet2.X = x;

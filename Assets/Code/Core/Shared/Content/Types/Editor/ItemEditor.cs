@@ -14,14 +14,5 @@ public class ItemEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-
-        if(Target.gameObject.layer == 9)
-        if (GUILayout.Button("Set Icon Rotation"))
-        {
-            Debug.Log(ContentManager.I.Items.Count+" / "+Target.InContentManagerIndex);
-            ContentManager.I.Items[Target.InContentManagerIndex].Position = Target.transform.localPosition;
-            ContentManager.I.Items[Target.InContentManagerIndex].Rotation = Target.transform.localEulerAngles;
-            ContentManager.I.Items[Target.InContentManagerIndex].Scale = Target.transform.localScale;
-        }
     }
 }

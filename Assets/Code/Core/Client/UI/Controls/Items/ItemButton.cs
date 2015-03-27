@@ -133,9 +133,6 @@ namespace Client.UI.Controls.Items
                 ItemModel = (GameObject) Instantiate(Item.gameObject);
 
                 ItemModel.transform.parent = transform;
-                ItemModel.transform.localPosition = _item.Position;
-                ItemModel.transform.localEulerAngles = _item.Rotation;
-                ItemModel.transform.localScale = _item.Scale;
                 ItemModel.collider.enabled = false;
 
                 ItemModel.layer = gameObject.layer;

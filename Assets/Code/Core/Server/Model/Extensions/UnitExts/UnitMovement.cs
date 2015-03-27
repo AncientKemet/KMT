@@ -371,7 +371,7 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
 
             Unit = entity as ServerUnit;
-
+            
             if (!Unit.IsStatic())
             {
                 _seeker = entity.gameObject.AddComponent<Seeker>();
@@ -379,13 +379,6 @@ namespace Server.Model.Extensions.UnitExts
                 CanMove = true;
                 CanRotate = true;
             }
-
-            if (entity is Human)
-            {
-                Teleport(new Vector3(512, 10, 512));
-                WalkTo(new Vector3(512, 11, 512));
-            }
-
             if (!(Unit is Plant))
             {
                 CanMove = true;

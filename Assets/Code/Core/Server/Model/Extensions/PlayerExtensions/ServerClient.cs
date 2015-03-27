@@ -38,7 +38,6 @@ namespace Server.Model.Extensions.PlayerExtensions
             set
             {
                 player = value;
-                entity = value;
             }
         }
 
@@ -82,6 +81,10 @@ namespace Server.Model.Extensions.PlayerExtensions
             socket.Close();
             if (OnDisconnect != null)
                 OnDisconnect();
+        }
+
+        protected override void OnExtensionWasAdded()
+        {
         }
     }
 }

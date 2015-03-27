@@ -13,17 +13,6 @@ namespace Assets.Editor
     public class OldBloodEditor
     {
 
-
-        [MenuItem("OldBlood/Fix GUIDs")]
-        private static void FixGUIDs()
-        {
-            foreach (var v in GameObject.FindObjectsOfType<ContentItem>())
-            {
-                if(v.GUID ==null)
-                { }
-            }
-        }
-
         private static string BeginFileMacro = "#if SERVER";
         private static string EndFileMacro = "#endif";
 

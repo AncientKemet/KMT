@@ -31,7 +31,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_head == null)
                     return null;
-                return _head.Item.EQ;
+                return _head.Item.Item.EQ;
             }
         }
 
@@ -41,7 +41,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_body == null)
                     return null;
-                return _body.Item.EQ; ;
+                return _body.Item.Item.EQ; ;
             }
         }
 
@@ -51,7 +51,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_legs == null)
                     return null;
-                return _legs.Item.EQ; ;
+                return _legs.Item.Item.EQ; ;
             }
         }
 
@@ -60,8 +60,8 @@ namespace Server.Model.Extensions.UnitExts
             get
             {
                 if (_boots == null)
-                    return null; 
-                return _boots.Item.EQ; ;
+                    return null;
+                return _boots.Item.Item.EQ; ;
             }
         }
 
@@ -70,8 +70,8 @@ namespace Server.Model.Extensions.UnitExts
             get
             {
                 if (_mainHand == null)
-                    return null; 
-                return _mainHand.Item.EQ; ;
+                    return null;
+                return _mainHand.Item.Item.EQ; ;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_offHand == null)
                     return null;
-                return _offHand.Item.EQ; ;
+                return _offHand.Item.Item.EQ; ;
             }
         }
 
@@ -167,7 +167,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public bool EquipItem(DroppedItem unit)
         {
-            EquipmentItem item = unit == null ? null : unit.Item.EQ;
+            EquipmentItem item = unit == null ? null : unit.Item.Item.EQ;
             switch (item.EquipType)
             {
                 case EquipmentItem.Type.Helm:
@@ -199,7 +199,7 @@ namespace Server.Model.Extensions.UnitExts
             EquipmentItem item = null;
 
             if (unit != null)
-                item = unit.Item.EQ;
+                item = unit.Item.Item.EQ;
 
             if (_itemRef != null)
             {
@@ -265,7 +265,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (unequip)
                 {
-                    if (_itemRef.Item.EQ.CanBeStoredInInventory)
+                    if (_itemRef.Item.Item.EQ.CanBeStoredInInventory)
                     {
                         UnitInventory inventory = Unit.GetExt<UnitInventory>();
                         if (inventory != null)
@@ -273,7 +273,8 @@ namespace Server.Model.Extensions.UnitExts
                             if (inventory.HasSpace(1))
                             {
                                 inventory.AddItem(_itemRef.Item);
-                                Unit.Actions.UnEquipSpells(_itemRef.Item.EQ.Spells);
+                                Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
+                                _itemRef.Display.Destroy = true;
                                 _itemRef = null;
                                 _wasUpdate = true;
                                 return true;
@@ -282,13 +283,11 @@ namespace Server.Model.Extensions.UnitExts
                     }
                     else
                     {
-                        if(_itemRef.Item.EQ.Spells != null)
-                            Unit.Actions.UnEquipSpells(_itemRef.Item.EQ.Spells);
+                        if (_itemRef.Item.Item.EQ.Spells != null)
+                            Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
 
-                        DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
-                        droppedItem.Item = _itemRef.Item;
-                        droppedItem.Movement.Teleport(Unit.Movement.Position);
-                        Unit.CurrentWorld.AddEntity(droppedItem);
+                        _itemRef.Movement.Parent = null;
+                        _itemRef.Movement.ParentPlaneID = -1;
                        
                         _itemRef = null;
                         _wasUpdate = true;
@@ -298,16 +297,13 @@ namespace Server.Model.Extensions.UnitExts
                 }
                 else
                 {
-                    Unit.Actions.UnEquipSpells(_itemRef.Item.EQ.Spells);
+                    Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
                     _itemRef = null;
                     _wasUpdate = true;
                     return true;
                 }
             }
-            else
-            {
                 return true;
-            }
         }
         #endregion
 
@@ -319,9 +315,9 @@ namespace Server.Model.Extensions.UnitExts
         protected override void pSerializeState(ByteStream p)
         {
             p.AddShort(_head == null ? -1 : _head.ID);
-            p.AddShort(_body == null ? -1 : _body.ID);
-            p.AddShort(_legs == null ? -1 : _legs.ID);
-            p.AddShort(_boots == null ? -1 : _boots.ID);
+            p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
+            p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
+            p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
             p.AddShort(_mainHand == null ? -1 : _mainHand.ID);
             p.AddShort(_offHand == null ? -1 : _offHand.ID);
         }
@@ -329,9 +325,9 @@ namespace Server.Model.Extensions.UnitExts
         protected override void pSerializeUpdate(ByteStream p)
         {
             p.AddShort(_head == null ? -1 : _head.ID);
-            p.AddShort(_body == null ? -1 : _body.ID);
-            p.AddShort(_legs == null ? -1 : _legs.ID);
-            p.AddShort(_boots == null ? -1 : _boots.ID);
+            p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
+            p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
+            p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
             p.AddShort(_mainHand == null ? -1 : _mainHand.ID);
             p.AddShort(_offHand == null ? -1 : _offHand.ID);
         }

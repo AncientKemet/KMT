@@ -9,7 +9,7 @@ namespace Code.Core.Shared.Content
 
         [HideInInspector][SerializeField] private string _guid;
 
-        public string GUID
+        /*public string GUID
         {
             get
             {
@@ -22,7 +22,7 @@ namespace Code.Core.Shared.Content
                 return _guid;
             }
             set { _guid = value; }
-        }
+        }*/
     }
 }
 

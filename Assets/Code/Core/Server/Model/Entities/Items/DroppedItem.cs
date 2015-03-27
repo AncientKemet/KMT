@@ -18,7 +18,7 @@ namespace Server.Model.Entities.Items
             List
         }
 
-        private Item _item;
+        private Item.ItemInstance _item;
 
         protected override ServerUnitPrioritization GetPrioritization()
         {
@@ -39,20 +39,20 @@ namespace Server.Model.Entities.Items
         /// </summary>
         public float AccessDelay { get; set; }
 
-        public Item Item
+        public Item.ItemInstance Item
         {
             get { return _item; }
             set
             {
                 _item = value;
 
-                name = Item.name;
+                name = Item.Item.name;
 
-                Display.Item = _item;
+                Display.Item = _item.Item;
                 Movement.CanMove = false;
                 Movement.CanRotate = false;
 
-                ItemWithInventory withInventory = value.GetComponent<ItemWithInventory>();
+                ItemWithInventory withInventory = value.Item.GetComponent<ItemWithInventory>();
 
                 if (withInventory != null)
                 {
@@ -94,15 +94,6 @@ namespace Server.Model.Entities.Items
                     AccessType = DroppedItemAccessType.ALL;
                 }
             }
-        }
-
-        public static DroppedItem Spawn(int _itemId, Vector3 position, World currentWorld)
-        {
-            DroppedItem i = CreateInstance<DroppedItem>();
-            i.Item = ContentManager.I.Items[_itemId];
-            i.Movement.Teleport(position);
-            currentWorld.AddEntity(i);
-            return i;
         }
     }
 }

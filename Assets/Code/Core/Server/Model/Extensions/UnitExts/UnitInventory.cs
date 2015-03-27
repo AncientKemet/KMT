@@ -30,7 +30,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private int _height = 1;
 
-        private List<Item> _items;
+        private List<Item.ItemInstance> _items;
 
         public ServerUnit Unit { get; private set; }
 
@@ -62,14 +62,14 @@ namespace Server.Model.Extensions.UnitExts
 
         private void RecreateInventory()
         {
-            _items = new List<Item>(Width * Height);
+            _items = new List<Item.ItemInstance>(Width * Height);
             for (int i = 0; i < Width * Height; i++)
             {
                 _items.Add(null);
             }
         }
 
-        public Item this[int x, int y]
+        public Item.ItemInstance this[int x, int y]
         {
             get
             {
@@ -128,7 +128,8 @@ namespace Server.Model.Extensions.UnitExts
         {
             for (int i = 0; i < Width * Height; i++)
             {
-                bytestream.AddShort(_items[i] == null ? -1 : _items[i].InContentManagerIndex);
+                bytestream.AddShort(_items[i] == null ? -1 : _items[i].Item.InContentManagerIndex);
+                bytestream.AddShort(_items[i] == null ? -1 : _items[i].Amount);
             }
         }
 
@@ -137,11 +138,11 @@ namespace Server.Model.Extensions.UnitExts
             for (int i = 0; i < Width * Height; i++)
             {
                 int id = bytestream.GetShort();
-                AddItem(id == -1 ? null : ContentManager.I.Items[id]);
+                AddItem(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], bytestream.GetUnsignedShort()));
             }
         }
         
-        public bool AddItem(Item item)
+        public bool AddItem(Item.ItemInstance item)
         {
             for (int y = 0; y < Height; y++)
             {
@@ -179,12 +180,12 @@ namespace Server.Model.Extensions.UnitExts
         {
             if (Unit.Access == null || Unit.Access.GetAccessFor(player).Take_From_Inventory)
             {
-                int itemPtr = e.controlID - 1;
+                int itemPtr = e.controlID;
 
                 int x = itemPtr - (int)(itemPtr / Height) * Height;
                 int y = itemPtr / Height;
 
-                Item selectedItem = this[x, y];
+                Item.ItemInstance selectedItem = this[x, y];
                 Debug.Log("action:" + e.Action + " x :" + x + " y: " + y + " item: " + selectedItem);
 
                 if (selectedItem == null)
@@ -202,17 +203,20 @@ namespace Server.Model.Extensions.UnitExts
                 }
                 if (e.Action == "Equip")
                 {
-                    UnitEquipment equipment = player.Equipment;
-
-                    DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
-
-                    droppedItem.Movement.Teleport(player.Movement.Position);
-                    droppedItem.Item = selectedItem;
-                    player.CurrentWorld.AddEntity(droppedItem);
-
-                    if (equipment.EquipItem(droppedItem))
+                    if (selectedItem.Item.EQ != null)
                     {
-                        this[x, y] = null;
+                        UnitEquipment equipment = player.Equipment;
+
+                        DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+
+                        droppedItem.Movement.Teleport(player.Movement.Position + player.Movement.Forward);
+                        droppedItem.Item = selectedItem;
+                        player.CurrentWorld.AddEntity(droppedItem);
+
+                        if (equipment.EquipItem(droppedItem))
+                        {
+                            this[x, y] = null;
+                        }
                     }
                 }
             }
@@ -225,8 +229,6 @@ namespace Server.Model.Extensions.UnitExts
 
         public void MoveItem(int index, int targetIndex, UnitInventory inventory)
         {
-            index -= 1;
-            targetIndex -= 1;
             if (_items[index] != null && inventory._items[targetIndex] == null)
             {
                 inventory._items[targetIndex] = _items[index];
@@ -239,7 +241,7 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        public ReadOnlyCollection<Item> GetItems()
+        public ReadOnlyCollection<Item.ItemInstance> GetItems()
         {
             return _items.AsReadOnly();
         }

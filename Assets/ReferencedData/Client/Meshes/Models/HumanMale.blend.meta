@@ -46,6 +46,8 @@ ModelImporter:
     100080: ExampleWeapon
     100082: LeftHand
     100084: RightHand
+    100086: MainHand
+    100088: OffHand
     400000: Armature
     400002: Base
     400004: Body
@@ -89,6 +91,8 @@ ModelImporter:
     400080: ExampleWeapon
     400082: LeftHand
     400084: RightHand
+    400086: MainHand
+    400088: OffHand
     4300000: Boots
     4300002: BodyMesh
     4300004: SkirtMesh

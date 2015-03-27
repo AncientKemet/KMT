@@ -1,17 +1,43 @@
-#if SERVER
+using Server.Model.Entities.Human;
+using Server.Servers;
 using UnityEngine;
-using System.Collections;
+#if SERVER
 
-public class NPCSpawn : MonoBehaviour {
+namespace Server.Model.Content.Spawns
+{
+    public class NPCSpawn : MonoBehaviour
+    {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        public int ModelID = 0;
+
+        [Range(-1f,100f)]
+        public float WalkRange = -1f;
+
+        public float MinSleepTime = 1;
+        public float MaxSleepTime = 5;
+
+        public Vector3 StaticPosition { get; set; }
+
+        void Awake ()
+        {
+            NPC n = gameObject.AddComponent<NPC>();
+
+            n.Display.ModelID = ModelID;
+
+            if (n.CurrentWorld == null)
+                ServerSingleton.Instance.GetComponent<WorldServer>().World.AddEntity(n);
+
+            n.Movement.Teleport(transform.position);
+
+            StaticPosition = transform.position;
+
+            n.Spawn = this;
+
+            foreach (var ext in GetComponents<NpcSpawnExtension>())
+            {
+                ext.Apply(n);
+            }
+        }
+    }
 }
 #endif

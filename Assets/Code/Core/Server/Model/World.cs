@@ -21,17 +21,20 @@ namespace Server.Model
         public KemetMap Map { get; private set; }
         public bool EnableVegetation = false;
         public long LAST_TICK = 0;
-        private List<WorldEntity> _entities = new List<WorldEntity>();
+        public List<WorldEntity> _entities = new List<WorldEntity>();
         public List<ServerUnit> Units;
-        public List<ServerUnit> LowPriorityUnits;
         public List<Player> Players;
 
-        private List<int> _freeIds = new List<int>(8); 
+        private List<int> _freeIds = new List<int>(8);
+
+        private bool _initialized = false;
 
         public QuadTree Tree;
 
         public void AddEntity(WorldEntity entity)
         {
+            EnsureInitialization();
+
             bool _foundNullIndex = false;
             int _nullIndex = -1;
 
@@ -70,7 +73,6 @@ namespace Server.Model
             }
 
             entity.transform.parent = transform;
-
         }
 
         public void RemoveEntity(WorldEntity entity)
@@ -104,15 +106,25 @@ namespace Server.Model
         {
             AstarPath.Instance.Scan();
 
+            EnsureInitialization();
+        }
+
+        private void EnsureInitialization()
+        {
+            if (_initialized)
+                return;
+
+            _initialized = true;
+
             _entities = new List<WorldEntity>(1024);
             Units = new List<ServerUnit>();
             Players = new List<Player>();
-            Tree = new QuadTree(5, Vector2.zero, Vector2.one * 1024);
+            Tree = new QuadTree(5, Vector2.zero, Vector2.one*1024);
 
             Map = KemetMap.GetMap("1");
             Map.transform.parent = transform;
             if (EnableVegetation)
-            WorldVegeationManager.Instance(this);
+                WorldVegeationManager.Instance(this);
         }
 
         #endregion

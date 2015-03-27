@@ -12,6 +12,7 @@ namespace Code.Code.Libaries.Net.Packets
 {
     public class UIInventoryInterfacePacket : BasePacket
     {
+
         public enum PacketType
         {
             ERROR,
@@ -23,6 +24,7 @@ namespace Code.Code.Libaries.Net.Packets
         public PacketType type {get;set;}
         public int UnitID { get; set; }
         public int Value { get; set; }
+        public int Amount { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
 
@@ -38,6 +40,7 @@ namespace Code.Code.Libaries.Net.Packets
             bytestream.AddByte((int)type);
             bytestream.AddShort(UnitID);
             bytestream.AddShort(Value);
+            bytestream.AddShort(Amount);
             bytestream.AddByte(X);
             bytestream.AddByte(Y);
         }
@@ -47,6 +50,7 @@ namespace Code.Code.Libaries.Net.Packets
             type = (PacketType) bytestream.GetByte();
             UnitID = bytestream.GetUnsignedShort();
             Value = bytestream.GetShort();
+            Amount = bytestream.GetUnsignedShort();
             X = bytestream.GetByte();
             Y = bytestream.GetByte();
         }

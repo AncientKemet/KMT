@@ -119,7 +119,7 @@ namespace Client.Units
                                     transform,
                                     parent.transform,
                                     () => { transform.parent = parent.transform; },
-                                    3f));
+                                    0.3f));
                             }
                             else
                             {
@@ -149,7 +149,7 @@ namespace Client.Units
                                     transform,
                                     plane,
                                     () => { transform.parent = plane; },
-                                    3f));
+                                    0.3f));
                         }
                         else
                         {
@@ -484,7 +484,7 @@ namespace Client.Units
                         if (Display.Model != modelId)
                         {
 
-                            StartCoroutine(Ease.Vector(Vector3.zero, Vector3.one * size, vector3 =>
+                            /*StartCoroutine(Ease.Vector(Vector3.zero, Vector3.one * size, vector3 =>
                             {
                                 transform.localScale = vector3;
                                 if (_projector != null)
@@ -492,7 +492,7 @@ namespace Client.Units
                                     _projector.orthoGraphicSize = vector3.x;
                                 }
                             }, () => { },
-                                1f));
+                                0.3f));*/
                             Display.Model = modelId;
                             AddAction(new RightClickAction("Inspect",
                                 delegate

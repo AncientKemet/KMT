@@ -154,6 +154,10 @@
      <Compile Include="Assets\Code\Core\Server\IO\IDataProvider.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\ServerMonoBehaviour.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NPCSpawn.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcCC.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcEquip.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcShop.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcSpawnExtension.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\ObjectSpawn.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\SpawnMB.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Trees\IQuadTreeObject.cs" />
@@ -175,13 +179,6 @@
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\NPC.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Player.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Items\DroppedItem.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\Configs\Limestone.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\IMPL\LimestoneBlock.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\IMPL\LimestoneMother.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\Mineral.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\MineralBlock.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\MineralConfig.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Minerals\MotherMineral.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Projectiles\Projectile.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\SEase.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\ServerUnit.cs" />
@@ -240,7 +237,6 @@
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemMaterials.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemRigid.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemWithInventory.cs" />
-     <Compile Include="Assets\Code\Core\Shared\Content\Types\NpcExtensions\NpcExtension.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Spell.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitAttributeProperty.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitPrefab.cs" />
@@ -401,6 +397,7 @@
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\EnterWorldPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\LoginResponsePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\ProfileInterfaceUpdatePacket.cs" />
+     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\ShopUpdatePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\SpellUpdatePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\UDPUnprecieseMovement.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\UIInventoryInterfacePacket.cs" />
@@ -657,25 +654,25 @@
      <None Include="Assets\JMO Assets\MatCap Shaders\_MatCap Shaders Readme.txt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendForBloom.shader" />
  <Reference Include="Pathfinding.ClipperLib">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.JsonFx">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Poly2Tri">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

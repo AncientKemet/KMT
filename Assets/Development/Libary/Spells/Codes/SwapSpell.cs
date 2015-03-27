@@ -38,7 +38,7 @@ namespace Development.Libary.Spells.Codes
                     DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
 
                     droppedItem.Movement.Teleport(unit.Movement.Position);
-                    droppedItem.Item = ContentManager.I.Items[item.Item.InContentManagerIndex + ItemIndex];
+                    droppedItem.Item = new Item.ItemInstance(ContentManager.I.Items[item.Item.InContentManagerIndex + ItemIndex]);
                     unit.CurrentWorld.AddEntity(droppedItem);
 
                     i.EquipItem(droppedItem);

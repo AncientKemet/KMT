@@ -1,4 +1,8 @@
-﻿using Client.UI.Scripts;
+﻿using System.Collections.Generic;
+using Client.UI.Controls.Items;
+using Client.UI.Scripts;
+using Code.Core.Client.Controls;
+using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Controls.Items;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.UnityExtensions.Independent;
@@ -8,52 +12,111 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
 {
     public class InventoryInterface : UIInterface<InventoryInterface>
     {
+        public enum State
+        {
+            Hidden,
+            HalfVisible,
+            Full
+        }
+
+        public Clickable Button;
+
+        public List<ItemButton> Buttons123;
+
+        public State CurrentState
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                StopAllCoroutines();
+
+                if (value == State.HalfVisible)
+                {
+                    StartCoroutine(
+                        Ease.Vector(
+                            transform.localPosition,
+                            Vector3.down * 7.355438f,
+                            delegate(Vector3 vector3)
+                            {
+                                transform.localPosition = vector3;
+                            },
+                            null,
+                            0.33f
+                            )
+                        );
+                }else if (value == State.Full)
+                {
+                    StartCoroutine(
+                        Ease.Vector(
+                            transform.localPosition,
+                            Vector3.zero,
+                            delegate(Vector3 vector3)
+                            {
+                                transform.localPosition = vector3;
+                            },
+                            null,
+                            0.33f
+                            )
+                        );
+                }
+                else
+                {
+                    StartCoroutine(
+                        Ease.Vector(
+                            transform.localPosition,
+                            Vector3.down * 9.237873f,
+                            delegate(Vector3 vector3)
+                            {
+                                transform.localPosition = vector3;
+                            },
+                            null,
+                            0.33f
+                            )
+                        );
+                }
+            }
+        }
 
         public ItemInventory ItemInventory;
+        private State _state;
 
         protected override void Awake()
         {
             base.Awake();
-            gameObject.SetActive(false);
+
+            CurrentState = State.Hidden;
+            
+            Button.OnLeftClick += () =>
+            {
+                if (_state == State.Full)
+                    CurrentState = State.Hidden;
+                else
+                    CurrentState++;
+                
+            };
         }
 
-        public override void Hide()
+        protected virtual void Update()
         {
-            CorotineManager.Instance.StartCoroutine(
-                Ease.Vector(
-                    transform.localPosition,
-                    Vector3.zero + Vector3.down * 20f,
-                    delegate(Vector3 vector3)
-                    {
-                        transform.localPosition = vector3;
-                    },
-                    delegate
-                    {
-                        gameObject.SetActive(false);
-                    },
-                    0.33f
-                    )
-                );
-
+            if(_state >= State.HalfVisible)
+            if (KeyboardInput.Instance.FullListener == null)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    Buttons123[0].Button.OnLeftClick();
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    Buttons123[1].Button.OnLeftClick();
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    Buttons123[2].Button.OnLeftClick();
+                }
+            }
         }
 
-        public override void Show()
-        {
-            gameObject.SetActive(true);
-            CorotineManager.Instance.StartCoroutine(
-                Ease.Vector(
-                    transform.localPosition,
-                    Vector3.zero,
-                    delegate(Vector3 vector3)
-                    {
-                        transform.localPosition = vector3;
-                    },
-                    delegate
-                    {
-                    },
-                    0.33f
-                    )
-                );
-        }
+
     }
 }

@@ -1,7 +1,5 @@
+using Shared.Content.Types;
 #if SERVER
-using Server.Model.Entities.Minerals;
-using Server.Model.Entities.Minerals.Configs;
-using Server.Model.Entities.Minerals.IMPL;
 
 using UnityEngine;
 
@@ -36,7 +34,7 @@ namespace Server.Model.Extensions.PlayerExtensions
                 {
                     if (p.text.Contains("item"))
                     {
-                        Player.Inventory.AddItem(ContentManager.I.Items[int.Parse(p.text.Split("."[0])[2])]);
+                        Player.Inventory.AddItem(new Item.ItemInstance(ContentManager.I.Items[int.Parse(p.text.Split("."[0])[2])]));
                     }
                     if (p.text.Contains("chick"))
                     {
@@ -49,10 +47,6 @@ namespace Server.Model.Extensions.PlayerExtensions
                     if (p.text.Contains("zombie"))
                     {
                         ServerSpawnManager.Instance(Player.CurrentWorld).Spawn<Zombie>(Player.Movement.Position);
-                    }
-                    if (p.text.Contains("limestone"))
-                    {
-                        ServerSpawnManager.Instance(Player.CurrentWorld).Spawn<LimestoneMother>(Player.Movement.Position);
                     }
                     if (p.text.Contains("kill"))
                     {

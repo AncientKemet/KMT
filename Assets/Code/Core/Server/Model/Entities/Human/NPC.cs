@@ -1,41 +1,43 @@
+using Server.Model.Content.Spawns;
 #if SERVER
+using Server.Servers;
 using Server.Model.Extensions.UnitExts;
 using UnityEngine;
 
 namespace Server.Model.Entities.Human
 {
-    public class Npc : ServerUnit
+    public class NPC : Human
     {
-
-        private ServerUnit _followingServerUnit;
-
         public override void Awake()
         {
             base.Awake();
-            name = "NPC ["+ID+"]";
-            Movement.Running = true;
         }
+
+        public NPCSpawn Spawn { get; set; }
+
+        private float _sleepTime = 1f;
 
         public override void Progress()
         {
-            if (_followingServerUnit == null)
-            {
-                foreach (var unit in CurrentBranch.ObjectsVisible)
-                {
-                    if (unit is Player)
-                        _followingServerUnit = unit as Player;
-                }
-            }
-            else
-            {
-                Vector2 otherPos = _followingServerUnit.GetPosition();
-                float distance = Vector2.Distance(GetPosition(), otherPos);
-                if (distance > 5f)
-                {
-                    Movement.WalkTo(_followingServerUnit.GetExt<UnitMovement>().Position);
-                }
-            }
             base.Progress();
+
+            if(Spawn.WalkRange > 0)
+            if (!Movement.IsWalkingSomeWhere)
+            {
+                _sleepTime -= Time.fixedDeltaTime;
+                if (_sleepTime < 0)
+                {
+                    Movement.WalkTo(
+                        Spawn.StaticPosition +
+                        new Vector3(
+                            Random.Range(-Spawn.WalkRange / 2f, Spawn.WalkRange / 2f),
+                            0,
+                            Random.Range(-Spawn.WalkRange / 2f, Spawn.WalkRange / 2f)),
+                            () => { _sleepTime = Random.Range(Spawn.MinSleepTime, Spawn.MaxSleepTime); }
+                            );
+                }
+            }
+
         }
     }
 }

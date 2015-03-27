@@ -37,8 +37,8 @@ namespace Development.Libary.Spells.Codes
 
             var e = unit.GetExt<UnitEquipment>();
             var u = e.OffHandUnit;
-            
-            e.DestroyItem(u.Item.EQ.EquipType);
+
+            e.DestroyItem(u.Item.Item.EQ.EquipType);
             
             u.Movement.Parent = null;
             u.Movement.Rotation = unit.Movement.Rotation - 90;

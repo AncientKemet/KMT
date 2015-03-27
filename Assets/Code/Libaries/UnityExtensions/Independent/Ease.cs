@@ -10,20 +10,20 @@ namespace Libaries.UnityExtensions.Independent
             InOut
         }
 
-        public static IEnumerator Vector(Vector3 start, Vector3 end, System.Action<Vector3> onUpdate, System.Action onFinish, float time)
+        public static IEnumerator Vector(Vector3 start, Vector3 end, System.Action<Vector3> onUpdate, System.Action onFinish= null, float time= 0.3f)
         {
             float startTime = Time.realtimeSinceStartup;
 
             float t = 0.001f;
 
-            while (Time.realtimeSinceStartup - startTime < time)
+            while (t < time)
             {
                 yield return new WaitForEndOfFrame();
 
                 t += Time.deltaTime;
 
-                if (Time.realtimeSinceStartup - startTime < time)
-                    onUpdate(start * (1f - Mathf.Max(t / time, 0f)) + end * Mathf.Min((t / time), 1f));
+                if (Time.realtimeSinceStartup - startTime < time / Time.timeScale)
+                    onUpdate(Vector3.Lerp(start, end, Mathf.Min((t / time), 1f)));
             }
 
             onUpdate(end);
@@ -37,22 +37,22 @@ namespace Libaries.UnityExtensions.Independent
 
             float t = 0.001f;
 
-            while (Time.realtimeSinceStartup - startTime < time)
+            while (t < time)
             {
                 yield return new WaitForEndOfFrame();
 
                 t += Time.deltaTime;
 
-                if (Time.realtimeSinceStartup - startTime < time)
+                if (Time.realtimeSinceStartup - startTime < time / Time.timeScale)
                 {
-                    start.position = start.position * (1f - Mathf.Max(t / time, 0f)) + end.position * Mathf.Min((t / time), 1f);
-                    start.rotation = Quaternion.Slerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
+                    start.position = Vector3.Lerp(start.position, end.position, Mathf.Min((t / time), 1f));
+                    start.rotation = Quaternion.Lerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
                 }
             }
-
-
+            
             start.position = end.position;
             start.rotation = end.rotation;
+
             if (onFinish != null)
                 onFinish();
         }
@@ -63,13 +63,13 @@ namespace Libaries.UnityExtensions.Independent
 
             float t = 0.001f;
 
-            while (Time.realtimeSinceStartup - startTime < time)
+            while (t < time)
             {
                 yield return new WaitForEndOfFrame();
 
-                t += Time.deltaTime;
+                t += Time.deltaTime * Time.timeScale;
 
-                if (Time.realtimeSinceStartup - startTime < time)
+                if (Time.realtimeSinceStartup - startTime < time / Time.timeScale)
                     onUpdate(start * (1f - (Mathf.Clamp(t, 0, time) / time)) + end * (Mathf.Clamp(t, 0, time) / time));
             }
 

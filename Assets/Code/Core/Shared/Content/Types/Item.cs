@@ -3,10 +3,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using Client.Units;
 using Code.Core.Shared.Content;
 using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Generic.Managers;
+using UnityEditor;
 using UnityEngine;
 
 namespace Shared.Content.Types
@@ -34,9 +37,7 @@ namespace Shared.Content.Types
 
         public int MaxStacks = 1;
 
-        public Vector3 Position = Vector3.zero;
-        public Vector3 Rotation = Vector3.zero;
-        public Vector3 Scale = Vector3.one;
+        public Texture2D Icon;
         
         private int _inContentManagerIndex = -1;
         private EquipmentItem _eq;
@@ -49,7 +50,7 @@ namespace Shared.Content.Types
                 {
                     _inContentManagerIndex = ContentManager.I.Items.IndexOf(this);
                 }
-                if (_inContentManagerIndex == -1)
+                /*if (_inContentManagerIndex == -1)
                 {
                     for (int i = 0; i < ContentManager.I.Items.Count; i++)
                     {
@@ -60,7 +61,7 @@ namespace Shared.Content.Types
                             break;
                         }
                     }
-                }
+                }*/
                 return _inContentManagerIndex;
             }
         }
@@ -124,6 +125,49 @@ namespace Shared.Content.Types
                 return _eq;
             }
         }
+
+        [SerializeField]
+        public class ItemInstance
+        {
+            public Item Item { get; private set; }
+            public int Amount { get; set; }
+
+            public ItemInstance(Item _item, int _amount)
+            {
+                Item = _item;
+                Amount = _amount;
+            }
+
+            public ItemInstance(Item item)
+            {
+                Item = item;
+                Amount = 1;
+            }
+        }
+
+#if UNITY_EDITOR
+        public void CreateIcon()
+        {
+            var tex = AssetPreview.GetAssetPreview(gameObject);
+            Thread.Sleep(50);
+            for (int i = 0; i < 20; i++)
+            {
+                if(AssetPreview.IsLoadingAssetPreview(gameObject.GetInstanceID()))
+                    Thread.Sleep(100);
+            }
+            if (tex != null)
+            {
+                byte[] data = tex.EncodeToPNG();
+                string pathAndName = Application.dataPath + "/Development/Libary/Items/Icons/" + name + ".png";
+                File.WriteAllBytes(pathAndName, data);
+                AssetDatabase.ImportAsset("Assets/Development/Libary/Items/Icons/" + name + ".png");
+                Icon =
+                    (Texture2D)
+                        AssetDatabase.LoadAssetAtPath("Assets/Development/Libary/Items/Icons/" + name + ".png",
+                            typeof (Texture2D));
+            }
+        }
+#endif
     }
 
     [RequireComponent(typeof(Item))]

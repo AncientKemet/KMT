@@ -1,3 +1,4 @@
+using Shared.Content.Types;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace Server.Model.Entities.Vegetation.HC
             for (int i = 0; i < Random.Range(1, 2); i++)
             {
                 DroppedItem item = CreateInstance<DroppedItem>();
-                item.Item = ContentManager.I.Items[8];
+                item.Item = new Item.ItemInstance(ContentManager.I.Items[8]);
 
                 item.Movement.Teleport(Movement.Position + new Vector3(Random.Range(-1.5f, 1.5f), 0, Random.Range(-1.5f, 1.5f)));
                 CurrentWorld.AddEntity(item);
