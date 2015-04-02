@@ -41,7 +41,7 @@ Shader "MatCap/Vertex/Textured Lit"
 		{
 			half4 c = tex2D(_MainTex, IN.uv_MainTex);
 			half4 mc = tex2D(_MatCap, IN.matcapUV);
-			o.Albedo = c.rgb * mc.rgb * _Color.rgb * 2.0;
+			o.Albedo = c.rgb * mc.rgb * (_Color.rgb* _Color.rgb * 10.0);
 		}
 		ENDCG
 	}

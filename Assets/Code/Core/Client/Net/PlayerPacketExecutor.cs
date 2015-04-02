@@ -119,7 +119,7 @@ namespace Client.Net
 
                         case UIInventoryInterfacePacket.PacketType.SetItem:
                             int itemID = p.Value;
-                            InventoryInterface.I.ItemInventory.SetItem(p.X, p.Y, itemID);
+                            InventoryInterface.I.ItemInventory.SetItem(p.X, p.Y, p.Value, p.Amount);
                             break;
                     }
                 }
@@ -142,6 +142,7 @@ namespace Client.Net
             }
             else if (packet is LoginResponsePacket)
             {
+                
                 LoginResponsePacket p = packet as LoginResponsePacket;
                 LoginInterface.I.StatusLabel.text = p.Text;
                 if (!string.IsNullOrEmpty(p.DataServerKey) && p.DataServerKey != "null")

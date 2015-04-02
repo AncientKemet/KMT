@@ -151,6 +151,7 @@
      <Compile Include="Assets\Code\Core\GV.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\Encryption\AES.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\File\FileDataProvider.cs" />
+     <Compile Include="Assets\Code\Core\Server\IO\File\ParseDataProvider.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\IDataProvider.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\ServerMonoBehaviour.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NPCSpawn.cs" />
@@ -204,6 +205,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\LobbyInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\LoginInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\ProfileInterface.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\ShopInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UserChat.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitAccessOwnership.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\UnitExts\UnitActions.cs" />
@@ -673,6 +675,9 @@
  </Reference>
  <Reference Include="System.Drawing">
  <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
+ </Reference>
+ <Reference Include="Parse.Unity">
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

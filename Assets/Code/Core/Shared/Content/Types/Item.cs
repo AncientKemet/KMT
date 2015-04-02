@@ -22,9 +22,8 @@ namespace Shared.Content.Types
         [Multiline(5)]
         public string Description = "";
         public string Subtitle = "";
-
+        
         public List<UnitAttributePropertySerializable> Attributes;
-
 
         public string[] ActionsStrings;
 
@@ -32,6 +31,7 @@ namespace Shared.Content.Types
         public float Weight;
 
         public bool Tradable = true;
+        [Range(1, int.MaxValue)] public int Value = 1;
         
         public bool Stackable = false;
 
@@ -143,6 +143,42 @@ namespace Shared.Content.Types
                 Item = item;
                 Amount = 1;
             }
+        }
+
+        public static ItemInstance CopperCoins(int amount)
+        {
+            return new ItemInstance(ContentManager.I.Items[0], amount);
+        }
+
+        public static ItemInstance BronzeCoins(int amount)
+        {
+            return new ItemInstance(ContentManager.I.Items[1], amount);
+        }
+
+        public static ItemInstance MildBronzeCoins(int amount)
+        {
+            return new ItemInstance(ContentManager.I.Items[2], amount);
+        }
+
+        public static ItemInstance TinCoins(int amount)
+        {
+            return new ItemInstance(ContentManager.I.Items[3], amount);
+        }
+
+        public static ItemInstance SilverCoins(int amount)
+        {
+            return new ItemInstance(ContentManager.I.Items[4], amount);
+        }
+
+        public enum CoinValue
+        {
+            Copper = 1,
+            Bronze = 2,
+            MildBronze = 5,
+            Tin = 10,
+            Silver = 200,
+            Electrum = 5000,
+            Gold = 10000
         }
 
 #if UNITY_EDITOR

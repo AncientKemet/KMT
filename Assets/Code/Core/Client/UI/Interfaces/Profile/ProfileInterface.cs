@@ -132,8 +132,7 @@ namespace Client.UI.Interfaces.Profile
                     break;
 
                 case UIInventoryInterfacePacket.PacketType.SetItem:
-                    int itemID = packet.Value;
-                    _inventoryTab.Inventory.SetItem(packet.X, packet.Y, itemID);
+                    _inventoryTab.Inventory.SetItem(packet.X, packet.Y, packet.Value, packet.Amount);
                     break;
             }
         }

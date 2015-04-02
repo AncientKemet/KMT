@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Client.UI.Controls.Items;
+using Code.Core.Client.UI.Scripts;
 using Code.Core.Shared.Content.Types;
 using Code.Libaries.Generic.Managers;
 using Shared.Content.Types;
@@ -28,13 +29,17 @@ namespace Code.Core.Client.UI.Controls.Items
             Build();
         }
 
-        public void SetItem(int x, int y, int itemId)
+        public void SetItem(int x, int y, int itemId, int amount = 1)
         {
-            buttons[x + y * Width].Item = itemId == -1 ? null : ContentManager.I.Items[itemId];
+            var button = buttons[x + y * Width];
+            button.Item = itemId == -1 ? null : ContentManager.I.Items[itemId];
+            button.Amount.text = amount == 1 ? "" : "" + amount;
         }
-        public void SetItem(int x, int y, Item item)
+        public void SetItem(int x, int y, Item item, int amount = 1)
         {
-            buttons[x + y * Width].Item = item;
+            var button = buttons[x + y*Width];
+            button.Item = item;
+            button.Amount.text = amount == 1 ? "" : "" + amount;
         }
 
         private void Build()
@@ -114,6 +119,8 @@ namespace Code.Core.Client.UI.Controls.Items
                                 .GetComponent<tk2dSlicedSprite>();
 
                         button.Background = buttonBackGround;
+                        button.Icon = buttonBackGround.GetComponentInChildren<Icon>();
+                        button.Amount = buttonBackGround.GetComponentInChildren<tk2dTextMesh>();
 
                         step = buttonBackGround.renderer.bounds.size;
 

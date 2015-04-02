@@ -1,6 +1,7 @@
 ﻿using Client.UI.Interfaces;
 using Code.Core.Client.UI;
 using Code.Core.Client.UI.Controls;
+using Code.Core.Client.UI.Scripts;
 using Code.Core.Shared.Content.Types;
 using Code.Libaries.GameObjects;
 using Shared.Content.Types;
@@ -24,6 +25,10 @@ namespace Client.UI.Controls.Items
         private float _timeDown = -1f;
 
         [SerializeField] private bool _canBeDragged = true;
+        [SerializeField]
+        private tk2dTextMesh _amount;
+        [SerializeField]
+        private Icon _icon;
 
         public bool CanBeDragged
         {
@@ -127,21 +132,11 @@ namespace Client.UI.Controls.Items
 
                 if (value == null)
                 {
+                    Icon.Texture = null;
                     return;
                 }
 
-                ItemModel = (GameObject) Instantiate(Item.gameObject);
-
-                ItemModel.transform.parent = transform;
-                ItemModel.collider.enabled = false;
-
-                ItemModel.layer = gameObject.layer;
-
-                foreach (var t in TransformHelper.GetChildren(ItemModel.transform))
-                {
-                    t.gameObject.layer = gameObject.layer;
-                }
-                
+                Icon.Texture = value.Icon;
                 
                 if (value != null)
                 {
@@ -180,6 +175,18 @@ namespace Client.UI.Controls.Items
                     _onHoverColor.a = _originalColor.a;
                 }
             }
+        }
+
+        public tk2dTextMesh Amount
+        {
+            get { return _amount; }
+            set { _amount = value; }
+        }
+
+        public Icon Icon
+        {
+            get { return _icon; }
+            set { _icon = value; }
         }
     }
 }

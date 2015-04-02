@@ -1,30 +1,31 @@
 ﻿using System.Collections.Generic;
 using Code.Core.Shared.Content.Types.ItemExtensions;
-using Server.Model.Content;
 using Server.Model.Entities.Human;
 using Server.Model.Entities.Items;
 using Shared.Content.Types;
-using UnityEngine;
-using System.Collections;
 
-public class NpcEquip : NpcSpawnExtension
+namespace Server.Model.Content.Spawns.NpcSpawns
 {
-    
-    public List<EquipmentItem> Items; 
-
-    public override void Apply(NPC n)
+    public class NpcEquip : NpcSpawnExtension
     {
-        foreach (var eqItem in Items)
-        {
-            DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+    
+        public List<EquipmentItem> Items; 
 
-                        droppedItem.Movement.Teleport(n.Movement.Position + n.Movement.Forward);
-                        droppedItem.Item = new Item.ItemInstance(eqItem.Item);
-                        n.CurrentWorld.AddEntity(droppedItem);
+        public override void Apply(NPC n)
+        {
+            base.Apply(n);
+            foreach (var eqItem in Items)
+            {
+                DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+
+                droppedItem.Movement.Teleport(n.Movement.Position + n.Movement.Forward);
+                droppedItem.Item = new Item.ItemInstance(eqItem.Item);
+                n.CurrentWorld.AddEntity(droppedItem);
             
-            n.Equipment.EquipItem(droppedItem);
-        }
+                n.Equipment.EquipItem(droppedItem);
+            }
 
         
+        }
     }
 }
