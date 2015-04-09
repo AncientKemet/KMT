@@ -17,10 +17,8 @@ namespace Server
         public override void StartServer()
         {
             base.StartServer();
-            DataProvider = new ParseDataProvider();
-
-            DataProvider.SetData("lobby/PlayPage/Data", "", b => {});
-
+            DataProvider = new MySQLDataProvider();
+            
             socket = CreateServerSocket(NetworkConfig.I.DataServerPort);
             Debug.Log("Data server running.");
         }
