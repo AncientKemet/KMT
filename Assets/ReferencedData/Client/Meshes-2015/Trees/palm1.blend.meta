@@ -1,0 +1,113 @@
+fileFormatVersion: 2
+guid: ce62e64c12e7d50468be4306b2c958ff
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: palm_leaf1
+    100004: palm_leaf2
+    100006: palm_leaf3
+    100008: palm_leaf4
+    100010: palma_1
+    100012: palma_1_top
+    100014: palma_2
+    100016: palma_2_top
+    100018: palma_3
+    100020: palma_3_top
+    400000: //RootNode
+    400002: palm_leaf1
+    400004: palm_leaf2
+    400006: palm_leaf3
+    400008: palm_leaf4
+    400010: palma_1
+    400012: palma_1_top
+    400014: palma_2
+    400016: palma_2_top
+    400018: palma_3
+    400020: palma_3_top
+    2300000: palm_leaf1
+    2300002: palm_leaf2
+    2300004: palm_leaf3
+    2300006: palm_leaf4
+    2300008: palma_1
+    2300010: palma_1_top
+    2300012: palma_2
+    2300014: palma_2_top
+    2300016: palma_3
+    2300018: palma_3_top
+    3300000: palm_leaf1
+    3300002: palm_leaf2
+    3300004: palm_leaf3
+    3300006: palm_leaf4
+    3300008: palma_1
+    3300010: palma_1_top
+    3300012: palma_2
+    3300014: palma_2_top
+    3300016: palma_3
+    3300018: palma_3_top
+    4300000: palm_leaf4
+    4300002: palm_leaf3
+    4300004: palm_leaf2
+    4300006: palm_leaf1
+    4300008: palma_1_top
+    4300010: palma_2_top
+    4300012: palma_3_top
+    4300014: palma_3
+    4300016: palma_2
+    4300018: palma_1
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
