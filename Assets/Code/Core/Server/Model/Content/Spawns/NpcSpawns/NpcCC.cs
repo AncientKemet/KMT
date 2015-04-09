@@ -1,4 +1,5 @@
-﻿using Server.Model.Entities.Human;
+﻿using Server.Model.Content.Spawns.NpcSpawns;
+using Server.Model.Entities.Human;
 using UnityEngine;
 using System.Collections;
 
@@ -8,6 +9,7 @@ public class NpcCC : NpcSpawnExtension
 
     public override void Apply(NPC n)
     {
+        base.Apply(n);
         n.Display.Facetype = faceType;
         n.Display.FaceColor = faceColor;
         n.Display.SkinColor = skinColor;

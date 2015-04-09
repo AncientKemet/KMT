@@ -57,6 +57,8 @@ namespace Code.Core.Client.UI.Scripts
 
             GetComponent<MeshFilter>().mesh = mesh;
 
+            renderer.enabled = Texture != null;
+
             _oldTexture2D = Texture;
         }
     }

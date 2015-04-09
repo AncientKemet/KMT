@@ -29,10 +29,10 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
         }
 
 
-        private ProfileInterfaceUpdatePacket.PacketTab Tab
+        public ProfileInterfaceUpdatePacket.PacketTab Tab
         {
             get { return _tab; }
-            set
+            private set
             {
                 if (_tab != value)
                 {
@@ -63,6 +63,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
         {
             if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
                 player.ClientUi.Inventories.CloseInventory(Unit.GetExt<UnitInventory>());
+            //else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
+                //player.ClientUi.Shop.CloseInventory(Unit.GetExt<UnitInventory>());
             else
             {
                 throw new Exception("Unhandled profile tab closing: "+_tab);

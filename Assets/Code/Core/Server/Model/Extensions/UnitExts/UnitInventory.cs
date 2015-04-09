@@ -245,6 +245,45 @@ namespace Server.Model.Extensions.UnitExts
         {
             return _items.AsReadOnly();
         }
+
+        public int AmountOfItemsPossibleToBePutIn(Item.ItemInstance i)
+        {
+            int r = 0;
+            if (i.Item.Stackable)
+            {
+                foreach (var item in _items)
+                {
+                    if (item.Item == i.Item)
+                    {
+                        if (item.Amount < item.Item.MaxStacks)
+                        {
+                            r += item.Item.MaxStacks - item.Amount;
+                        }
+                    }
+                }
+                r += GetSpace()*i.Item.MaxStacks;
+            }
+            else
+            {
+                r += GetSpace();
+            }
+
+            return r;
+        }
+
+        public int GetCoinValue()
+        {
+            int r = 0;
+            foreach (var item in _items)
+            {
+                int id = item.Item.InContentManagerIndex;
+                if (id >= 0 && id <= 6)
+                {
+                    r += item.Item.Value*item.Amount;
+                }
+            }
+            return r;
+        }
     }
 }
 #endif

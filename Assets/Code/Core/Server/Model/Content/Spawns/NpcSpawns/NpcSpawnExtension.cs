@@ -1,10 +1,16 @@
 ﻿using Server.Model.Entities.Human;
 using UnityEngine;
-using System.Collections;
 
-public abstract class NpcSpawnExtension : MonoBehaviour
+namespace Server.Model.Content.Spawns.NpcSpawns
 {
+    public class NpcSpawnExtension : MonoBehaviour
+    {
+        public NPC Npc { get; private set; }
 
-    public abstract void Apply(NPC n);
+        public virtual void Apply(NPC n)
+        {
+            Npc = n;
+        }
     
+    }
 }

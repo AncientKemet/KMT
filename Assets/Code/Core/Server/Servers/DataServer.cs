@@ -17,7 +17,7 @@ namespace Server
         public override void StartServer()
         {
             base.StartServer();
-            DataProvider = new FileDataProvider();
+            DataProvider = new ParseDataProvider();
 
             DataProvider.SetData("lobby/PlayPage/Data", "", b => {});
 
