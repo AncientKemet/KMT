@@ -43,7 +43,7 @@ namespace Client.UI.Interfaces
             if(_opened)
                 Close();
 
-            Vector3 wp = tk2dUIManager.Instance.camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 wp = tk2dUIManager.Instance.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
             Vector3 pos;
             if(clickable is PlayerUnit)
                 pos = new Vector3(wp.x, wp.y, -100) + OFFSET;
@@ -69,16 +69,16 @@ namespace Client.UI.Interfaces
             }
 
             //fit the background size
-            _backGround.renderer.enabled = true;
+            _backGround.GetComponent<Renderer>().enabled = true;
             _backGround.dimensions = new Vector2(20 + maxWidth * _buttonWidthRatio, 16 + _buttonHeightRatio * buttons.Count) * 2;
             _backGround.ForceBuild();
 
             pos.x = Mathf.Clamp(pos.x,
-                tk2dUIManager.Instance.camera.ViewportToWorldPoint(new Vector2(0, 0)).x,
-                tk2dUIManager.Instance.camera.ViewportToWorldPoint(new Vector2(1, 0)).x - _backGround.renderer.bounds.size.x);
+                tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(new Vector2(0, 0)).x,
+                tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(new Vector2(1, 0)).x - _backGround.GetComponent<Renderer>().bounds.size.x);
             pos.y = Mathf.Clamp(pos.y,
-                tk2dUIManager.Instance.camera.ViewportToWorldPoint(new Vector2(0, 0)).y + _backGround.renderer.bounds.size.y,
-                tk2dUIManager.Instance.camera.ViewportToWorldPoint(new Vector2(1, 1)).y );
+                tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(new Vector2(0, 0)).y + _backGround.GetComponent<Renderer>().bounds.size.y,
+                tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(new Vector2(1, 1)).y );
 
             transform.position = pos;
 
@@ -95,7 +95,7 @@ namespace Client.UI.Interfaces
                 }
 
                 buttons.Clear();
-                _backGround.renderer.enabled = false;
+                _backGround.GetComponent<Renderer>().enabled = false;
 
                 _opened = false;
             }
@@ -128,7 +128,7 @@ namespace Client.UI.Interfaces
         protected virtual void LateUpdate()
         {
             if(_opened)
-            if(!_backGround.renderer.bounds.IntersectRay(tk2dUIManager.Instance.UICamera.ScreenPointToRay(Input.mousePosition)))
+            if(!_backGround.GetComponent<Renderer>().bounds.IntersectRay(tk2dUIManager.Instance.UICamera.ScreenPointToRay(Input.mousePosition)))
                 Close();
         }
     }

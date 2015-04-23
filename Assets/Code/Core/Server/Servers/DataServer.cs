@@ -26,8 +26,12 @@ namespace Server
         public override void ServerUpdate()
         {
             base.ServerUpdate();
-            
-                scm.Get.AcceptConnections(socket);
+
+            if (socket == null)
+                socket = CreateServerSocket(NetworkConfig.I.DataServerPort);
+           if (DataProvider == null)
+                DataProvider = new MySQLDataProvider();
+            scm.Get.AcceptConnections(socket);
                 lock (Clients)
                 {
                     foreach (var client in Clients)
@@ -39,8 +43,6 @@ namespace Server
 
         public override void Stop()
         {
-            socket.Close();
-            Debug.Log("Stopping Data server.");
         }
     }
 }

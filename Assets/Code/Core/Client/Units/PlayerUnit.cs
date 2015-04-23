@@ -43,8 +43,8 @@ namespace Client.Units
                 _isStatic = value;
                 this.enabled = !value;
                 Display.enabled = !value;
-                if (collider != null)
-                    collider.enabled = !value;
+                if (GetComponent<Collider>() != null)
+                    GetComponent<Collider>().enabled = !value;
             }
         }
 
@@ -236,7 +236,7 @@ namespace Client.Units
                 if (_projector == null)
                 {
                     _projector = UnitFactory.Instance.CreateProjector(this);
-                    _projector.orthoGraphicSize = 0.66f * transform.localScale.x;
+                    _projector.orthographicSize = 0.66f * transform.localScale.x;
                 }
                 return _projector;
             }
@@ -522,8 +522,8 @@ namespace Client.Units
                         rigid.PhysicsEnabled = true;
                     }
 
-                    if(collider != null)
-                        collider.enabled = false;
+                    if(GetComponent<Collider>() != null)
+                        GetComponent<Collider>().enabled = false;
                 }
 
                 if (wasDestroyed)

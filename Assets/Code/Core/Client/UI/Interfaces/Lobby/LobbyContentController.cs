@@ -33,9 +33,9 @@ namespace Client.UI.Interfaces.Lobby
 
         private IEnumerator DoLoadAction(Action action)
         {
-            if (animation.isPlaying)
-                yield return WaitForAnimation(animation);
-            animation.Play();
+            if (GetComponent<Animation>().isPlaying)
+                yield return WaitForAnimation(GetComponent<Animation>());
+            GetComponent<Animation>().Play();
             yield return new WaitForSeconds(0.4f);
             yield return new WaitForEndOfFrame();
             if(action != null)

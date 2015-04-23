@@ -22,7 +22,7 @@ namespace Code.Core.Client.UI.Controls
             {
                 _spell = value;
 
-                renderer.enabled = value != null;
+                GetComponent<Renderer>().enabled = value != null;
 
                 if (value != null)
                 {

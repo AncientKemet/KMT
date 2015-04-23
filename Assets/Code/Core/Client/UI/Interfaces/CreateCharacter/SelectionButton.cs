@@ -20,8 +20,8 @@ namespace Client.UI.Interfaces.CreateCharacter
             set
             {
                 _isLocked = value;
-                if(collider != null)
-                collider.enabled = !value;
+                if(GetComponent<Collider>() != null)
+                GetComponent<Collider>().enabled = !value;
             }
         }
 

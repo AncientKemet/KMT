@@ -44,7 +44,7 @@ namespace Code.Core.Client.UI.Controls.Items
 
         private void Build()
         {
-            if (UIContentManager.I == null || UIContentManager.I.ItemButtonBackGround == null || UIContentManager.I.ItemButtonBackGround.renderer == null)
+            if (UIContentManager.I == null || UIContentManager.I.ItemButtonBackGround == null || UIContentManager.I.ItemButtonBackGround.GetComponent<Renderer>() == null)
             {
                 Debug.LogError("Error");
                 return;
@@ -122,7 +122,7 @@ namespace Code.Core.Client.UI.Controls.Items
                         button.Icon = buttonBackGround.GetComponentInChildren<Icon>();
                         button.Amount = buttonBackGround.GetComponentInChildren<tk2dTextMesh>();
 
-                        step = buttonBackGround.renderer.bounds.size;
+                        step = buttonBackGround.GetComponent<Renderer>().bounds.size;
 
                         buttonBackGround.transform.parent = button.transform;
                         buttonBackGround.transform.localPosition = new Vector3(0, 0, 1);
@@ -139,7 +139,7 @@ namespace Code.Core.Client.UI.Controls.Items
                     button.transform.localPosition = new Vector3((-Width+1) / 2f * step.x + (ax + x) * step.x, (-ay-y) * step.y, -1);
                     button.transform.localScale = Vector3.one;
 
-                    (button.collider as BoxCollider).size = step;
+                    (button.GetComponent<Collider>() as BoxCollider).size = step;
 
                     buttons.Add(button);
                 }

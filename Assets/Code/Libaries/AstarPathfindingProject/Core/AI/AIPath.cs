@@ -162,7 +162,7 @@ public class AIPath : MonoBehaviour {
 		navController = GetComponent<NavmeshController>();
 		rvoController = GetComponent<RVOController>();
 		if ( rvoController != null ) rvoController.enableRotation = false;
-		rigid = rigidbody;
+		rigid = GetComponent<Rigidbody>();
 	}
 	
 	/** Starts searching for paths.

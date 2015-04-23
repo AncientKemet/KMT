@@ -13,9 +13,9 @@ namespace Code.Core.Shared.Content.Types
 
         protected virtual void OnMouseEnter()
         {
-            if (renderer != null)
+            if (GetComponent<Renderer>() != null)
             {
-                foreach (Material material in renderer.materials)
+                foreach (Material material in GetComponent<Renderer>().materials)
                 {
                     originalColors[material] = material.color;
                     material.color = ChangeToColor*2;
@@ -25,9 +25,9 @@ namespace Code.Core.Shared.Content.Types
 
         protected virtual void OnMouseExit()
         {
-            if (renderer != null)
+            if (GetComponent<Renderer>() != null)
             {
-                foreach (Material material in renderer.materials)
+                foreach (Material material in GetComponent<Renderer>().materials)
                 {
                     material.color = originalColors[material];
                 }

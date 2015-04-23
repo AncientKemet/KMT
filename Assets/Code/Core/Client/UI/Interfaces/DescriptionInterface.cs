@@ -56,14 +56,14 @@ namespace Client.UI.Interfaces
             
 
             //Convert background sprite size to viewport size
-            Vector3 mousePos = tk2dUIManager.Instance.camera.ScreenToViewportPoint(Input.mousePosition);
+            Vector3 mousePos = tk2dUIManager.Instance.GetComponent<Camera>().ScreenToViewportPoint(Input.mousePosition);
 
-            transform.position = tk2dUIManager.Instance.camera.ViewportToWorldPoint(mousePos);
+            transform.position = tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(mousePos);
             //Update background sprie
             _mainSprite.RecalculateBounds();
 
-            Vector3 vpCenter = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.center);
-            Vector3 vpSize = tk2dUIManager.Instance.camera.WorldToViewportPoint(_mainSprite.Bounds.size )- new Vector3(0.5f,0.5f,0);
+            Vector3 vpCenter = tk2dUIManager.Instance.GetComponent<Camera>().WorldToViewportPoint(_mainSprite.Bounds.center);
+            Vector3 vpSize = tk2dUIManager.Instance.GetComponent<Camera>().WorldToViewportPoint(_mainSprite.Bounds.size )- new Vector3(0.5f,0.5f,0);
             vpSize *= 2f;
             Vector3 finalPos = mousePos;
 
@@ -89,7 +89,7 @@ namespace Client.UI.Interfaces
                 }
             }*/
 
-            transform.position = tk2dUIManager.Instance.camera.ViewportToWorldPoint(finalPos);
+            transform.position = tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(finalPos);
             _mainSprite.RecalculateBounds();
         }
 

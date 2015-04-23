@@ -369,7 +369,7 @@ namespace Code.Core.Client.Units.UnitControllers
             //Copy animations from male to female
             if (_model == 0)
             {
-                var maleAnim = ContentManager.I.Models[1].animation;
+                var maleAnim = ContentManager.I.Models[1].GetComponent<Animation>();
                 foreach (AnimationState animClip in maleAnim)
                 {
                     _animation.AddClip(maleAnim.GetClip(animClip.name), animClip.name);

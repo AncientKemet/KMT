@@ -41,7 +41,7 @@ namespace Shared.Content.Types.ItemExtensions
                 //Only for medium and higher
                 if (VideoSettings.Instance.Physics.Value >= VideoSettings.PhysicsQuality.Low)
                 {
-                    rigidbody.isKinematic = !value;
+                    GetComponent<Rigidbody>().isKinematic = !value;
                 }
 
                 if (value)

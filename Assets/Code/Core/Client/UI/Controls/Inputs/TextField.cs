@@ -48,7 +48,7 @@ namespace Client.UI.Controls.Inputs
                     _textMesh.text = new string('*', value.Length);
                 else
                     _textMesh.text = value;
-                _bounds = _textMesh.renderer.bounds;
+                _bounds = _textMesh.GetComponent<Renderer>().bounds;
 
                 if(_inputCursor != null)
                     _inputCursor.transform.position = string.IsNullOrEmpty(value) ? _textMesh.transform.position :  _bounds.center + new Vector3(_bounds.size.x / 2f, _bounds.size.y  / 4f, 0);

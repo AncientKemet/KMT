@@ -22,8 +22,8 @@ namespace Code.Core.Client.UI.Scripts
 
         private void RecreateMesh()
         {
-            renderer.sharedMaterial = new Material(Shader.Find("tk2d/BlendVertexColor"));
-            renderer.sharedMaterial.mainTexture = Texture;
+            GetComponent<Renderer>().sharedMaterial = new Material(Shader.Find("tk2d/BlendVertexColor"));
+            GetComponent<Renderer>().sharedMaterial.mainTexture = Texture;
 
             Mesh mesh = new Mesh();
 
@@ -57,7 +57,7 @@ namespace Code.Core.Client.UI.Scripts
 
             GetComponent<MeshFilter>().mesh = mesh;
 
-            renderer.enabled = Texture != null;
+            GetComponent<Renderer>().enabled = Texture != null;
 
             _oldTexture2D = Texture;
         }

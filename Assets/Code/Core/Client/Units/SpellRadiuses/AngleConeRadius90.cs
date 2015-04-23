@@ -17,8 +17,8 @@ namespace Client.Units.SpellRadiuses
             set
             {
                 _range = value;
-                NormalRange.orthoGraphicSize = 2 + Range;
-                CriticalStart.orthoGraphicSize = 2 + Range - 0.2f * CriticalChance;
+                NormalRange.orthographicSize = 2 + Range;
+                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalChance;
             }
         }
 
@@ -28,7 +28,7 @@ namespace Client.Units.SpellRadiuses
             set
             {
                 _criticalChance = value;
-                CriticalStart.orthoGraphicSize = 2 + Range - 0.2f * CriticalChance;
+                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalChance;
             }
         }
 

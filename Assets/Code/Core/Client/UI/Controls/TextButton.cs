@@ -30,7 +30,7 @@ namespace Client.UI.Controls
 
         public float Width
         {
-            get { return _textMesh.renderer.bounds.size.x; }
+            get { return _textMesh.GetComponent<Renderer>().bounds.size.x; }
             set
             {
                 _backGround.dimensions = new Vector2(value * 20, _backGround.dimensions.y);
