@@ -215,13 +215,13 @@
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/TK2DROOT/tk2d/Editor/tk2dSkin.dll</HintPath>
  </Reference>
  <Reference Include="JMOAssets">
- <HintPath>D:/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
@@ -232,6 +232,10 @@
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-vs.csproj">
+      <Project>{7DB6A75E-5830-1E26-1D6B-48B45B829E36}</Project>      <Name>Assembly-CSharp-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

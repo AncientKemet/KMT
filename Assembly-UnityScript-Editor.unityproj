@@ -212,13 +212,13 @@
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/TK2DROOT/tk2d/Editor/tk2dSkin.dll</HintPath>
  </Reference>
  <Reference Include="JMOAssets">
- <HintPath>D:/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/JMO Assets/Editor/JMOAssets.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
@@ -231,6 +231,8 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp.csproj">
+      <Project>{7DB6A75E-5830-1E26-1D6B-48B45B829E36}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript.unityproj">
       <Project>{46F2D9CF-7736-42A6-3BA4-EA49F91FCD68}</Project>      <Name>Assembly-UnityScript</Name>    </ProjectReference>
   </ItemGroup>

@@ -671,7 +671,7 @@
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
+ <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
