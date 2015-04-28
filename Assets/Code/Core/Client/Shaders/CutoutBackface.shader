@@ -31,7 +31,7 @@
 		void vert (inout appdata_full v) {
 			//v.vertex.xyz += v.normal;
 			float3 worldPos = mul (_Object2World, float4(v.vertex.x, 0, v.vertex.y, 1)).xyz;
-			float wind = float4(0);
+			float wind = float4(0,0,0,0);
 			float2 windCoord = float2(worldPos.x, worldPos.z) / 250.0 + _Time / 75.0;
 			wind += tex2D (_WindTex, windCoord).r;
 			float4 worldBonus = mul (_Object2World, float4( wind * max(v.vertex.z, 0.0), 0, 0, 0));

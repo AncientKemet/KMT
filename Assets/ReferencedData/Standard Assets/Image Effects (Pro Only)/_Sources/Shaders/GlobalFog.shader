@@ -1,13 +1,16 @@
 Shader "Hidden/GlobalFog" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "black" {}
+	_WindTex ("Wind", 2D) = "black" {}
 }
 
 CGINCLUDE
 
 	#include "UnityCG.cginc"
+	#include "AutoLight.cginc"
 
 	uniform sampler2D _MainTex;
+	uniform sampler2D _WindTex;
 	uniform sampler2D _CameraDepthTexture;
 	
 	uniform float _GlobalDensity;
@@ -76,8 +79,14 @@ CGINCLUDE
 		float dpth = Linear01Depth(UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture,i.uv_depth)));
 		float4 wsPos = (_CameraWS + dpth * i.interpolatedRay);
 		float fogVert = max(0.0, (wsPos.y-_Y.x) * _Y.y);
+
+		float2 windCoord = float2(wsPos.x - _WorldSpaceCameraPos.x +32, wsPos.z - _WorldSpaceCameraPos.z + 32) / 64;
+		float attenuation = LIGHT_ATTENUATION(i);
+		
 		fogVert *= fogVert; 
 		fogVert = (exp (-fogVert));
+		
+		fogVert *= tex2D(_WindTex, windCoord).r * attenuation;
 		return lerp(tex2D( _MainTex, i.uv ), _FogColor, fogVert);				
 	}
 

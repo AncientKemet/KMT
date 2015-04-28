@@ -18,7 +18,7 @@ Properties {
 	// used in fallback on old cards & base map
 	 _MainTex ("BaseMap (RGB)", 2D) = "white" {}
 	 _WindTex ("Wind", 2D) = "white" {}
-	 _Color ("Main Color", Color) = (1,1,1,1)
+	 _Color ("Main Color", Color) = (1,1,1,1) 
 }
 	
 SubShader {
@@ -72,8 +72,8 @@ void surf (Input IN, inout SurfaceOutput o) {
 	col += splat_control.a * tex2D (_Splat3, IN.uv_Splat3);
 
 	//Wind
-	fixed4 wind = float4(0);
-	float2 windCoord = float2(IN.worldPos.x, IN.worldPos.z) / 250 + _Time / 75;
+	fixed4 wind = fixed4(0,0,0,0); 
+	float2 windCoord = float2(IN.worldPos.x, IN.worldPos.z) / 250 + (_Time.xy) / 75;
 	wind += (splat_control.a) * tex2D (_WindTex, windCoord) / 2;
 
 	col += wind;
