@@ -90,7 +90,6 @@
      <None Include="Assets\Code\Core\Client\Shaders\CutoutBackface.shader" />
      <None Include="Assets\Code\Libaries\TK2DROOT\tk2d\Shaders\SolidVertexColor.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ScreenSpaceAmbientObscurance.shader" />
-     <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\NFAA.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\TiltShiftHdrLensBlur.shader" />
      <None Include="Assets\Code\Libaries\TK2DROOT\tk2dUI\Shaders\DepthMask.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\BackFaceDiffuse.shader" />
@@ -114,6 +113,7 @@
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAAPreset3.shader" />
      <None Include="Assets\Code\Libaries\TK2DROOT\tk2d\Shaders\goodies\PackedTextMesh.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\FisheyeShader.shader" />
+     <None Include="Assets\Code\Core\Client\Shaders\WindDiffuse.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Apply.shader" />
      <None Include="Assets\Code\Libaries\TK2DROOT\tk2d\Shaders\Blend2TexVertexColor.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Water (Pro Only)\Water4\Sources\Shaders\FX-SimpleWater4.shader" />

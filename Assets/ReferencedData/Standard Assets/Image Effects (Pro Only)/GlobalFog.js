@@ -29,6 +29,7 @@ class GlobalFog extends PostEffectsBase {
 	public var globalFogColor : Color = Color.grey;
 	
 	public var fogShader : Shader;
+    public var WindTex : RenderTexture;
 	private var fogMaterial : Material = null;	
 	
 	function CheckResources () : boolean {	
@@ -91,6 +92,7 @@ class GlobalFog extends PostEffectsBase {
 		
 		fogMaterial.SetFloat ("_GlobalDensity", globalDensity * 0.01f);
 		fogMaterial.SetColor ("_FogColor", globalFogColor);
+        fogMaterial.SetTexture("_WindTex", WindTex);
 		
 		CustomGraphicsBlit (source, destination, fogMaterial, fogMode);
 	}
