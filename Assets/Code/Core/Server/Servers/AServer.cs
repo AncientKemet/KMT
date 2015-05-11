@@ -36,11 +36,11 @@ namespace Server.Servers
             return newSocket;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (LimitProgressing)
             {
-                _progressCounter += Time.fixedDeltaTime;
+                _progressCounter += Time.deltaTime;
                 if (1f/ProgressRate < _progressCounter)
                 {
                     for (int i = 0; i < (int) (_progressCounter/(1f/ProgressRate)); i++)

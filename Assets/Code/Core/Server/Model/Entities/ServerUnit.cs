@@ -81,7 +81,7 @@ namespace Server.Model.Entities
         {
             if (CurrentWorld == null)
                 return;
-
+            
             ReCreateUpdatePacket();
 
             if (_updatePacket != null)

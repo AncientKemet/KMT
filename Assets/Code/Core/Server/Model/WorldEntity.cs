@@ -80,10 +80,10 @@ namespace Server.Model
 
         public virtual void Progress(float time)
         {
-            if (_currentWorld.LAST_TICK < _last_world_tick + (int) GetPrioritization())
+            /*if (_currentWorld.LAST_TICK < _last_world_tick + (int) GetPrioritization())
             {
                 return;
-            }
+            }*/
 
             _last_world_tick = _currentWorld.LAST_TICK;
             foreach (var extension in extensions.Values)

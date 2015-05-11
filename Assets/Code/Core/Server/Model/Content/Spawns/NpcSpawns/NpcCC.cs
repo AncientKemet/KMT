@@ -10,7 +10,7 @@ public class NpcCC : NpcSpawnExtension
     public override void Apply(NPC n)
     {
         base.Apply(n);
-        n.Display.Facetype = faceType;
+        n.Display.FaceType = faceType;
         n.Display.FaceColor = faceColor;
         n.Display.SkinColor = skinColor;
         n.Display.Hairtype = hairType;

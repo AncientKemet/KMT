@@ -1,3 +1,4 @@
+using Libaries.IO;
 using Shared.Content.Types;
 #if SERVER
 using System.Collections.Generic;
@@ -107,7 +108,7 @@ namespace Server.Model.Extensions.UnitExts
                 _hasCharacterCustomalization = true;
             }
         }
-        public int Facetype
+        public int FaceType
         {
             get { return _characterCustomalizations[2]; }
             set
@@ -211,10 +212,34 @@ namespace Server.Model.Extensions.UnitExts
         {
             base.OnExtensionWasAdded();
             Size = 1f;
-            _wasUpdate = true;
             Unit = entity as ServerUnit;
         }
 
+        public override void Serialize(JSONObject j)
+        {
+            JSONObject display = new JSONObject();
+
+            display.AddField("HairType", "" + Hairtype);
+            display.AddField("HairColor", "" + HairColor);
+            display.AddField("FaceType", "" + FaceType);
+            display.AddField("FaceColor", "" + FaceColor);
+            display.AddField("SkinColor", "" + SkinColor);
+            display.AddField("UnderwearColor", "" + UnderwearColor);
+
+            j.AddField("Display", display);
+         }
+
+        public override void Deserialize(JSONObject j)
+        {
+            JSONObject display = j.GetField("Display");
+
+            Hairtype = int.Parse(display.GetField("HairType").str);
+            HairColor = int.Parse(display.GetField("HairColor").str);
+            FaceType = int.Parse(display.GetField("FaceType").str);
+            FaceColor = int.Parse(display.GetField("FaceColor").str);
+            SkinColor = int.Parse(display.GetField("SkinColor").str);
+            UnderwearColor = int.Parse(display.GetField("UnderwearColor").str);
+        }
     }
 }
 #endif

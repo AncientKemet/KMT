@@ -48,8 +48,6 @@ namespace Server.Model.Entities.Human
 
             PlayerInput = AddExt<PlayerInput>();
             PlayerUdp = AddExt<PlayerUDP>();
-
-            Inventory.ListeningPlayers.Add(this);
         }
         
         /// <summary>
@@ -65,6 +63,16 @@ namespace Server.Model.Entities.Human
             enterWorldPacket.Position = Movement.Position;
 
             Client.ConnectionHandler.SendPacket(enterWorldPacket);
+
+            ClientUi.Open(InterfaceType.ActionBars);
+            ClientUi.Open(InterfaceType.ChatPanel);
+            ClientUi.Open(InterfaceType.Chat);
+            ClientUi.Open(InterfaceType.StatsBars);
+            ClientUi.Open(InterfaceType.LowerLeftMenu);
+            ClientUi.Open(InterfaceType.UnitSelectionInterface);
+
+            GetExt<UnitInventory>().ListeningPlayers.Add(this);
+            GetExt<UnitInventory>().RefreshFull();
         }
 
         public void SetupNewPlayer(WorldServer worldServer)
