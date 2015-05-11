@@ -125,20 +125,16 @@ namespace Server.Model.ContentHandling
         public void LoadUnit(WorldServer worldServer, Entities.Human.Player player)
         {
             _player = player;
+            _player.name = "Requesting data...";
             DSC.RequestData("s/" + DataServerKey + "/unit", (b, s) =>
             {
                 if (b)
                 {
-                    ByteStream bs = new ByteStream();
+                    JSONObject j = new JSONObject(s);
 
-                    byte[] bytes = new byte[s.Length * sizeof(char)];
-                    Buffer.BlockCopy(s.ToCharArray(), 0, bytes, 0, bytes.Length);
+                    player.Deserialize(j);
 
-                    bs.AddBytes(bytes);
-                    bs.Offset = 0;
-
-                    player.Deserialize(bs);
-
+                    worldServer.World.AddEntity(player);
                 }
                 else
                 {
@@ -175,17 +171,10 @@ namespace Server.Model.ContentHandling
 
         public void SaveUnit(Entities.Human.Player p)
         {
-            ByteStream b = new ByteStream();
-
-            p.Serialize(b);
-            b.Offset = 0;
-
-            byte[] array = b.GetBuffer();
-            UTF8Encoding encoding = new UTF8Encoding();
-
-            string data  = encoding.GetString(array.ToArray());
-                   
-            DSC.SetData("s/"+DataServerKey+"/unit", data);
+            JSONObject j = new JSONObject();
+            p.Serialize(j);
+            
+            DSC.SetData("s/"+DataServerKey+"/unit", j.ToString());
         }
     }
 }

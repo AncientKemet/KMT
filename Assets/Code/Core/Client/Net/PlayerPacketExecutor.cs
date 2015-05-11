@@ -41,6 +41,8 @@ namespace Client.Net
                 EnterWorldPacket p = packet as EnterWorldPacket;
                 //load some world
 
+                Debug.Log("Entering world with id: "+p.myUnitID);
+
                 PlayerUnit.MyPlayerUnit = UnitManager.Instance[p.myUnitID];
                 PlayerUnit.MyPlayerUnit.transform.position = p.Position;
 

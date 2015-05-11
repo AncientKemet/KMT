@@ -1,3 +1,4 @@
+using Libaries.IO;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -66,9 +67,9 @@ namespace Server.Model.Extensions.UnitExts
 
         const int RegenUpdateTick = 20;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
 
             RegenTick++;
             if (!Dead)
@@ -84,11 +85,23 @@ namespace Server.Model.Extensions.UnitExts
                 }
         }
 
-        public override void Serialize(ByteStream bytestream)
-        { }
+        public override void Serialize(JSONObject j)
+        {
+            JSONObject combat = new JSONObject();
 
-        public override void Deserialize(ByteStream bytestream)
-        { }
+            combat.AddField("hp", "" + Health);
+            combat.AddField("en", "" + Energy);
+
+            j.AddField("combat", combat);
+        }
+
+        public override void Deserialize(JSONObject j)
+        {
+            JSONObject combat = j.GetField("combat");
+
+            Health = int.Parse(combat.GetField("hp").str);
+            Energy = int.Parse(combat.GetField("en").str);
+        }
 
         protected override void OnExtensionWasAdded()
         {

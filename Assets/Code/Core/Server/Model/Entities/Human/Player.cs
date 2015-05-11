@@ -1,3 +1,5 @@
+using Server.Model.Content.Spawns;
+using Server.Model.ContentHandling;
 using Server.Servers;
 #if SERVER
 using Code.Core.Client.UI;
@@ -49,12 +51,7 @@ namespace Server.Model.Entities.Human
 
             Inventory.ListeningPlayers.Add(this);
         }
-
-        public override void Progress()
-        {
-            base.Progress();
-        }
-
+        
         /// <summary>
         /// Is called when the player enters a world.
         /// </summary>
@@ -72,7 +69,7 @@ namespace Server.Model.Entities.Human
 
         public void SetupNewPlayer(WorldServer worldServer)
         {
-            Movement.Teleport(new Vector3(61.17155f, 10, 974.3839f));
+            Movement.Teleport(ServerSpawnManager.Instance(worldServer.World).PlayerSpawns.Find(spawn => spawn.type == PlayerSpawn.Type.Default).transform.position);
             worldServer.World.AddEntity(this);
             ClientUi.CreateCharacterInterface.Opened = true;
 

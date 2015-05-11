@@ -1,3 +1,4 @@
+using Libaries.IO;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -76,11 +77,11 @@ namespace Server.Model.Entities
                 );
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            if(CurrentWorld == null)
+            if (CurrentWorld == null)
                 return;
-            
+
             ReCreateUpdatePacket();
 
             if (_updatePacket != null)
@@ -98,7 +99,7 @@ namespace Server.Model.Entities
                 Movement.UnprecieseMovementPacket = null;
             }
 
-            base.Progress();
+            base.Progress(time);
 
             _statePacket = null;
         }
@@ -113,24 +114,32 @@ namespace Server.Model.Entities
                     playerAround.Client.ConnectionHandler.SendPacket(packet);
                 }
             }
-            
+
         }
 
         #region SERIALIZATION
 
-        public virtual void Serialize(ByteStream bytestream)
+        public virtual void Serialize(JSONObject j)
         {
             foreach (var extension in Extensions)
             {
-                extension.Serialize(bytestream);
+                try
+                {
+                    extension.Serialize(j);
+                }
+                catch (Exception e)
+                { Debug.LogException(e); }
             }
         }
 
-        public virtual void Deserialize(ByteStream bytestream)
+        public virtual void Deserialize(JSONObject j)
         {
             foreach (var extension in Extensions)
             {
-                extension.Deserialize(bytestream);
+                try
+                { extension.Deserialize(j); }
+                catch (Exception e)
+                { Debug.LogException(e); }
             }
         }
 
@@ -199,10 +208,10 @@ namespace Server.Model.Entities
                     int mask = 0;
                     foreach (UnitUpdateExt updateExtension in _updateExtensions)
                     {
-                        if(updateExtension is UnitMovement)
+                        if (updateExtension is UnitMovement)
                             mask = mask | updateExtension.UpdateFlag();
                         else
-                        mask = mask | updateExtension.UpdateFlag();
+                            mask = mask | updateExtension.UpdateFlag();
                     }
 
                     _statePacket = new UnitUpdatePacket();

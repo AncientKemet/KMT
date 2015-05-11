@@ -12,7 +12,7 @@ namespace Server.Model.Extensions.AnimalExtensions
         public int tick = 1;
         public int maxTick = 2;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             tick++;
             if (tick == maxTick)
@@ -31,14 +31,7 @@ namespace Server.Model.Extensions.AnimalExtensions
                 }
             }
         }
-
-        public override void Serialize(ByteStream bytestream)
-        {}
-
-        public override void Deserialize(ByteStream bytestream)
-        {
-        }
-
+        
         private void Escape()
         {
             Animal.Movement.Running = true;

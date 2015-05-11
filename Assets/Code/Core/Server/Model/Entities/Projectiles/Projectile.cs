@@ -28,13 +28,7 @@ namespace Server.Model.Entities.Projectiles
         }
 
         public void UpdateTrajectory(){}
-
-        public override void Progress()
-        {
-            base.Progress();
-
-        }
-
+        
         protected override ServerUnitPrioritization GetPrioritization()
         {
             return ServerUnitPrioritization.Realtime;

@@ -69,9 +69,9 @@ namespace Server.Model.Entities.Vegetation
             Movement.Rotation = Random.Range(0, 360);
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
             if (CanSeed && SeedsLeft > 0)
             {
                 SeedsLeft--;

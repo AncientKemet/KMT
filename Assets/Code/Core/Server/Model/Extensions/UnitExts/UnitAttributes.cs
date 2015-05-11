@@ -30,7 +30,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private int _updateTick = 0;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             if (_buffs.Count > 0)
             {
@@ -60,11 +60,6 @@ namespace Server.Model.Extensions.UnitExts
         }
         public float this[UnitAttributeProperty type] { get { return Get(type); } set { Set(type, value); } }
 
-        public override void Serialize(ByteStream bytestream)
-        { }
-
-        public override void Deserialize(ByteStream bytestream)
-        { }
 
         protected override void OnExtensionWasAdded()
         {

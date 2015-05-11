@@ -20,9 +20,9 @@ namespace Server.Servers
             Debug.Log("Master server running.");
         }
 
-        public override void ServerUpdate()
+        public override void ServerUpdate(float f)
         {
-            base.ServerUpdate();
+            base.ServerUpdate(f);
             scm.Get.AcceptConnections(socket);
         }
 

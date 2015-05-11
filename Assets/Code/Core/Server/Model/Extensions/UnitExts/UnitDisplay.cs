@@ -148,26 +148,6 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        public override void Serialize(ByteStream bytestream)
-        {
-            bytestream.AddShort(ModelID);
-            bytestream.AddFloat4B(Size);
-            for (int i = 0; i < _characterCustomalizations.Length; i++)
-            {
-                bytestream.AddInt(_characterCustomalizations[i]);
-            }
-        }
-
-        public override void Deserialize(ByteStream bytestream)
-        {
-            ModelID = bytestream.GetShort();
-            Size = bytestream.GetFloat4B();
-            for (int i = 0; i < _characterCustomalizations.Length; i++)
-            {
-                _characterCustomalizations[i] = bytestream.GetInt();
-            }
-        }
-
         public override byte UpdateFlag()
         {
             return 0x02;

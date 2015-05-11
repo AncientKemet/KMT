@@ -116,8 +116,8 @@ namespace Server.Net
                         var player = ServerMonoBehaviour.CreateInstance<Player>();
                         client.Player = player;
                         player.Client = client;
-                        if (client.Server is WorldServer)
-                            client.UserAccount.LoadUnit(client.Server as WorldServer, player);
+                        player.name = "Loading...";
+                        client.UserAccount.LoadUnit(client.Server as WorldServer, player);
                     };
 
                     ServerSingleton.StuffToRunOnUnityThread.Add(actionToRunOnUnityThread);
@@ -255,98 +255,107 @@ namespace Server.Net
             }
             #endregion
 
-            #region Between Servers
-
-            if (packet is DataRequestPacket)
+            if (packet is DataPacket)
             {
-                if (client.Server is DataServer)
-                {
-                    DataRequestPacket p = packet as DataRequestPacket;
-                    DataServer dataserver = (client.Server as DataServer);
+                #region DataPackets
 
-                    dataserver.DataProvider.GetData(p.DataPath, (success, data) =>
+                if (packet is DataRequestPacket)
+                {
+                    if (client.Server is DataServer)
                     {
-                        DataResponsePacket response = new DataResponsePacket();
-                        response.ID = p.ID;
-                        response.Success = success;
-                        response.Certificate = ServerSingleton.Instance.DataCertificate;
-                        response.DataPath = p.DataPath;
-                        response.Value = data;
-                        client.ConnectionHandler.SendPacket(response);
-                    });
+                        DataRequestPacket p = packet as DataRequestPacket;
+                        DataServer dataserver = (client.Server as DataServer);
 
-                    return;
-                }
-                else
-                {
-                    Debug.LogError("DataRequestPacket came to non dataserver wtf.");
-                }
-            }
+                        dataserver.DataProvider.GetData(p.DataPath, (success, data) =>
+                        {
+                            DataResponsePacket response = new DataResponsePacket();
+                            response.ID = p.ID;
+                            response.Success = success;
+                            response.Certificate = ServerSingleton.Instance.DataCertificate;
+                            response.DataPath = p.DataPath;
+                            response.Value = data;
+                            client.ConnectionHandler.SendPacket(response);
+                        });
 
-            if (packet is DataSetPacket)
-            {
-                if (client.Server is DataServer)
-                {
-                    DataSetPacket p = packet as DataSetPacket;
-                    DataServer dataserver = (client.Server as DataServer);
-
-                    dataserver.DataProvider.SetData(p.DataPath, p.Data, (success) =>
+                        return;
+                    }
+                    else
                     {
-                        if (!success)
-                        { Debug.LogError("Failed to set data: " + p.Data + " to path: " + p.DataPath); }
-                    });
-
-                    return;
+                        Debug.LogError("DataRequestPacket came to non dataserver wtf.");
+                    }
                 }
-                else
-                {
-                    Debug.LogError("DataSetPacket came to non dataserver wtf.");
-                }
-            }
 
-            if (packet is DataReplacePacket)
-            {
-                if (client.Server is DataServer)
+                if (packet is DataSetPacket)
                 {
-                    var p = packet as DataReplacePacket;
-                    DataServer dataserver = (client.Server as DataServer);
-
-                    dataserver.DataProvider.ReplaceData(p.DataPath, p.OldValue, p.NewValue, (success) =>
+                    if (client.Server is DataServer)
                     {
-                        if (!success)
-                        { Debug.LogError("Failed to replace data: " + p.OldValue + " to path: " + p.DataPath); }
-                    });
+                        DataSetPacket p = packet as DataSetPacket;
+                        DataServer dataserver = (client.Server as DataServer);
 
-                    return;
-                }
-                else
-                {
-                    Debug.LogError("DataReplacePacket came to non dataserver wtf.");
-                }
-            }
+                        dataserver.DataProvider.SetData(p.DataPath, p.Data, (success) =>
+                        {
+                            if (!success)
+                            {
+                                Debug.LogError("Failed to set data: " + p.Data + " to path: " + p.DataPath);
+                            }
+                        });
 
-            if (packet is DataAppendPacket)
-            {
-                if (client.Server is DataServer)
-                {
-                    var p = packet as DataAppendPacket;
-                    DataServer dataserver = (client.Server as DataServer);
-
-                    dataserver.DataProvider.AppendData(p.DataPath, p.Data, (success) =>
+                        return;
+                    }
+                    else
                     {
-                        if (!success)
-                        { Debug.LogError("Failed to append data: " + p.Data + " to path: " + p.DataPath); }
-                    });
-
-                    return;
+                        Debug.LogError("DataSetPacket came to non dataserver wtf.");
+                    }
                 }
-                else
+
+                if (packet is DataReplacePacket)
                 {
-                    Debug.LogError("DataSetPacket came to non dataserver wtf.");
-                }
-            }
-            #endregion
+                    if (client.Server is DataServer)
+                    {
+                        var p = packet as DataReplacePacket;
+                        DataServer dataserver = (client.Server as DataServer);
 
+                        dataserver.DataProvider.ReplaceData(p.DataPath, p.OldValue, p.NewValue, (success) =>
+                        {
+                            if (!success)
+                            {
+                                Debug.LogError("Failed to replace data: " + p.OldValue + " to path: " + p.DataPath);
+                            }
+                        });
+
+                        return;
+                    }
+                    else
+                    {
+                        Debug.LogError("DataReplacePacket came to non dataserver wtf.");
+                    }
+                }
+
+                if (packet is DataAppendPacket)
+                {
+                    if (client.Server is DataServer)
+                    {
+                        var p = packet as DataAppendPacket;
+                        DataServer dataserver = (client.Server as DataServer);
+
+                        dataserver.DataProvider.AppendData(p.DataPath, p.Data, (success) =>
+                        {
+                            if (!success)
+                            {
+                                Debug.LogError("Failed to append data: " + p.Data + " to path: " + p.DataPath);
+                            }
+                        });
+
+                        return;
+                    }
+                    else
+                    {
+                        Debug.LogError("DataSetPacket came to non dataserver wtf.");
+                    }
+                }
+
+                #endregion
+            }
 
             Debug.LogError("Unable to decode packet: " + packet.GetType().Name + " that came to: " + client.Server.GetType().Name);
         }

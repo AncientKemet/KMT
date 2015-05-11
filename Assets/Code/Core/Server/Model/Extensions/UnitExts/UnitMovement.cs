@@ -1,4 +1,5 @@
 using System;
+using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 #if SERVER
 using Shared.Content.Types;
@@ -142,10 +143,11 @@ namespace Server.Model.Extensions.UnitExts
         }
 
         //Methods
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
 
+            Debug.Log("MOV");
             if (Parent != null)
                 return;
 
@@ -457,16 +459,25 @@ namespace Server.Model.Extensions.UnitExts
                 MoveTo(_position + vector3 * strenght);
         }
 
-        public override void Serialize(ByteStream bytestream)
+        public override void Serialize(JSONObject j)
         {
-            bytestream.AddPosition12B(_position);
-            bytestream.AddFloat4B(_rotation);
+            JSONObject movement = new JSONObject();
+
+            movement.AddField("x", "" + Position.x);
+            movement.AddField("y", "" + Position.y);
+            movement.AddField("z", "" + Position.z);
+
+            movement.AddField("rot", "" + Rotation);
+            
+            j.AddField("movement", movement);
         }
 
-        public override void Deserialize(ByteStream bytestream)
+        public override void Deserialize(JSONObject j)
         {
-            _position = bytestream.GetPosition12B();
-            _rotation = bytestream.GetFloat4B();
+            JSONObject movement = j.GetField("movement");
+
+            Teleport(new Vector3(float.Parse(movement.GetField("x").str), float.Parse(movement.GetField("y").str), float.Parse(movement.GetField("z").str)));
+            Rotation = float.Parse(movement.GetField("rot").str);
         }
 
         public void _UnSafeMoveTo(Vector3 position)

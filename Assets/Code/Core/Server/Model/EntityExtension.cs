@@ -1,3 +1,4 @@
+using Libaries.IO;
 using Server.Model.Content;
 using UnityEngine;
 #if SERVER
@@ -29,10 +30,15 @@ namespace Server.Model
 
         }
         
-        public abstract void Progress();
+        public abstract void Progress(float time);
 
-        public abstract void Serialize(ByteStream bytestream);
-        public abstract void Deserialize(ByteStream bytestream);
+        public virtual void Serialize(JSONObject j)
+        {
+        }
+
+        public virtual void Deserialize(JSONObject j)
+        {
+        }
     }
 }
 #endif

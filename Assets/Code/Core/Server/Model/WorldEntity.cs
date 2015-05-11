@@ -78,7 +78,7 @@ namespace Server.Model
 
         public CollisionExt CollisionExt { get { return _collisionExt;} }
 
-        public virtual void Progress()
+        public virtual void Progress(float time)
         {
             if (_currentWorld.LAST_TICK < _last_world_tick + (int) GetPrioritization())
             {
@@ -88,7 +88,7 @@ namespace Server.Model
             _last_world_tick = _currentWorld.LAST_TICK;
             foreach (var extension in extensions.Values)
             {
-                extension.Progress();
+                extension.Progress(time);
             }
         }
 

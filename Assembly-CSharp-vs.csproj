@@ -159,7 +159,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcEquip.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcShop.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcSpawnExtension.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\ObjectSpawn.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\PlayerSpawn.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\SpawnMB.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Trees\IQuadTreeObject.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Trees\QuadTree.cs" />
@@ -490,6 +490,7 @@
      <Compile Include="Assets\Code\Scripts\GridMovement.cs" />
      <Compile Include="Assets\Code\Scripts\PlayAnimScript.cs" />
      <Compile Include="Assets\Development\Libary\Buffs\Codes\RestBuff.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\PrefabInstance.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\BlockSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\MeleeSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\OffHandCharge.cs" />
@@ -521,6 +522,7 @@
      <Compile Include="Assets\ReferencedData\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\SpecularLighting.cs" />
      <Compile Include="Assets\ReferencedData\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\WaterBase.cs" />
      <Compile Include="Assets\ReferencedData\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\WaterTile.cs" />
+     <Compile Include="Assets\ReferencedData\Standard Assets\WindEngine\WindCamera.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />

@@ -8,9 +8,11 @@ using UnityEngine;
 
 namespace Server
 {
+
     public class DataServer : AServer
     {
 
+        public bool debug = false;
         public IDataProvider DataProvider;
 
 
@@ -23,26 +25,33 @@ namespace Server
             Debug.Log("Data server running.");
         }
 
-        public override void ServerUpdate()
+        public override void ServerUpdate(float f)
         {
-            base.ServerUpdate();
+            base.ServerUpdate(f);
 
             if (socket == null)
                 socket = CreateServerSocket(NetworkConfig.I.DataServerPort);
-           if (DataProvider == null)
+            if (DataProvider == null)
                 DataProvider = new MySQLDataProvider();
             scm.Get.AcceptConnections(socket);
                 lock (Clients)
                 {
                     foreach (var client in Clients)
                     {
-                        client.Progress();
+                        client.Progress(f);
                     }
                 }
         }
 
         public override void Stop()
         {
+            foreach (var client in Clients)
+            {
+                client.Progress(1f);
+            }
+            MySQLDataProvider.ExecuteAllSQL();
+            socket.Close();
+            DataProvider = null;
         }
     }
 }

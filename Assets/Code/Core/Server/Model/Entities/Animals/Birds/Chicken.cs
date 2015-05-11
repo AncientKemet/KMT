@@ -24,9 +24,9 @@ namespace Server.Model.Entities.Animals.Birds
         private int _updateCounter = 0;
         private const int UpdateRate = 10;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
             Hunger += 0.1f;
             _updateCounter++;
             if (_updateCounter == UpdateRate)

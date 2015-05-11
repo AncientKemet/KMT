@@ -47,15 +47,23 @@ namespace Server.IO.File
             {
                 lock (sqlActions)
                 {
-                    foreach (var action in sqlActions)
-                    {
-                        action();
-                    }
-                    sqlActions.Clear();
+                    ExecuteAllSQL();
                 }
                 Thread.Sleep(500);
+                conSQL.Ping();
             }
         }));
+
+        public static void ExecuteAllSQL()
+        {
+            for (int i = 0; i < sqlActions.Count; i++)
+            {
+                if(sqlActions[i] != null)
+                    sqlActions[i]();
+            }
+            sqlActions.Clear();
+        }
+
         #endregion
 
         public void GetData(string dataPath, Action<bool, string> onFinish)
@@ -68,24 +76,39 @@ namespace Server.IO.File
             {
                 Action a = () =>
                 {
+                    if (_cachedValues.ContainsKey(dataPath))
+                    {
+                        onFinish(true, _cachedValues[dataPath]);
+                        return;
+                    }
+
+                    
                     MySqlCommand command = conSQL.CreateCommand();
-                    command.CommandText = "SELECT v FROM DataServer WHERE i='" + dataPath + "'";
-                    command.ExecuteNonQuery();
+                    command.CommandText = "SELECT v FROM DataServer WHERE i=@i";
+                    //command.CommandTimeout = 1;
+                    command.Parameters.Add(new MySqlParameter("@i", dataPath));
+                    command.ExecuteScalar();
+                    
                     MySqlDataAdapter dataAdapter = new MySqlDataAdapter(command);
                     DataSet dataSet = new DataSet();
                     dataAdapter.Fill(dataSet);
-
                     try
                     {
                         _cachedValues.Add(dataPath, dataSet.Tables[0].Rows[0]["v"].ToString());
                         onFinish(true, dataSet.Tables[0].Rows[0]["v"].ToString());
                     }
-                    catch (Exception e)
+                    catch (IndexOutOfRangeException e)
                     {
                         onFinish(false, "");
                     }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                        onFinish(false, "");
+                    }
                 };
-                sqlActions.Add(a);
+                lock (sqlActions)
+                    sqlActions.Add(a);
             }
         }
 
@@ -94,7 +117,9 @@ namespace Server.IO.File
             Action a = () =>
             {
                 MySqlCommand command = conSQL.CreateCommand();
-                command.CommandText = "INSERT INTO DataServer (i, v) VALUES('" + dataPath + "', '" + data + "') ON DUPLICATE KEY UPDATE i=VALUES(i), v=VALUES(v)";
+                command.CommandText = "INSERT INTO DataServer (i, v) VALUES(@dataPath, @data) ON DUPLICATE KEY UPDATE i=VALUES(i), v=VALUES(v)";
+                command.Parameters.Add(new MySqlParameter("@dataPath", dataPath));
+                command.Parameters.Add(new MySqlParameter("@data", data));
                 command.ExecuteNonQuery();
                 MySqlDataAdapter dataAdapter = new MySqlDataAdapter(command);
                 DataSet dataSet = new DataSet();
@@ -111,6 +136,7 @@ namespace Server.IO.File
 
                 onFinish(true);
             };
+            lock (sqlActions)
             sqlActions.Add(a);
         }
 
@@ -119,9 +145,9 @@ namespace Server.IO.File
             GetData(dataPath, (b, s) =>
             {
                 if (b)
-                    SetData(dataPath, data, b1 => onFinish(true));
+                    SetData(dataPath, s + data, b1 => onFinish(true));
                 else
-                    onFinish(false);
+                    SetData(dataPath, data, b1 => onFinish(true));
             });
         }
 

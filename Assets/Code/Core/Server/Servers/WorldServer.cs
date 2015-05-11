@@ -36,14 +36,14 @@ namespace Server.Servers
             Debug.Log("WorldServer running.");
         }
 
-        public override void ServerUpdate()
+        public override void ServerUpdate(float f)
         {
-            base.ServerUpdate();
-            World.Progress();
+            base.ServerUpdate(f);
+            World.Progress(f);
             scm.Get.AcceptConnections(socket);
             foreach (var client in Clients)
             {
-                client.Progress();
+                client.Progress(f);
             }
         }
 
