@@ -14,7 +14,7 @@ namespace Server.Model.Extensions.PlayerExtensions
 
         public UDPConnectionHandler ConnectionHandler;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             if (ConnectionHandler == null)
             {
@@ -48,13 +48,6 @@ namespace Server.Model.Extensions.PlayerExtensions
                 Debug.LogException(e);
             }
         }
-
-        public override void Serialize(ByteStream bytestream)
-        {
-        }
-
-        public override void Deserialize(ByteStream bytestream)
-        {
-        }
+        
     }
 }

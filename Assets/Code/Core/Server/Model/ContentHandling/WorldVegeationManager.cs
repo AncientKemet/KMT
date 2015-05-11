@@ -78,7 +78,7 @@ namespace Server.Model.ContentHandling
                     }
                     else
                     {
-                        p.Progress();
+                        p.Progress(Time.fixedDeltaTime);
                     }
                 }
                 catch (Exception e)

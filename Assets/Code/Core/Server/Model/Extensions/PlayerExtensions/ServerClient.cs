@@ -1,5 +1,6 @@
 using System.Net;
 using Libaries.Net;
+using UnityEngine;
 #if SERVER
 using Server.Servers;
 
@@ -48,12 +49,6 @@ namespace Server.Model.Extensions.PlayerExtensions
         public UserAccount UserAccount { get; set; }
         public UserChat UserChat { get; set; }
         public string IpAdress { get; private set; }
-
-        public override void Serialize(ByteStream bytestream)
-        { }
-
-        public override void Deserialize(ByteStream bytestream)
-        { }
         
         public void Initialize(Socket _socket)
         {
@@ -63,7 +58,7 @@ namespace Server.Model.Extensions.PlayerExtensions
             name = "C " + IpAdress;
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             try
             {
@@ -72,6 +67,7 @@ namespace Server.Model.Extensions.PlayerExtensions
             }
             catch (Exception e)
             {
+                Debug.LogException(e);
                 Disconnect();
             }
         }

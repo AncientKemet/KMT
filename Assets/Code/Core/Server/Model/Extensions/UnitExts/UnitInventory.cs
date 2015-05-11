@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Libaries.IO;
 using Shared.Content.Types;
 #if SERVER
 using Server.Model.Content;
@@ -119,26 +120,34 @@ namespace Server.Model.Extensions.UnitExts
             RecreateInventory();
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
 
         }
 
-        public override void Serialize(ByteStream bytestream)
+        public override void Serialize(JSONObject json)
         {
+            JSONObject inventory = new JSONObject();
+
+            inventory.AddField("count", "" + (Width * Height));
+
             for (int i = 0; i < Width * Height; i++)
             {
-                bytestream.AddShort(_items[i] == null ? -1 : _items[i].Item.InContentManagerIndex);
-                bytestream.AddShort(_items[i] == null ? -1 : _items[i].Amount);
+                inventory.AddField("id " + i, "" + (_items[i] == null ? -1 : _items[i].Item.InContentManagerIndex));
+                inventory.AddField("am " + i, "" + (_items[i] == null ? -1 : _items[i].Amount));
             }
+
+            json.AddField("inventory", inventory);
         }
 
-        public override void Deserialize(ByteStream bytestream)
+        public override void Deserialize(JSONObject json)
         {
-            for (int i = 0; i < Width * Height; i++)
+            JSONObject inventory = json.GetField("inventory");
+
+            for (int i = 0; i < int.Parse(inventory.GetField("count").str); i++)
             {
-                int id = bytestream.GetShort();
-                AddItem(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], bytestream.GetUnsignedShort()));
+                int id = int.Parse(inventory.GetField("id "+i).str);
+                AddItem(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am "+i).str)));
             }
         }
         

@@ -34,7 +34,7 @@ namespace Server.Model.Extensions
         protected abstract void pSerializeState(ByteStream packet);
         protected abstract void pSerializeUpdate(ByteStream packet);
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             _wasUpdate = false;
         }

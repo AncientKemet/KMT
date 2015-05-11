@@ -113,13 +113,7 @@ namespace Server.Model.Extensions.UnitExts
 
             SetDefaults();
         }
-
-        public override void Serialize(ByteStream bytestream)
-        { }
-
-        public override void Deserialize(ByteStream bytestream)
-        { }
-
+        
         public void SetDefaults()
         {
             StandAnimation = "Idle";

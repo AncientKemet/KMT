@@ -24,6 +24,11 @@ namespace Code.Libaries.Generic
 
         private void Awake()
         {
+            if (_instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
             _instance = this as T;
             OnAwake();
         }

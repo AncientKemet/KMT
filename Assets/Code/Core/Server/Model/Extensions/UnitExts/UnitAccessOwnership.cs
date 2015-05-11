@@ -77,30 +77,10 @@ namespace Server.Model.Extensions.UnitExts
             return a;
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
         }
 
-        public override void Serialize(ByteStream bytestream)
-        {
-            bytestream.AddInt(_ownerDatabaseId);
-            bytestream.AddShort(_unitAccesses.Count);
-            foreach (var access in _unitAccesses)
-            {
-                access.Serialize(bytestream);
-            }
-        }
-
-        public override void Deserialize(ByteStream bytestream)
-        {
-            _ownerDatabaseId = bytestream.GetInt();
-            for (int i = 0; i < bytestream.GetShort(); i++)
-            {
-                UnitAccess a = new UnitAccess();
-                a.Deserialize(bytestream);
-                _unitAccesses.Add(a);
-            }
-        }
     }
 }
 #endif

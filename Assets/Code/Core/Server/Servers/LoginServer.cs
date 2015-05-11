@@ -73,9 +73,9 @@ namespace Server
             Debug.Log("Login server running.");
         }
 
-        public override void ServerUpdate()
+        public override void ServerUpdate(float f)
         {
-            base.ServerUpdate();
+            base.ServerUpdate(f);
             scm.Get.AcceptConnections(socket);
             if (Clients.Count > 0)
             {
@@ -85,7 +85,7 @@ namespace Server
                 if (Clients[_currentIndex] != null)
                 {
                     ServerClient client = Clients[_currentIndex];
-                    Action actionToRunOnUnityThread = client.Progress;
+                    Action actionToRunOnUnityThread = () => client.Progress(f);
 
                     lock (ServerSingleton.StuffToRunOnUnityThread)
                     {

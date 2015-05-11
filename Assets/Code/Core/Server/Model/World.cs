@@ -81,7 +81,7 @@ namespace Server.Model
             _entities[entity.ID] = null;
         }
 
-        public void Progress()
+        public void Progress(float time)
         {
             LAST_TICK++;
             
@@ -92,18 +92,22 @@ namespace Server.Model
                     ServerUnit e = o as ServerUnit;
                     if (e != null)
                     {
-                        e.Progress();
+                        e.Progress(time);
                     }
                 }
             }
-            if(LAST_TICK % 20 == 0)
+            if (LAST_TICK%20 == 0)
+            {
+                LAST_TICK = 0;
                 Tree.Update();
+            }
         }
 
         #region Constructor
 
         private void Start()
         {
+            ServerSpawnManager.Instance(this);
             AstarPath.Instance.Scan();
 
             EnsureInitialization();

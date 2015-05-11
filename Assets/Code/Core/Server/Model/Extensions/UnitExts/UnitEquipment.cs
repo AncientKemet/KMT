@@ -338,13 +338,6 @@ namespace Server.Model.Extensions.UnitExts
             Unit = entity as ServerUnit;
         }
 
-        public override void Serialize(ByteStream bytestream)
-        {
-        }
-
-        public override void Deserialize(ByteStream bytestream)
-        {
-        }
     }
 }
 #endif

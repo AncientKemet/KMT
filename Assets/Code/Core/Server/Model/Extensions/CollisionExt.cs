@@ -12,7 +12,7 @@ namespace Server.Model.Extensions
 
         public Action<ServerUnit> OnCollision;
 
-	    public override void Progress()
+	    public override void Progress(float time)
         {
             Vector2 pos1 = new Vector2(unit.Movement.Position.x, unit.Movement.Position.z);
             foreach (var o in unit.IsStatic() ? unit.CurrentBranch.StaticObjectsVisible : unit.CurrentBranch.StaticObjectsVisible)
@@ -43,12 +43,6 @@ namespace Server.Model.Extensions
 	            }
 	        }
         }
-
-        public override void Serialize(ByteStream bytestream)
-        {}
-
-        public override void Deserialize(ByteStream bytestream)
-        {}
 
         protected override void OnExtensionWasAdded()
         {

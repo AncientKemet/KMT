@@ -83,9 +83,9 @@ namespace Server.Model.Entities.Items
             }
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
             if (AccessDelay > 0)
             {
                 AccessDelay -= Time.fixedDeltaTime;

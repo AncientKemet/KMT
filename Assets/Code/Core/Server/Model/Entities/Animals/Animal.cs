@@ -138,9 +138,9 @@ namespace Server.Model.Entities.Animals
             }*/
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
             Hunger += 0.01f;
             Scared -= 3f;
 

@@ -13,7 +13,7 @@ namespace Server.Model.Extensions.PlayerExtensions
 
         private List<PacketEnums.INPUT_TYPES> inputs = new List<PacketEnums.INPUT_TYPES>();
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             foreach (PacketEnums.INPUT_TYPES input in inputs)
             {
@@ -37,13 +37,7 @@ namespace Server.Model.Extensions.PlayerExtensions
             }
             inputs.Clear();
         }
-
-        public override void Serialize(ByteStream bytestream)
-        {}
-
-        public override void Deserialize(ByteStream bytestream)
-        {}
-
+        
         protected override void OnExtensionWasAdded()
         {
             base.OnExtensionWasAdded();

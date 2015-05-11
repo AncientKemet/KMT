@@ -11,6 +11,12 @@ namespace Server.Model.ContentHandling
     public class ServerSpawnManager : WorldEntity
     {
         private List<SpawnMB> _managedSpawnsUnits = new List<SpawnMB>();
+        private List<PlayerSpawn> _playerSpawns = new List<PlayerSpawn>();
+
+        public List<PlayerSpawn> PlayerSpawns
+        {
+            get { return _playerSpawns; }
+        }
 
         public void AddItemSpawn(SpawnMB aSpawn)
         {
@@ -46,7 +52,13 @@ namespace Server.Model.ContentHandling
             }
         }
 
-        private static Dictionary<World, ServerSpawnManager> managers = new Dictionary<World, ServerSpawnManager>();  
+        private void Awake()
+        {
+            Current = this;
+        }
+
+        private static Dictionary<World, ServerSpawnManager> managers = new Dictionary<World, ServerSpawnManager>();
+        public static ServerSpawnManager Current { get; private set; }
 
         public static ServerSpawnManager Instance(World world)
         {

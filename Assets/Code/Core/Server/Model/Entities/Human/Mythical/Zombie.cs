@@ -16,9 +16,9 @@ namespace Server.Model.Entities.Human.Mythical
 
         public Player target;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
             if (!Movement.IsWalkingSomeWhere && Random.Range(0f, 100f) > 99.0f && target == null)
             {
                 DoRandomWalk();

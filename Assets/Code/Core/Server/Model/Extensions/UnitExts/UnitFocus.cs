@@ -69,12 +69,10 @@ namespace Server.Model.Extensions.UnitExts
             _listeners.Add(worldEntity);
         }
 
-        public override void Progress()
+        public override void Progress(float time)
         {
         }
 
-        public override void Serialize(ByteStream bytestream) { }
-        public override void Deserialize(ByteStream bytestream) { }
     }
 }
 #endif

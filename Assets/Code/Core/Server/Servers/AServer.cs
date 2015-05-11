@@ -13,6 +13,7 @@ namespace Server.Servers
 {
     public abstract class AServer : MonoBehaviour
     {
+        public bool LimitProgressing = true;
         public int ProgressRate = 1;
         protected Socket socket;
         protected List<ServerClient> Clients = new List<ServerClient>();
@@ -37,15 +38,22 @@ namespace Server.Servers
 
         private void FixedUpdate()
         {
-            _progressCounter += Time.fixedDeltaTime;
-            if (1f / ProgressRate < _progressCounter)
+            if (LimitProgressing)
             {
-                for (int i = 0; i < (int)(_progressCounter / (1f / ProgressRate )); i++)
+                _progressCounter += Time.fixedDeltaTime;
+                if (1f/ProgressRate < _progressCounter)
                 {
-                    ServerUpdate();
-                    _updatesCounter++;
-                    _progressCounter -= 1f/ProgressRate;
+                    for (int i = 0; i < (int) (_progressCounter/(1f/ProgressRate)); i++)
+                    {
+                        ServerUpdate(1f/ProgressRate);
+                        _updatesCounter++;
+                        _progressCounter -= 1f/ProgressRate;
+                    }
                 }
+            }
+            else
+            {
+                ServerUpdate(Time.fixedDeltaTime);
             }
         }
 
@@ -84,7 +92,7 @@ namespace Server.Servers
 
         public abstract void Stop();
 
-        public virtual void ServerUpdate()
+        public virtual void ServerUpdate(float f)
         {
             //data server doesnt need an connection to itself.
             if (!(this is DataServer))

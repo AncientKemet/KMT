@@ -17,9 +17,9 @@ namespace Server.Model.Entities.Human
 
         private float _sleepTime = 1f;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
-            base.Progress();
+            base.Progress(time);
 
             if(Spawn.WalkRange > 0)
             if (!Movement.IsWalkingSomeWhere)

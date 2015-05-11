@@ -24,7 +24,7 @@ namespace Server.Model.Extensions.UnitExts
         private int _currentCastingSpellId = -1;
         private float _currentSpellTime;
 
-        public override void Progress()
+        public override void Progress(float time)
         {
             if (CurrentCastingSpell != null)
             {
@@ -36,13 +36,7 @@ namespace Server.Model.Extensions.UnitExts
                 CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
             }
         }
-
-        public override void Serialize(ByteStream bytestream)
-        { }
-
-        public override void Deserialize(ByteStream bytestream)
-        { }
-
+        
         public float CurrentCastStrenght
         {
             get { return (Mathf.Min(_currentSpellTime, CurrentCastingSpell.MaxDuration) - CurrentCastingSpell.ActivableDuration) / (CurrentCastingSpell.MaxDuration - CurrentCastingSpell.ActivableDuration); }
@@ -261,7 +255,6 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     Unit.Display.Destroy = true;
                 }
-                Unit.Progress();
                 return;
             }
 

@@ -41,7 +41,7 @@
 			float y = wind * max(v.color.g, 0.0);
 			float z = wind * max(v.color.b, 0.0);
 
-			v.vertex += float4(x, y, z, 0);
+			v.vertex +=  mul (_Object2World, float4(x, y, -z, 0));
 
 			//float4 worldBonus = mul (_Object2World, float4( side, up, 0, 0));
 			//v.vertex += worldBonus;
