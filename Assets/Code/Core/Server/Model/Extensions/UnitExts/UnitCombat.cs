@@ -99,8 +99,10 @@ namespace Server.Model.Extensions.UnitExts
         {
             JSONObject combat = j.GetField("combat");
 
-            Health = int.Parse(combat.GetField("hp").str);
-            Energy = int.Parse(combat.GetField("en").str);
+            if (combat.HasField("hp"))
+                Health = Mathf.Min(float.Parse(combat.GetField("hp").str), 1f);
+            if (combat.HasField("en"))
+                Energy = Mathf.Min(float.Parse(combat.GetField("en").str), 1f);
         }
 
         protected override void OnExtensionWasAdded()

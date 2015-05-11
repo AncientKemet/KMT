@@ -293,6 +293,15 @@ namespace Server.Model.Extensions.UnitExts
             }
             return r;
         }
+
+        public void RefreshFull()
+        {
+            for (int i = 0; i < Width*Height; i++)
+            {
+                SendUpdateToPlayers(i);
+            }
+
+        }
     }
 }
 #endif

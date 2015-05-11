@@ -152,7 +152,7 @@ namespace Server.Net
                         client.Player.Display.HairColor = p.value;
 
                     if (p.Action == CharacterChangePacket.CharAction.FaceType)
-                        client.Player.Display.Facetype = p.value;
+                        client.Player.Display.FaceType = p.value;
 
                     if (p.Action == CharacterChangePacket.CharAction.FaceColor)
                         client.Player.Display.FaceColor = p.value;

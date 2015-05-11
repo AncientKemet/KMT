@@ -147,7 +147,6 @@ namespace Server.Model.Extensions.UnitExts
         {
             base.Progress(time);
 
-            Debug.Log("MOV");
             if (Parent != null)
                 return;
 
