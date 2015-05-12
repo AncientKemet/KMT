@@ -33,13 +33,13 @@ namespace Code.Core.Client.UI.Controls.Items
         {
             var button = buttons[x + y * Width];
             button.Item = itemId == -1 ? null : ContentManager.I.Items[itemId];
-            button.Amount.text = amount == 1 ? "" : "" + amount;
+            button.Amount.text = amount <= 1 ? "" : "" + amount;
         }
         public void SetItem(int x, int y, Item item, int amount = 1)
         {
             var button = buttons[x + y*Width];
             button.Item = item;
-            button.Amount.text = amount == 1 ? "" : "" + amount;
+            button.Amount.text = amount <= 1 ? "" : "" + amount;
         }
 
         private void Build()
