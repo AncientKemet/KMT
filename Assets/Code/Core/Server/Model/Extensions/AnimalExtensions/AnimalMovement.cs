@@ -52,7 +52,7 @@ namespace Server.Model.Extensions.AnimalExtensions
             }
             else
             {
-                Animal.Actions.DoAction(food.ID, "Animal-Eating");
+                Animal.Details.DoAction(food.ID, "Animal-Eating");
             }
         }
 

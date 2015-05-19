@@ -92,13 +92,13 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
                 int spell = e.controlID;
                 if (e._eventType == UIInterfaceEvent.EventType.Button_Down)
                 {
-                    Player.Actions.StartSpell(spell);
+                    Player.Spells.StartSpell(spell);
                     return;
                 }
 
                 if (e._eventType == UIInterfaceEvent.EventType.CLICK)
                 {
-                    Player.Actions.FinishSpell(spell);
+                    Player.Spells.FinishSpell(spell);
                     return;
                 }
 
@@ -172,10 +172,10 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
             {
                 if (e.Action == "Rest")
                 {
-                    var Actions = Player.Actions;
+                    var Actions = Player.Spells;
                     if (!Actions.HasSpell(ContentManager.I.RestSpell, 5))
                         Actions.EquipSpell(ContentManager.I.RestSpell, 5);
-                    Player.Actions.StartOrStopSpell(5);
+                    Player.Spells.StartOrStopSpell(5);
 
                     return;
                 }

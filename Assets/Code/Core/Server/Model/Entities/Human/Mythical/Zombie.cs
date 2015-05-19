@@ -11,7 +11,7 @@ namespace Server.Model.Entities.Human.Mythical
             base.Awake();
             Display.ModelID = 50;
             Movement._rotationSpeed /= 3f;
-            Actions.EquipSpell(ContentManager.I.Spells[3], 0);
+            Spells.EquipSpell(ContentManager.I.Spells[3], 0);
         }
 
         public Player target;
@@ -57,17 +57,17 @@ namespace Server.Model.Entities.Human.Mythical
 
             float distance = Vector3.Distance(target.Movement.Position, Movement.Position);
             if (distance < 1.5f)
-                Actions.FinishSpell(0);
+                Spells.FinishSpell(0);
             else if (distance < 4f)
             {
-                if (Actions.CurrentCastingSpell == null)
-                    Actions.StartSpell(0);
+                if (Spells.CurrentCastingSpell == null)
+                    Spells.StartSpell(0);
                 Movement.WalkTo((Movement.Position + target.Movement.Position*2)/3f, Attack);
             }
             else
             {
-                if (Actions.CurrentCastingSpell != null)
-                Actions.FinishSpell(0);
+                if (Spells.CurrentCastingSpell != null)
+                Spells.FinishSpell(0);
                 Movement.WalkTo((Movement.Position + target.Movement.Position*2) / 3f, Attack);
             }
             if (Random.Range(0f, 100f) > 99.0f)

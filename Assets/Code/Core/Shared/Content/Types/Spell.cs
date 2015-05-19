@@ -106,7 +106,7 @@ namespace Shared.Content.Types
 
         public void ForceCancelCasting(ServerUnit Unit)
         {
-            Unit.Actions.CancelCurrentSpell();
+            Unit.Spells.CancelCurrentSpell();
         }
 
         public abstract void OnStartCasting(ServerUnit unit);

@@ -44,10 +44,9 @@ namespace Server.Model.Entities.Human
 
         public override void Awake()
         {
-            base.Awake();
-
             PlayerInput = AddExt<PlayerInput>();
             PlayerUdp = AddExt<PlayerUDP>();
+            base.Awake();
         }
         
         /// <summary>

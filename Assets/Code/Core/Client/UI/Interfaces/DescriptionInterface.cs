@@ -15,7 +15,6 @@ namespace Client.UI.Interfaces
         public void Show(string title, string subtitle = null, string description = null, Texture2D icon = null)
         {
             gameObject.SetActive(true);
-
             bool enableTtitle = !string.IsNullOrEmpty(title);
             _title.gameObject.SetActive(enableTtitle);
             if (enableTtitle)

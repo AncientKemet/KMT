@@ -31,7 +31,7 @@ namespace Shared.Content.Types
         public float Weight;
 
         public bool Tradable = true;
-        [Range(1, int.MaxValue)] public int Value = 1;
+        [Range(1, 1000000)] public int Value = 1;
         
         public bool Stackable = false;
 

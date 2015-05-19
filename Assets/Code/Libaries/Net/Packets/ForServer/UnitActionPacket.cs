@@ -22,7 +22,7 @@ namespace Code.Libaries.Net.Packets.ForServer
 
         protected override int GetOpCode()
         {
-            return 21;
+            return 24;
         }
 
         protected override void enSerialize(ByteStream bytestream)

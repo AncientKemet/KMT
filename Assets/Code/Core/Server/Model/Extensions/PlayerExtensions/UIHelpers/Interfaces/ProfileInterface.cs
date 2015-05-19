@@ -65,6 +65,15 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                 player.ClientUi.Inventories.CloseInventory(Unit.GetExt<UnitInventory>());
             //else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
                 //player.ClientUi.Shop.CloseInventory(Unit.GetExt<UnitInventory>());
+
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Main)
+            {
+                //nothing
+            }
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Trade)
+            {
+                //close trade
+            }
             else
             {
                 throw new Exception("Unhandled profile tab closing: "+_tab);

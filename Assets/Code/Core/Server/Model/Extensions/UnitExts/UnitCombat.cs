@@ -77,9 +77,9 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     RegenTick = 0;
 
-                    Energy += UnitAttributes[UnitAttributeProperty.EnergyRegen] * Time.fixedDeltaTime * RegenUpdateTick;
+                    Energy += UnitAttributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
                     Energy = Mathf.Clamp(Energy, 0, 100);
-                    Health += UnitAttributes[UnitAttributeProperty.HealthRegen] * Time.fixedDeltaTime * RegenUpdateTick;
+                    Health += UnitAttributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
                     Health = Mathf.Clamp(Health, 0, 100);
                     _wasUpdate = true;
                 }
@@ -100,9 +100,9 @@ namespace Server.Model.Extensions.UnitExts
             JSONObject combat = j.GetField("combat");
 
             if (combat.HasField("hp"))
-                Health = Mathf.Min(float.Parse(combat.GetField("hp").str), 1f);
+                Health = Mathf.Max(float.Parse(combat.GetField("hp").str), 1f);
             if (combat.HasField("en"))
-                Energy = Mathf.Min(float.Parse(combat.GetField("en").str), 1f);
+                Energy = Mathf.Max(float.Parse(combat.GetField("en").str), 1f);
         }
 
         protected override void OnExtensionWasAdded()
