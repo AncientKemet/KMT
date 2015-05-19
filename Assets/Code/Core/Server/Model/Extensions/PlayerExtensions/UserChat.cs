@@ -34,7 +34,7 @@ namespace Server.Model.Extensions.PlayerExtensions
                 {
                     if (p.text.Contains("item"))
                     {
-                        Player.Inventory.AddItem(new Item.ItemInstance(ContentManager.I.Items[int.Parse(p.text.Split("."[0])[2])]));
+                        Player.Inventory.AddItem(new Item.ItemInstance(ContentManager.I.Items[int.Parse(p.text.Split("."[0])[2])], int.Parse(p.text.Split("."[0])[3])));
                     }
                     if (p.text.Contains("chick"))
                     {

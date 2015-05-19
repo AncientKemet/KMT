@@ -165,7 +165,7 @@ namespace Server.Model.Extensions.UnitExts
                 }
                 else
                 {
-                    MoveAndRotate();
+                    MoveAndRotate(time);
                 }
             }
 
@@ -189,7 +189,7 @@ namespace Server.Model.Extensions.UnitExts
             }*/
         }
 
-        private void MoveAndRotate()
+        private void MoveAndRotate(float time)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace Server.Model.Extensions.UnitExts
                     if (!_dontWalk /*&&
                         Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint)*/)
                     {
-                        MoveForward(CurrentSpeed * Time.fixedDeltaTime);
+                        MoveForward(CurrentSpeed * time);
                         _position.y += (waypoint.y - _position.y) / 5f;
                     }
 

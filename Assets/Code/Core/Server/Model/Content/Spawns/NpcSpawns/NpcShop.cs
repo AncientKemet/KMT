@@ -40,6 +40,10 @@ namespace Server.Model.Content.Spawns.NpcSpawns
         public override void Apply(NPC n)
         {
             base.Apply(n);
+
+            //add actions
+            n.Details.AddAction("Trade");
+
             //initialize stock
             Stock = new List<Item.ItemInstance>();
 

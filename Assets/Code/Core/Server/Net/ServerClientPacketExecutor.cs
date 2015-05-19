@@ -68,7 +68,6 @@ namespace Server.Net
                             {
                                 //client.Player = ServerMonoBehaviour.CreateInstance<Player>();
                                 //client.Player.Client = client;
-                                /**/
                                 //hide loginscreen
                                 client.UI.Login.Opened = false;
 
@@ -196,16 +195,11 @@ namespace Server.Net
             }
 
             if (client.Server is WorldServer)
+            {
                 if (packet is TargetUpdatePacket)
                 {
                     TargetUpdatePacket p = packet as TargetUpdatePacket;
-
-                    /*if (client.Player.Focus.FocusedUnit != null)
-                        if (client.Player.Focus.FocusedUnit.ID != p.UnitId)
-                        {
-                            client.Player.Focus.FocusedUnit.Focus..Remove(client.Player);
-                        }*/
-
+                    
                     if (p.UnitId == -1)
                     {
                         client.Player.Focus.FocusedUnit = null;
@@ -238,14 +232,13 @@ namespace Server.Net
                     return;
                 }
 
-            if (client.Server is WorldServer)
                 if (packet is UnitActionPacket)
                 {
                     UnitActionPacket p = packet as UnitActionPacket;
-                    client.Player.Actions.DoAction(p.UnitId, p.ActionName);
-
+                    client.Player.Details.DoAction(p.UnitId, p.ActionName);
                     return;
                 }
+            }
 
             if (packet is ChatPacket)
             {

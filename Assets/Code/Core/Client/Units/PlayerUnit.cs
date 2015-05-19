@@ -173,6 +173,7 @@ namespace Client.Units
             set
             {
                 _name = value;
+                gameObject.name = name;
             }
         }
 
@@ -320,7 +321,7 @@ namespace Client.Units
             
             OnMouseIn += delegate
             {
-                DescriptionInterface.I.Show(name);
+                DescriptionInterface.I.Show(Name);
             };
             OnMouseOff += delegate
             {
@@ -402,6 +403,7 @@ namespace Client.Units
             bool combatUpdate = bitArray[2];
             bool animUpdate = bitArray[3];
             bool equipmentUpdate = bitArray[4];
+            bool detailsUpdate = bitArray[5];
 #if DEBUG_NETWORK
             string log = "";
             log += "\n" + "Packet size " + b.GetSize();
@@ -494,22 +496,13 @@ namespace Client.Units
                             }, () => { },
                                 0.3f));*/
                             Display.Model = modelId;
-                            AddAction(new RightClickAction("Inspect",
-                                delegate
-                                {
-
-                                    UnitActionPacket pac = new UnitActionPacket();
-                                    pac.UnitId = Id;
-                                    pac.ActionName = "Inspect";
-                                    ClientCommunicator.Instance.SendToServer(pac);
-                                }
-                                ));
+                            
                         }
                     }
                 }
                 else
                 {
-                    Item item = ((GameObject) Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
+                    Item item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
                     transform.localPosition += Vector3.up;
                     item.transform.parent = transform;
                     item.transform.localPosition = Vector3.zero;
@@ -673,6 +666,31 @@ namespace Client.Units
 
             if (equipmentUpdate)
                 Display.EquipItems(b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort(), b.GetShort());
+
+            if (detailsUpdate)
+            {
+                Name = b.GetString();
+                int _count = b.GetByte();
+                ClearAllActions("Cancel");
+                if(_count > 0)
+                for (int i = 0; i < _count; i++)
+                {
+                    string action = b.GetString();
+                    AddAction(new RightClickAction(
+                        action,
+                        delegate
+                        {
+                            if (this != null)
+                            {
+                                UnitActionPacket packet = new UnitActionPacket();
+                                packet.UnitId = Id;
+                                packet.ActionName = action;
+                                ClientCommunicator.Instance.SendToServer(packet);
+                            }
+                        }
+                        ));
+                }
+            }
 
         }
         

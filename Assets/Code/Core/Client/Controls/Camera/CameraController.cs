@@ -121,7 +121,7 @@ namespace Code.Core.Client.Controls.Camera
 
                     Vector3 _targetPos = new Vector3(x, objectPos.y + CameraY * (Input.GetMouseButton(2) ? 0.5f : 1f), z) + objectLookVector3;
 
-                    transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * 10);
+                    transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * 15);
 
                     lastObjectPosition += (objectPos-lastObjectPosition) / 50f;
                 }

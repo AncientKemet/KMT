@@ -28,7 +28,9 @@ namespace Server.Model.Entities
 
         public UnitFocus Focus;
 
-        public UnitActions Actions;
+        public UnitSpells Spells;
+
+        public UnitDetails Details;
 
         private List<UnitUpdateExt> _updateExtensions;
 
@@ -41,12 +43,9 @@ namespace Server.Model.Entities
             set
             {
                 if (base.CurrentWorld != null)
-                {
                     if (CurrentBranch != null)
-                    {
                         CurrentBranch.RemoveObject(this);
-                    }
-                }
+
                 _quadTreePos = new Vector2(Movement.Position.x, Movement.Position.z);
                 base.CurrentWorld = value;
                 OnEnterWorld(value);
@@ -60,17 +59,14 @@ namespace Server.Model.Entities
             Movement = AddExt<UnitMovement>();
             Display = AddExt<UnitDisplay>();
             Access = AddExt<UnitAccessOwnership>();
-            Actions = AddExt<UnitActions>();
+            Spells = AddExt<UnitSpells>();
             Focus = AddExt<UnitFocus>();
+            Details = AddExt<UnitDetails>();
 
             //in the end find all updatable extensions
             foreach (EntityExtension extension in Extensions)
-            {
                 if (extension is UnitUpdateExt)
-                {
                     _updateExtensions.Add(extension as UnitUpdateExt);
-                }
-            }
 
             _updateExtensions.Sort(
                 (ext, updateExt) => ext.UpdateFlag().CompareTo(updateExt.UpdateFlag())
@@ -81,7 +77,7 @@ namespace Server.Model.Entities
         {
             if (CurrentWorld == null)
                 return;
-            
+
             ReCreateUpdatePacket();
 
             if (_updatePacket != null)
@@ -110,11 +106,8 @@ namespace Server.Model.Entities
             {
                 Player playerAround = objectAround as Player;
                 if (playerAround != null)
-                {
                     playerAround.Client.ConnectionHandler.SendPacket(packet);
-                }
             }
-
         }
 
         #region SERIALIZATION
@@ -124,9 +117,7 @@ namespace Server.Model.Entities
             foreach (var extension in Extensions)
             {
                 try
-                {
-                    extension.Serialize(j);
-                }
+                { extension.Serialize(j); }
                 catch (Exception e)
                 { Debug.LogException(e); }
             }
@@ -178,9 +169,8 @@ namespace Server.Model.Entities
         {
             Player player = o as Player;
             if (player != null && player != this)
-            {
                 player.Client.ConnectionHandler.SendPacket(StatePacket);
-            }
+
         }
 
         public virtual bool IsStatic()
@@ -206,12 +196,10 @@ namespace Server.Model.Entities
                     _statePacket = new UnitUpdatePacket();
                     //Crate mask
                     int mask = 0;
+
                     foreach (UnitUpdateExt updateExtension in _updateExtensions)
                     {
-                        if (updateExtension is UnitMovement)
-                            mask = mask | updateExtension.UpdateFlag();
-                        else
-                            mask = mask | updateExtension.UpdateFlag();
+                        mask = mask | updateExtension.UpdateFlag();
                     }
 
                     _statePacket = new UnitUpdatePacket();

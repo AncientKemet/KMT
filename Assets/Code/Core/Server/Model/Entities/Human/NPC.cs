@@ -8,10 +8,6 @@ namespace Server.Model.Entities.Human
 {
     public class NPC : Human
     {
-        public override void Awake()
-        {
-            base.Awake();
-        }
 
         public NPCSpawn Spawn { get; set; }
 

@@ -25,7 +25,10 @@ namespace Server.Model.Extensions
         /// 0x02 - display
         /// 0x04 - combat
         /// 0x08 - animaion
-        /// 0x0F - equipment
+        /// 0x10 - equipment
+        /// 0x20 - details
+        /// 0x40 - 
+        /// 0x80 - 
         /// ...
         /// </summary>
         /// <returns>Byte flag</returns>

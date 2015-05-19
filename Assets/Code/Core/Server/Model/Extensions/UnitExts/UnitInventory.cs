@@ -70,6 +70,30 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
+        public Item.ItemInstance this[int index]
+        {
+            get
+            {
+                try
+                {
+                    return _items[index];
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Debug.LogError("Invalid inventory access. [" + index + "] while Width = " + Width + " Height = " + Height);
+                    return null;
+                }
+            }
+            set
+            {
+                _items[index] = value;
+                if (ListeningPlayers.Count > 0)
+                {
+                    SendUpdateToPlayers(index);
+                }
+            }
+        }
+
         public Item.ItemInstance this[int x, int y]
         {
             get
@@ -137,32 +161,60 @@ namespace Server.Model.Extensions.UnitExts
                 inventory.AddField("am " + i, "" + (_items[i] == null ? -1 : _items[i].Amount));
             }
 
-            json.AddField("inventory", inventory);
+            json.AddField("Inventory", inventory);
         }
 
         public override void Deserialize(JSONObject json)
         {
-            JSONObject inventory = json.GetField("inventory");
+            JSONObject inventory = json.GetField("Inventory");
 
             for (int i = 0; i < int.Parse(inventory.GetField("count").str); i++)
             {
                 int id = int.Parse(inventory.GetField("id "+i).str);
-                AddItem(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am "+i).str)));
+                this[i]=(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am "+i).str)));
             }
         }
         
         public bool AddItem(Item.ItemInstance item)
         {
+            int nullIndexX = -1;
+            int nullIndexY = -1;
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    if (this[x, y] == null)
+                    var that = this[x, y];
+                    if(that != null)
+                    if (that.Item == item.Item)
                     {
-                        this[x, y] = item;
-                        return true;
+                        if (that.Amount < that.Item.MaxStacks)
+                        {
+                            if (item.Amount > that.Item.MaxStacks - that.Amount)
+                            {
+                                item.Amount -= that.Item.MaxStacks - that.Amount;
+                                that.Amount = that.Item.MaxStacks;
+                                SendUpdateToPlayers(x, y);
+                                return AddItem(item);
+                            }
+                            else
+                            {
+                                that.Amount += item.Amount;
+                                SendUpdateToPlayers(x, y);
+                                return true;
+                            }
+                        }
+                    }
+                    if (that == null && nullIndexX == -1)
+                    {
+                        nullIndexX = x;
+                        nullIndexY = y;
                     }
                 }
+            }
+            if (nullIndexX != -1)
+            {
+                this[nullIndexX, nullIndexY] = item;
+                return true;
             }
             return false;
         }

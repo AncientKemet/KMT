@@ -222,7 +222,7 @@ namespace Server.Model.Extensions.UnitExts
                     }
 
                     if (item != null && item.Spells != null)
-                        Unit.Actions.EquipSpells(item.Spells);
+                        Unit.Spells.EquipSpells(item.Spells);
                     
                     _wasUpdate = true;
                     return true;
@@ -251,7 +251,7 @@ namespace Server.Model.Extensions.UnitExts
                 }
 
                 if(item != null && item.Spells != null)
-                    Unit.Actions.EquipSpells(item.Spells);
+                    Unit.Spells.EquipSpells(item.Spells);
 
                 _wasUpdate = true;
                 return true;
@@ -273,7 +273,7 @@ namespace Server.Model.Extensions.UnitExts
                             if (inventory.HasSpace(1))
                             {
                                 inventory.AddItem(_itemRef.Item);
-                                Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
+                                Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
                                 _itemRef.Display.Destroy = true;
                                 _itemRef = null;
                                 _wasUpdate = true;
@@ -284,7 +284,7 @@ namespace Server.Model.Extensions.UnitExts
                     else
                     {
                         if (_itemRef.Item.Item.EQ.Spells != null)
-                            Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
+                            Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
 
                         _itemRef.Movement.Parent = null;
                         _itemRef.Movement.ParentPlaneID = -1;
@@ -297,7 +297,7 @@ namespace Server.Model.Extensions.UnitExts
                 }
                 else
                 {
-                    Unit.Actions.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
+                    Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
                     _itemRef = null;
                     _wasUpdate = true;
                     return true;
