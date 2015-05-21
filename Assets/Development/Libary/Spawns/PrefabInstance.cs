@@ -11,6 +11,8 @@ public class PrefabInstance : MonoBehaviour
     [SerializeField]
     private GameObject prefab;
 
+    [SerializeField] private bool _rebuild = true;
+
 #if UNITY_EDITOR
     // Struct of all components. Used for edit-time visualization and gizmo drawing
     public struct Thingy
@@ -27,7 +29,7 @@ public class PrefabInstance : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            Instantiate(prefab, transform.position, transform.rotation);
+            var o = Instantiate(prefab, transform.position, transform.rotation) as GameObject;
             Destroy(gameObject);
         }
     }
@@ -35,6 +37,7 @@ public class PrefabInstance : MonoBehaviour
     void OnValidate()
     {
         things.Clear();
+        prefab.transform.localRotation = Quaternion.identity;
         if (enabled)
             Rebuild(prefab, Matrix4x4.identity);
     }
@@ -42,17 +45,20 @@ public class PrefabInstance : MonoBehaviour
     void OnEnable()
     {
         things.Clear();
+        prefab.transform.localRotation = Quaternion.identity;
         if (enabled)
             Rebuild(prefab, Matrix4x4.identity);
     }
 
     void Rebuild(GameObject source, Matrix4x4 inMatrix)
     {
+        _rebuild = false;
         if (!source)
             return;
 
         Matrix4x4 baseMat = inMatrix * Matrix4x4.TRS(-source.transform.position, Quaternion.identity, Vector3.one);
 
+// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
         foreach (Renderer mr in source.GetComponentsInChildren(typeof(Renderer), true))
         {
             things.Add(new Thingy()
@@ -63,6 +69,7 @@ public class PrefabInstance : MonoBehaviour
             });
         }
 
+// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
         foreach (PrefabInstance pi in source.GetComponentsInChildren(typeof(PrefabInstance), true))
         {
             if (pi.enabled && pi.gameObject.activeSelf)
@@ -75,6 +82,8 @@ public class PrefabInstance : MonoBehaviour
     {
         if (EditorApplication.isPlaying)
             return;
+        if(_rebuild)
+            Rebuild(prefab, Matrix4x4.identity);
         Matrix4x4 mat = transform.localToWorldMatrix;
         foreach (Thingy t in things)
             for (int i = 0; i < t.materials.Count; i++)
@@ -101,6 +110,7 @@ public class PrefabInstance : MonoBehaviour
     [PostProcessScene(-2)]
     public static void OnPostprocessScene()
     {
+// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
         foreach (PrefabInstance pi in UnityEngine.Object.FindObjectsOfType(typeof(PrefabInstance)))
             BakeInstance(pi);
     }
