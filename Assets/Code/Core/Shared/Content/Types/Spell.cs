@@ -44,10 +44,8 @@ namespace Shared.Content.Types
         [Multiline(5)]
         public string Description = "";
 
-        public string subtitle;
-
-
-
+        public string Subtitle;
+        
         public int InContentManagerId
         {
             get
@@ -61,14 +59,14 @@ namespace Shared.Content.Types
         }
 
 #if SERVER
-
+        [System.Obsolete("Use Unit.Spells.StartSpell")]
         public void StartCasting(ServerUnit unit)
         {
-            Player p = unit as Player;
+            var player = unit as Player;
 
-            if (p != null)
+            if (player != null)
             {
-                p.ClientUi.ShowControl(InterfaceType.ActionBars, 4);
+                player.ClientUi.ShowControl(InterfaceType.ActionBars, 4);
             }
 
             OnStartCasting(unit);
@@ -76,11 +74,11 @@ namespace Shared.Content.Types
 
         public void FinishCasting(ServerUnit unit, float strenght)
         {
-            Player p = unit as Player;
+            var player = unit as Player;
 
-            if (p != null)
+            if (player != null)
             {
-                p.ClientUi.HideControl(InterfaceType.ActionBars, 4);
+                player.ClientUi.HideControl(InterfaceType.ActionBars, 4);
             }
 
             OnFinishCasting(unit, strenght);
@@ -89,30 +87,24 @@ namespace Shared.Content.Types
         public void StrenghtChanged(ServerUnit unit, float strenght)
         {
             strenght = Mathf.Clamp01(strenght);
-
-            Player p = unit as Player;
-
-            if (p != null)
-            {
-                List<float> floats = new List<float>();
-
-                floats.Add(strenght);
-
-                p.ClientUi.SetControlValues(InterfaceType.ActionBars, 4, floats);
-            }
-
             OnStrenghtChanged(unit, strenght);
         }
 
-        public void ForceCancelCasting(ServerUnit Unit)
+        public void ForceCancelCasting(ServerUnit unit)
         {
-            Unit.Spells.CancelCurrentSpell();
+            unit.Spells.CancelCurrentSpell();
         }
 
         public abstract void OnStartCasting(ServerUnit unit);
         public abstract void OnFinishCasting(ServerUnit unit, float strenght);
         public abstract void OnStrenghtChanged(ServerUnit unit, float strenght);
-        public abstract void CancelCasting(ServerUnit Unit);
+
+        /// <summary>
+        /// Do not call this by anymeans, instead use Unit.Spells.CancelSpell or
+        /// </summary>
+        /// <param name="unit"></param>
+        [System.Obsolete("Use Unit.Spells.CancelSpell")]
+        public abstract void CancelCasting(ServerUnit unit);
 #endif
 #if UNITY_EDITOR
         public static void CreateSpell<T>() where T : Spell
@@ -123,20 +115,11 @@ namespace Shared.Content.Types
             Selection.activeObject = asset;
         }
 #endif
-
-
-        public string GetDescribtion()
-        {
-            string s = "";
-
-            return Description;
-        }
-
         public enum HitType
         {
             Melee,
             Range,
-            DOT
+            DamageOverTime
         }
 
         /// <summary>
@@ -146,8 +129,8 @@ namespace Shared.Content.Types
         public enum HitStrenght
         {
             Weak = 0,
-            Normal = 2,
-            Strong = 3,
+            Normal = 1,
+            Strong = 2,
             Critical = 3
         }
 

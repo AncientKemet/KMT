@@ -50,7 +50,7 @@ namespace Development.Libary.Spells.Codes
         {
         }
 
-        public override void CancelCasting(ServerUnit Unit)
+        public override void CancelCasting(ServerUnit unit)
         {
         }
 

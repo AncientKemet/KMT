@@ -1,3 +1,4 @@
+using Code.Core.Shared.Content.Types.ItemExtensions;
 #if SERVER
 using Code.Code.Libaries.Net;
 using Server.Model.Entities;
@@ -110,12 +111,22 @@ namespace Server.Model.Extensions.UnitExts
         protected override void OnExtensionWasAdded()
         {
             base.OnExtensionWasAdded();
-
+            Unit = entity as ServerUnit;
             SetDefaults();
         }
-        
+
+        public ServerUnit Unit { get; private set; }
+
         public void SetDefaults()
         {
+            UnitEquipment eq = Unit.GetExt<UnitEquipment>();
+            if (eq != null && eq.MainHand.Item.EQ != null)
+            {
+                var ieq = eq.MainHand.Item.EQ;
+                StandAnimation = ieq.StandAnim;
+                WalkAnimation = ieq.WalkAnim;
+                return;
+            }
             StandAnimation = "Idle";
             WalkAnimation = "Walk";
             RunAnimation = "Run";

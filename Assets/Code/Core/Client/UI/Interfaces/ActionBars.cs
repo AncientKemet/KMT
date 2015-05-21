@@ -1,5 +1,6 @@
 ﻿using Client.UI.Controls;
 using Client.UI.Scripts;
+using Code.Core.Client.UI.Controls;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
 using Libaries.UnityExtensions.Independent;
@@ -11,6 +12,9 @@ namespace Code.Core.Client.UI.Interfaces
     {
 
         private Vector3 HiddenPos = Vector3.zero + Vector3.down*20f;
+
+        [SerializeField]
+        private ChannelBar ChannelBar;
 
         public SpellButton Q,W,E,R;
 
@@ -61,21 +65,30 @@ namespace Code.Core.Client.UI.Interfaces
 
         public void OnPacket(SpellUpdatePacket p)
         {
-            if (p.Index == 0)
+            //Cast spell packets
+            if (p.IsCasting)
             {
-                Q.spell = p.Spell;
+                ChannelBar.Progress = p.Strenght;
             }
-            else if (p.Index == 1)
+            //Set spell packets
+            if (p.SetSpell)
             {
-                W.spell = p.Spell;
-            }
-            else if (p.Index == 2)
-            {
-                E.spell = p.Spell;
-            }
-            else if (p.Index == 3)
-            {
-                R.spell = p.Spell;
+                if (p.Index == 0)
+                {
+                    Q.spell = p.Spell;
+                }
+                else if (p.Index == 1)
+                {
+                    W.spell = p.Spell;
+                }
+                else if (p.Index == 2)
+                {
+                    E.spell = p.Spell;
+                }
+                else if (p.Index == 3)
+                {
+                    R.spell = p.Spell;
+                }
             }
         }
     }

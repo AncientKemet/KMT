@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Client.UI.Controls.Items;
 using Code.Core.Client.UI.Scripts;
 using Code.Core.Shared.Content.Types;
@@ -32,14 +33,17 @@ namespace Code.Core.Client.UI.Controls.Items
         public void SetItem(int x, int y, int itemId, int amount = 1)
         {
             var button = buttons[x + y * Width];
-            button.Item = itemId == -1 ? null : ContentManager.I.Items[itemId];
-            button.Amount.text = amount <= 1 ? "" : "" + amount;
-        }
-        public void SetItem(int x, int y, Item item, int amount = 1)
-        {
-            var button = buttons[x + y*Width];
+            var item = itemId == -1 ? null : ContentManager.I.Items[itemId];
             button.Item = item;
             button.Amount.text = amount <= 1 ? "" : "" + amount;
+
+            if(OnItemUpdate != null)
+            OnItemUpdate(button, new Item.ItemInstance(item, amount));
+        }
+
+        public void SetItem(int x, int y, Item item, int amount = 1)
+        {
+            SetItem(x,y, item.InContentManagerIndex, amount);
         }
 
         private void Build()
@@ -145,6 +149,8 @@ namespace Code.Core.Client.UI.Controls.Items
                 }
             }
         }
-        
+
+        public Action<ItemButton, Item.ItemInstance> OnItemUpdate;
+
     }
 }

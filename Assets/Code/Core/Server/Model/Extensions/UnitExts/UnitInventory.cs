@@ -276,6 +276,7 @@ namespace Server.Model.Extensions.UnitExts
 
                         if (equipment.EquipItem(droppedItem))
                         {
+                            player.Anim.SetDefaults();
                             this[x, y] = null;
                         }
                     }

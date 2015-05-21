@@ -47,7 +47,7 @@ namespace Client.UI.Controls
             {
                 if (spell != null)
                 {
-                    DescriptionInterface.I.Show(spell.name, spell.subtitle, spell.GetDescribtion(), spell.Icon);
+                    DescriptionInterface.I.Show(spell.name, spell.Subtitle, spell.Description, spell.Icon);
                 }
             };
             OnLeftDown += SendButtonDown;

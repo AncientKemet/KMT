@@ -1,3 +1,5 @@
+using Code.Libaries.Generic.Managers;
+using Libaries.IO;
 using Shared.Content.Types;
 #if SERVER
 using Server.Model.Content;
@@ -188,6 +190,17 @@ namespace Server.Model.Extensions.UnitExts
             return false;
         }
 
+        public bool EquipItem(Item.ItemInstance _item)
+        {
+                DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+
+                droppedItem.Movement.Teleport(Unit.Movement.Position + Unit.Movement.Forward);
+                droppedItem.Item = _item;
+                Unit.CurrentWorld.AddEntity(droppedItem);
+
+                return EquipItem(droppedItem);
+         }
+
         #region Private Handling
         /// <summary>
         /// Sets _wasUpdate to True;
@@ -338,6 +351,54 @@ namespace Server.Model.Extensions.UnitExts
             Unit = entity as ServerUnit;
         }
 
+        public override void Serialize(JSONObject j)
+        {
+            JSONObject equipment = new JSONObject();
+
+            equipment.AddField("MainHand", SerializeInstance(MainHandUnit == null ? new Item.ItemInstance(null,0) : MainHandUnit.Item));
+            equipment.AddField("OffHand", SerializeInstance(OffHandUnit == null ? new Item.ItemInstance(null, 0) : OffHandUnit.Item));
+            equipment.AddField("Head", SerializeInstance(HeadUnit == null ? new Item.ItemInstance(null, 0) : HeadUnit.Item));
+
+            //TODO rest of equipment
+
+            j.AddField("equipment", equipment);
+        }
+
+        public override void Deserialize(JSONObject j)
+        {
+            JSONObject equipment = j.GetField("equipment");
+
+            var mainHand = DeserializeInstance(equipment.GetField("MainHand").str);
+            var offHand = DeserializeInstance(equipment.GetField("OffHand").str);
+            var head = DeserializeInstance(equipment.GetField("Head").str);
+
+            //TODO rest of equipment
+
+            EquipItem(mainHand);
+            EquipItem(offHand);
+            EquipItem(head);
+
+        }
+
+        private static string SerializeInstance(Item.ItemInstance instance)
+        {
+            return (instance.Item == null ? "-1" : "" + instance.Item.InContentManagerIndex) + "," + instance.Amount;
+        }
+
+        private static Item.ItemInstance DeserializeInstance(string s)
+        {
+            string[] splitStrings = s.Split(',');
+            int id = int.Parse(splitStrings[0]);
+            if (id != -1)
+            {
+                int am = int.Parse(splitStrings[1]);
+                return new Item.ItemInstance(ContentManager.I.Items[id], am);
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
 #endif

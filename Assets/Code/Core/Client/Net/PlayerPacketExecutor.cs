@@ -110,9 +110,9 @@ namespace Client.Net
                     switch (p.type)
                     {
                         case UIInventoryInterfacePacket.PacketType.SHOW:
-                            InventoryInterface.I.ItemInventory.Width = p.X;
-                            InventoryInterface.I.ItemInventory.Height = p.Y;
-                            InventoryInterface.I.ItemInventory.ForceRebuild();
+                            InventoryInterface.I.Inventory.Width = p.X;
+                            InventoryInterface.I.Inventory.Height = p.Y;
+                            InventoryInterface.I.Inventory.ForceRebuild();
                             break;
 
                         case UIInventoryInterfacePacket.PacketType.HIDE:
@@ -121,7 +121,7 @@ namespace Client.Net
 
                         case UIInventoryInterfacePacket.PacketType.SetItem:
                             int itemID = p.Value;
-                            InventoryInterface.I.ItemInventory.SetItem(p.X, p.Y, p.Value, p.Amount);
+                            InventoryInterface.I.Inventory.SetItem(p.X, p.Y, p.Value, p.Amount);
                             break;
                     }
                 }

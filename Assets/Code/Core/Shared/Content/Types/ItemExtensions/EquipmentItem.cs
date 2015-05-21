@@ -25,5 +25,8 @@ namespace Code.Core.Shared.Content.Types.ItemExtensions
         public bool CanBeStoredInInventory = true;
 
         public Spell[] Spells;
+
+        public string StandAnim = "Idle";
+        public string WalkAnim = "Walk";
     }
 }

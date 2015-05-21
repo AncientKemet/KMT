@@ -80,9 +80,9 @@ namespace Code.Core.Client.UI.Controls.Items
                 switch (packet.type)
                 {
                     case UIInventoryInterfacePacket.PacketType.SHOW:
-                        InventoryInterface.I.ItemInventory.Width = packet.X;
-                        InventoryInterface.I.ItemInventory.Height = packet.Y;
-                        InventoryInterface.I.ItemInventory.ForceRebuild();
+                        InventoryInterface.I.Inventory.Width = packet.X;
+                        InventoryInterface.I.Inventory.Height = packet.Y;
+                        InventoryInterface.I.Inventory.ForceRebuild();
                         break;
 
                     case UIInventoryInterfacePacket.PacketType.HIDE:
@@ -91,7 +91,7 @@ namespace Code.Core.Client.UI.Controls.Items
 
                     case UIInventoryInterfacePacket.PacketType.SetItem:
                         int itemID = packet.Value;
-                        InventoryInterface.I.ItemInventory.SetItem(packet.X, packet.Y, itemID);
+                        InventoryInterface.I.Inventory.SetItem(packet.X, packet.Y, itemID);
                         break;
                 }
                 return;

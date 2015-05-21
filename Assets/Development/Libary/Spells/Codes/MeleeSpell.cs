@@ -87,9 +87,9 @@ namespace Development.Libary.Spells.Codes
 
         }
 
-        public override void CancelCasting(ServerUnit Unit)
+        public override void CancelCasting(ServerUnit unit)
         {
-            Unit.Anim.ActionAnimation = "CancelAction";
+            unit.Anim.ActionAnimation = "CancelAction";
         }
 
         protected bool DoLocationTest(ServerUnit unit, Vector3 target, float targetRadius)

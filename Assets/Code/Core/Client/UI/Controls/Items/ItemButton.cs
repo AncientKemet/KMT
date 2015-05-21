@@ -154,7 +154,6 @@ namespace Client.UI.Controls.Items
                 {
                     Button.MenuOn = false;
                 }
-
             }
         }
 

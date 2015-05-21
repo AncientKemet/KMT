@@ -1,3 +1,4 @@
+
 #if SERVER
 using Libaries.Net.Packets.ForClient;
 
@@ -24,16 +25,34 @@ namespace Server.Model.Extensions.UnitExts
         private int _currentCastingSpellId = -1;
         private float _currentSpellTime;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="time">Time that has passed since last call in seconds. (0.033f usually)</param>
         public override void Progress(float time)
         {
             if (CurrentCastingSpell != null)
             {
                 if (CurrentCastingSpell.HasEnergyCost)
                 {
-                    Unit.Combat.ReduceEnergy(Time.fixedDeltaTime * CurrentCastingSpell.ChargeEnergyCost * Unit.Combat.EnergyRatio);
+                    Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost * Unit.Combat.EnergyRatio);
                 }
-                _currentSpellTime += Time.fixedDeltaTime * Unit.Combat.EnergyRatio;
+                _currentSpellTime += time * Unit.Combat.EnergyRatio;
                 CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
+
+                //If the unit is player we'll send them direct Spell strenght Update packet.
+                if (Unit is Player)
+                {
+                    Player p = Unit as Player;
+
+                    SpellUpdatePacket packet = new SpellUpdatePacket();
+                    packet.Index = _currentCastingSpellId;
+                    packet.IsCasting = true;
+                    packet.Strenght = CurrentCastStrenght;
+
+                    p.Client.ConnectionHandler.SendPacket(packet);
+                }
+
             }
         }
         
@@ -75,6 +94,7 @@ namespace Server.Model.Extensions.UnitExts
 
                 packet.Index = i;
                 packet.IsEnabled = false;
+                packet.SetSpell = true;
                 packet.Spell = null;
 
                 p.Client.ConnectionHandler.SendPacket(packet);
@@ -94,6 +114,7 @@ namespace Server.Model.Extensions.UnitExts
 
                 packet.Index = i;
                 packet.IsEnabled = true;
+                packet.SetSpell = true;
                 packet.Spell = spell;
 
                 p.Client.ConnectionHandler.SendPacket(packet);
@@ -122,11 +143,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public void CancelCurrentSpell()
         {
-            if (CurrentCastingSpell != null)
-            {
-                CurrentCastingSpell.CancelCasting(Unit);
-                _currentCastingSpellId = -1;
-            }
+            CancelSpell(_currentCastingSpellId);
         }
 
         public void FinishSpell(int id)
@@ -134,11 +151,10 @@ namespace Server.Model.Extensions.UnitExts
             if (_spells[id] != null)
                 if (_spells[id] == CurrentCastingSpell)
                 {
-                    Debug.Log("str " + CurrentCastStrenght);
                     if (CurrentCastingSpell.ActivableDuration < _currentSpellTime)
                         CurrentCastingSpell.FinishCasting(Unit, CurrentCastStrenght);
                     else
-                        CurrentCastingSpell.CancelCasting(Unit);
+                        CancelSpell(id);
                     _currentSpellTime = 0;
                     _currentCastingSpellId = -1;
                 }
@@ -152,13 +168,9 @@ namespace Server.Model.Extensions.UnitExts
         public void StartOrStopSpell(int index)
         {
             if (CurrentCastingSpell == _spells[index])
-            {
                 FinishSpell(index);
-            }
             else
-            {
                 StartSpell(index);
-            }
         }
 
         public void UnEquipSpells(Spell[] spells)

@@ -6,6 +6,7 @@ using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Controls.Items;
 using Code.Libaries.UnityExtensions.Independent;
 using Libaries.UnityExtensions.Independent;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
@@ -22,6 +23,8 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
         public Clickable Button;
 
         public List<ItemButton> Buttons123;
+
+        public ItemInventory Inventory;
 
         public State CurrentState
         {
@@ -78,7 +81,6 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
             }
         }
 
-        public ItemInventory ItemInventory;
         private State _state;
 
         protected override void Awake()
@@ -86,7 +88,14 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
             base.Awake();
 
             CurrentState = State.Hidden;
-            
+
+            Inventory.OnItemUpdate += (_itemButton, itemInstance) =>
+            {
+                if(itemInstance.Item != null)
+                if(itemInstance.Item.EQ != null)
+                    _itemButton.Button.AddAction(new RightClickAction("Equip"));
+            };
+
             Button.OnLeftClick += () =>
             {
                 if (_state == State.Full)
