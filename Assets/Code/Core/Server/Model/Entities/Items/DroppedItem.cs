@@ -1,10 +1,7 @@
 using Shared.Content.Types;
 #if SERVER
 using System.Collections.Generic;
-using Code.Libaries.Generic.Managers;
 using UnityEngine;
-
-using Code.Core.Shared.Content.Types;
 using Code.Core.Shared.Content.Types.ItemExtensions;
 using Server.Model.Extensions.UnitExts;
 
@@ -45,7 +42,6 @@ namespace Server.Model.Entities.Items
             set
             {
                 _item = value;
-
                 name = Item.Item.name;
 
                 Display.Item = _item.Item;

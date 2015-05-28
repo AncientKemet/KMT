@@ -7,11 +7,9 @@ using Client.UI.Scripts;
 using Client.Units;
 using Code.Core.Client.Controls.Camera;
 using Code.Core.Client.UI.Controls;
-using Code.Core.Client.Units;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 using Libaries.Net.Packets.ForServer;
-using UnityEngine;
 
 namespace Client.UI.Interfaces
 {

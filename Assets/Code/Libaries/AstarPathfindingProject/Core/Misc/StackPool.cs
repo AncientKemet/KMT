@@ -1,6 +1,5 @@
 //#define ASTAR_NO_POOLING //Disable pooling for some reason. Could be debugging or just for measuring the difference.
 
-using System;
 using System.Collections.Generic;
 
 namespace Pathfinding.Util

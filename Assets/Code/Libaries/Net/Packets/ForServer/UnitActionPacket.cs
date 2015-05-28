@@ -9,7 +9,6 @@
 //------------------------------------------------------------------------------
 
 using Code.Code.Libaries.Net;
-using UnityEngine;
 
 namespace Code.Libaries.Net.Packets.ForServer
 {

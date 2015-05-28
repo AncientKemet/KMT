@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/Camera/tk2dCameraAnchor")]
 [ExecuteInEditMode]

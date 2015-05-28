@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public abstract class tk2dUILayoutContainer : tk2dUILayout {
 	protected Vector2 innerSize = Vector2.zero;

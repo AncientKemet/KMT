@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 [AddComponentMenu("2D Toolkit/Camera/tk2dCamera")]

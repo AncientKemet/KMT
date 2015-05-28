@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using Pathfinding;
 
 namespace Pathfinding {
 	[AddComponentMenu("Pathfinding/Modifiers/Alternative Path")]

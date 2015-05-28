@@ -4,19 +4,15 @@ using System.Collections.Generic;
 using Client.Enviroment;
 using Client.Net;
 using Client.UI.Interfaces;
+using Client.Units.UnitControllers;
 using Code.Code.Libaries.Net;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Interfaces;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
-using Code.Core.Client.Units.Extensions;
 using Code.Core.Client.Units.Managed;
-using Code.Core.Client.Units.UnitControllers;
-using Code.Core.Shared.Content.Types;
-using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Generic.Managers;
 using Code.Libaries.Net.Packets.ForClient;
 using Code.Libaries.Net.Packets.ForServer;
-using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
 using Libaries.UnityExtensions.Independent;
 using Shared.Content.Types;
@@ -30,9 +26,7 @@ namespace Client.Units
     {
         [SerializeField]
         private int _id = -1;
-
-        [SerializeField] private int _modelIndex = -1;
-
+        
         private UnitDisplay _display;
 
         private bool IsStatic
@@ -41,34 +35,22 @@ namespace Client.Units
             set
             {
                 _isStatic = value;
-                this.enabled = !value;
+                enabled = !value;
                 Display.enabled = !value;
                 if (GetComponent<Collider>() != null)
                     GetComponent<Collider>().enabled = !value;
             }
         }
 
-        private static PlayerUnit _myPlayerUnitInstance;
 
-        [SerializeField]
-        private tk2dTextMesh _2dNameLabel;
-
-        private string _name;
-
-        [SerializeField]
-        protected float _basemovementSpeed = 1;
-        
-        protected Vector3 movementTargetPosition;
-        protected Vector3 smoothedTargetPosition;
-        protected float targetRotation;
+        protected Vector3 _movementTargetPosition;
+        protected Vector3 _smoothedTargetPosition;
+        protected float _targetRotation;
 
         private Projector _projector;
-
+        protected float _distanceToTarget;
         [SerializeField]
-        protected float distanceToTarget;
-
-        [SerializeField]
-        protected float _visualSpeed;
+        protected float _visualSpeed = 0.2f;
 
         private bool _isStatic;
         private int _parentId = -1;
@@ -96,6 +78,8 @@ namespace Client.Units
                 _id = value;
             }
         }
+
+        public bool IsFlying { get; set; }
 
         public int ParentId
         {
@@ -161,18 +145,14 @@ namespace Client.Units
             }
         }
 
-        public static PlayerUnit MyPlayerUnit
-        {
-            get { return _myPlayerUnitInstance; }
-            set { _myPlayerUnitInstance = value; }
-        }
+        public static PlayerUnit MyPlayerUnit { get; set; }
 
         public string Name
         {
-            get { return _name; }
+            get { return name; }
             set
             {
-                _name = value;
+                name = value;
                 gameObject.name = name;
             }
         }
@@ -185,7 +165,7 @@ namespace Client.Units
         {
             get
             {
-                return _basemovementSpeed;
+                return 1f;
             }
         }
 
@@ -198,11 +178,11 @@ namespace Client.Units
         {
             get
             {
-                return movementTargetPosition;
+                return _movementTargetPosition;
             }
             set
             {
-                movementTargetPosition = value;
+                _movementTargetPosition = value;
             }
         }
 
@@ -216,18 +196,13 @@ namespace Client.Units
 
         public float TargetRotation
         {
-            get { return targetRotation; }
-            set { targetRotation = value; }
+            get { return _targetRotation; }
+            set { _targetRotation = value; }
         }
 
         public UnitDisplay Display
         {
-            get
-            {
-                if (_display == null)
-                    _display = GetComponent<UnitDisplay>();
-                return _display;
-            }
+            get { return _display ?? (_display = GetComponent<UnitDisplay>()); }
         }
 
         public Projector Projector
@@ -249,7 +224,7 @@ namespace Client.Units
                 BuffInstances = new List<BuffInstance>();
 
             var existing = BuffInstances.Find(instance => instance.Index == b.Index);
-            if(existing != null)
+            if (existing != null)
                 RemoveBuff(existing);
 
             BuffInstances.Add(b);
@@ -272,11 +247,11 @@ namespace Client.Units
         protected override void Start()
         {
             base.Start();
-            
+
             if (_projector != null)
             {
                 _projector.gameObject.SetActive(false);
-                _projector.material = (Material) Instantiate(_projector.material);
+                _projector.material = Instantiate(_projector.material);
             }
 
             OnLeftClick += delegate
@@ -284,20 +259,21 @@ namespace Client.Units
                 if (!CreateCharacterInterface.IsNull)
                     return;
 
-                if(UnitSelectionInterface.IsNull)
+                if (UnitSelectionInterface.IsNull)
                     return;
 
                 if (UnitSelectionInterface.I.Unit != this)
                     UnitSelectionInterface.I.Unit = this;
                 else
                 {
-                    if(this == null)
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (this == null)
                         return;
-                    
+
                     if (Actions[0].Action != null)
                     {
                         Actions[0].Action();
-                        GameObject effect = (GameObject) Instantiate((ContentManager.I.Effects[0]));
+                        GameObject effect = Instantiate((ContentManager.I.Effects[0]));
                         effect.transform.parent = transform;
                         effect.transform.localPosition = Vector3.zero;
                     }
@@ -309,6 +285,7 @@ namespace Client.Units
                 if (!CreateCharacterInterface.IsNull)
                     return;
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (this == null)
                     return;
 
@@ -318,66 +295,39 @@ namespace Client.Units
                 }
             };
 
-            
-            OnMouseIn += delegate
-            {
-                DescriptionInterface.I.Show(Name);
-            };
-            OnMouseOff += delegate
-            {
-                DescriptionInterface.I.Hide();
-            };
 
-            OnStart();
-        }
+            OnMouseIn += () => DescriptionInterface.I.Show(Name);
+            OnMouseOff += () => DescriptionInterface.I.Hide();
 
-        void Update()
-        {
-            OnUpdate();
-        }
-        
-        void FixedUpdate()
-        {
-            /*if(this != MyPlayerUnit && MyPlayerUnit != null)
-            if (Vector3.Distance(transform.position, MyPlayerUnit.transform.position) > 90)
-            {
-                Destroy(gameObject);
-            }*/
-            OnFixedUpdate();
-        }
-
-        protected virtual void OnStart()
-        {
             MovementTargetPosition = transform.localPosition;
         }
-
-        protected virtual void OnUpdate()
+        
+        protected virtual void Update()
         {
 
-            if(ParentId != -1)
+            if (ParentId != -1)
                 return;
-            
-            distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(movementTargetPosition.x, movementTargetPosition.z));
-            _visualSpeed = Mathf.Clamp(distanceToTarget, 0f, _basemovementSpeed) ;
 
-            smoothedTargetPosition = Vector3.Lerp(smoothedTargetPosition, movementTargetPosition, 1.3f);
+            _distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
+            _visualSpeed = Mathf.Clamp(_distanceToTarget, 0f, CurrentMovementSpeed);
+
+            _smoothedTargetPosition = Vector3.Lerp(_smoothedTargetPosition, _movementTargetPosition, 1.3f);
 
             Vector3 calculatedPosition = transform.localPosition;
 
-            if (distanceToTarget > 0.017f)
+            if (_distanceToTarget > 0.017f)
             {// Process DirecionVector
-                calculatedPosition = Vector3.Lerp(calculatedPosition, smoothedTargetPosition, Time.deltaTime * 7.5f);
+                calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
 
+                if (!IsFlying)
                 FixYOnTerrain(ref calculatedPosition);
                 transform.localPosition = calculatedPosition;
             }
 
-            Quaternion calculatedRotation;
-
             {// Process rotation
-                if (Mathf.Abs(targetRotation - transform.localEulerAngles.y) > 1f)
+                if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
                 {
-                    calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
+                    var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
                     calculatedRotation.x = 0;
                     calculatedRotation.z = 0;
 
@@ -396,7 +346,7 @@ namespace Client.Units
             ByteStream b = p.SubPacketData;
             int mask = b.GetByte();
 
-            BitArray bitArray = new BitArray(new[] { mask });
+            var bitArray = new BitArray(new[] { mask });
 
             bool movementUpdate = bitArray[0];
             bool displayUpdate = bitArray[1];
@@ -425,6 +375,7 @@ namespace Client.Units
                 bool teleported = bitArray[2];
                 bool correction = bitArray[3];
                 bool parented = bitArray[4];
+                bool isFlying = bitArray[5];
                 if (correction)
                 {
                     if (positionUpdate)
@@ -452,9 +403,10 @@ namespace Client.Units
                 }
                 if (parented)
                 {
-                    this.ParentId = b.GetShort();
-                    this.ParentPlaneId = b.GetByte();
+                    ParentId = b.GetShort();
+                    ParentPlaneId = b.GetByte();
                 }
+                IsFlying = isFlying;
 
 #if DEBUG_NETWORK
                 log = "";
@@ -476,9 +428,8 @@ namespace Client.Units
                 IsStatic = displayMask[2];
                 bool hasEffects = displayMask[3];
                 bool _hasCharacterCustoms = displayMask[4];
-
-                _modelIndex = modelId;
-
+                bool _visible = displayMask[5];
+                
                 if (!isItem)
                 {
                     if (Display != null)
@@ -496,13 +447,13 @@ namespace Client.Units
                             }, () => { },
                                 0.3f));*/
                             Display.Model = modelId;
-                            
+
                         }
                     }
                 }
                 else
                 {
-                    Item item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
+                    var item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
                     transform.localPosition += Vector3.up;
                     item.transform.parent = transform;
                     item.transform.localPosition = Vector3.zero;
@@ -515,7 +466,7 @@ namespace Client.Units
                         rigid.PhysicsEnabled = true;
                     }
 
-                    if(GetComponent<Collider>() != null)
+                    if (GetComponent<Collider>() != null)
                         GetComponent<Collider>().enabled = false;
                 }
 
@@ -537,10 +488,10 @@ namespace Client.Units
                         }
                         else
                         {
-                            Debug.Log("null unit id: "+unitID);
+                            Debug.Log("null unit id: " + unitID);
                         }
                     }
-                    Debug.Log("destroying object :"+name);
+                    Debug.Log("destroying object :" + name);
                     Destroy(gameObject);
                 }
 
@@ -551,8 +502,8 @@ namespace Client.Units
                     {
                         try
                         {
-                            GameObject newEffect =
-                                (GameObject) Instantiate(ContentManager.I.Effects[b.GetUnsignedByte()]);
+                            var newEffect =
+                                Instantiate(ContentManager.I.Effects[b.GetUnsignedByte()]);
                             newEffect.transform.parent = transform;
                             newEffect.transform.localPosition = Vector3.zero;
                             newEffect.transform.localScale = Vector3.one;
@@ -567,7 +518,7 @@ namespace Client.Units
                 if (_hasCharacterCustoms)
                 {
                     int len = b.GetUnsignedByte();
-                    int[] customs = new int[len];
+                    var customs = new int[len];
                     for (int i = 0; i < len; i++)
                     {
                         customs[i] = b.GetUnsignedByte();
@@ -576,7 +527,9 @@ namespace Client.Units
                     Display.SetCharacterCustoms(customs);
                 }
 
-                transform.localScale = Vector3.one*size;
+                gameObject.SetActive(_visible);
+
+                transform.localScale = Vector3.one * size;
 
 #if DEBUG_NETWORK
                 log = "";
@@ -593,23 +546,16 @@ namespace Client.Units
                 int maxhealth = b.GetUnsignedByte();
                 int energy = b.GetUnsignedByte();
                 int maxenergy = b.GetUnsignedByte();
-                
+
                 Health = health;
                 MaxHealth = maxhealth;
                 Energy = energy;
                 MaxEnergy = maxenergy;
 
-                var combat = GetComponent<CombatUnit>();
-
                 if (this == MyPlayerUnit)
                 {
-                    StatsBarInterfaces.I.HPBar.Progress = (float)((float)health / ((float)maxhealth + 0.01f));
+                    StatsBarInterfaces.I.HPBar.Progress = (float)health / ((float)maxhealth + 0.01f);
                     StatsBarInterfaces.I.ENBar.Progress = ((float)energy / ((float)maxenergy + 0.01f));
-                }
-                if (combat != null)
-                {
-                    combat.SetHealth(health);
-                    combat.SetEnergy(energy);
                 }
 
 #if DEBUG_NETWORK
@@ -672,28 +618,27 @@ namespace Client.Units
                 Name = b.GetString();
                 int _count = b.GetByte();
                 ClearAllActions("Cancel");
-                if(_count > 0)
-                for (int i = 0; i < _count; i++)
-                {
-                    string action = b.GetString();
-                    AddAction(new RightClickAction(
-                        action,
-                        delegate
-                        {
-                            if (this != null)
+                if (_count > 0)
+                    for (int i = 0; i < _count; i++)
+                    {
+                        string action = b.GetString();
+                        AddAction(new RightClickAction(
+                            action,
+                            delegate
                             {
-                                UnitActionPacket packet = new UnitActionPacket();
-                                packet.UnitId = Id;
-                                packet.ActionName = action;
-                                ClientCommunicator.Instance.SendToServer(packet);
+// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                if (this != null)
+                                {
+                                    var packet = new UnitActionPacket {UnitId = Id, ActionName = action};
+                                    ClientCommunicator.Instance.SendToServer(packet);
+                                }
                             }
-                        }
-                        ));
-                }
+                            ));
+                    }
             }
 
         }
-        
+
         public static bool GetBit(int byt, int index)
         {
             if (index < 0 || index > 7)
@@ -702,10 +647,10 @@ namespace Client.Units
             int shift = 7 - index;
 
             // Get a single bit in the proper DirecionVector.
-            byte bitMask = (byte)(1 << shift);
+            var bitMask = (byte)(1 << shift);
 
             // Mask out the appropriate bit.
-            byte masked = (byte)(byt & bitMask);
+            var masked = (byte)(byt & bitMask);
 
             // If masked != 0, then the masked out bit is 1.
             // Otherwise, masked will be 0.
@@ -714,9 +659,9 @@ namespace Client.Units
 
         protected void FixYOnTerrain(ref Vector3 position)
         {
-            Ray ray = new Ray(position + new Vector3(0, 50, 0), Vector3.down);
-            RaycastHit hit = new RaycastHit();
-            int layerMask = 1 << 8;
+            var ray = new Ray(position + new Vector3(0, 50, 0), Vector3.down);
+            RaycastHit hit;
+            const int layerMask = 1 << 8;
             //layerMask = ~layerMask;
             if (Physics.Raycast(ray, out hit, 100.0f, layerMask))
             {
@@ -726,9 +671,20 @@ namespace Client.Units
 
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
-            float angleInRadians = p.Angle / (180 / Mathf.PI);
-            Vector3 vector = new Vector3(Mathf.Cos(angleInRadians), 0, Mathf.Sin(angleInRadians));
-            movementTargetPosition = movementTargetPosition + (vector * p.Distance);
+            float angleY = p.YAngle / (180 / Mathf.PI);
+            float angleX = p.XAngle / (180 / Mathf.PI);
+
+            var vector = new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY));
+
+            if (IsFlying)
+            {
+               vector = new Vector3(
+                   Mathf.Sin(angleX) * Mathf.Cos(angleY),
+                   Mathf.Cos(angleX),
+                   Mathf.Sin(angleX) * Mathf.Sin(angleY));
+            }
+
+            _movementTargetPosition = _movementTargetPosition + (vector * p.Distance);
             TargetRotation = p.Face;
         }
     }

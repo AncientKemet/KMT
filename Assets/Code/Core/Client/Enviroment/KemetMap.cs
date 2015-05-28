@@ -5,7 +5,6 @@ using Client.UI.Interfaces;
 using Client.Units;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
-using Code.Core.Client.Units;
 using Code.Core.Shared.NET;
 using Code.Libaries.Generic;
 using Code.Libaries.Net.Packets.ForServer;

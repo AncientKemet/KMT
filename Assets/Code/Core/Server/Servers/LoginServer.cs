@@ -1,9 +1,9 @@
+using System.Data;
 #if SERVER
 using Server.Servers;
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading;
 using MySql.Data.MySqlClient;
 using Server.Model.Extensions.PlayerExtensions;

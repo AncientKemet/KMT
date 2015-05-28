@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Client.Net;
-using Code.Code.Libaries.Net.Packets;
 using Code.Libaries.Net.Packets.ForServer;
 using UnityEngine;
 using EventType = Code.Libaries.Net.Packets.ForServer.UIInterfaceEvent.EventType;

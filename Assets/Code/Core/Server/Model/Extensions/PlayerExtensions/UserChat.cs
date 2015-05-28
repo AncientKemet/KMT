@@ -68,6 +68,10 @@ namespace Server.Model.Extensions.PlayerExtensions
                             }
                         }
                     }
+                    if (p.text.Contains("fly"))
+                    {
+                        Player.Movement.Fly(Vector3.up+Vector3.right*0.3f);
+                    }
                 }
                 else
                     Say(p.text);

@@ -1,7 +1,6 @@
 ﻿using Code.Code.Libaries.Net;
 using Code.Libaries.Generic.Managers;
 using Shared.Content.Types;
-using UnityEngine;
 
 namespace Libaries.Net.Packets.ForClient
 {

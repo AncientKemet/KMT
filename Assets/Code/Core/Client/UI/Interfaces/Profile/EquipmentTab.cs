@@ -1,7 +1,5 @@
-﻿using System;
-using Client.UI.Controls.Items;
+﻿using Client.UI.Controls.Items;
 using Client.Units;
-using Code.Core.Client.Units;
 using Code.Libaries.Generic.Managers;
 
 namespace Client.UI.Interfaces.Profile

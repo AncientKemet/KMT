@@ -1,7 +1,4 @@
-﻿using Libaries.Net.Packets.ForServer;
-using UnityEngine;
-
-namespace Client.UI.Interfaces.CreateCharacter
+﻿namespace Client.UI.Interfaces.CreateCharacter
 {
     public class ColorButton : SelectionButton
     {

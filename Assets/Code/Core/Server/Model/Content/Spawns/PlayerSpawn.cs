@@ -1,5 +1,4 @@
 ﻿using Server.Model.ContentHandling;
-using Server.Servers;
 using UnityEngine;
 
 namespace Server.Model.Content.Spawns

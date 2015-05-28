@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections;
-
 namespace Pathfinding.Util {
 	
 	/** Simple implementation of a GUID */

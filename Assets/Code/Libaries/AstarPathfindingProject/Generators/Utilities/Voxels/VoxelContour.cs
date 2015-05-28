@@ -1,10 +1,7 @@
 //#define ASTARDEBUG
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
 
 namespace Pathfinding.Voxels {
 	public partial class Voxelize {

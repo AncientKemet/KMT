@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-
-using Pathfinding;
 using Pathfinding.Util;
 
 namespace Pathfinding {

@@ -1,10 +1,7 @@
 using Libaries.Net.Packets.ForClient;
 using Shared.Content.Types;
 #if SERVER
-using System;
-using System.Collections.Generic;
 using Code.Code.Libaries.Net.Packets;
-using Code.Core.Shared.Content.Types;
 using Server.Model.Entities.Human;
 using Server.Model.Extensions.UnitExts;
 using UnityEngine;

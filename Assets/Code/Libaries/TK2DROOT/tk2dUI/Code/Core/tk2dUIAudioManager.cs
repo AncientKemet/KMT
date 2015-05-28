@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Singleton AudioManager used by tk2dUISoundButton ex: tk2dUIAudioManager.Instance.Play(audioClip);

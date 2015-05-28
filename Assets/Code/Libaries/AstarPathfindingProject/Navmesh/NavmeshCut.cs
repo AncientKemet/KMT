@@ -1,8 +1,6 @@
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Navmesh cutting for fast recast graph updating.

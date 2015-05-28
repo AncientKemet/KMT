@@ -1,11 +1,8 @@
 //#define ASTARDEBUG
 //#define ASTAR_DEBUGREPLAY
 //#define ASTAR_RECAST_BFS //Enables an experimental optimization to recast. Faster scanning and updating but can sometimes fail to generate any navmesh at all (this is relatively rare though).
-using UnityEngine;
-using System.Collections;
+
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
 
 namespace Pathfinding.Voxels {
 	public partial class Voxelize {

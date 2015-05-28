@@ -1,7 +1,5 @@
 ﻿#if UNITY_EDITOR
 #endif
-using System;
-using System.Collections.Generic;
 using Shared.Content.Types;
 using UnityEngine;
 

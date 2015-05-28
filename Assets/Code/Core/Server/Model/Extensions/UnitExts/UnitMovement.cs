@@ -1,16 +1,12 @@
 using System;
+using System.Collections;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 #if SERVER
 using Shared.Content.Types;
-
-using Server.Model.Pathfinding;
-
-using Code.Code.Libaries.Net;
 using Server.Model.Entities.Vegetation;
 using Pathfinding;
 using Server.Model.Entities;
-using Server.Model.Entities.Human;
 using UnityEngine;
 
 namespace Server.Model.Extensions.UnitExts
@@ -19,7 +15,7 @@ namespace Server.Model.Extensions.UnitExts
     public class UnitMovement : UnitUpdateExt
     {
         //how fast does force fadeout?
-        private const float ForceFade = 0.80f;
+        private const float ForceFade = 0.99f;
 
         //how strong the force is?
         private const float ForceWeight = 0.0f;
@@ -57,8 +53,19 @@ namespace Server.Model.Extensions.UnitExts
             get { return _parent; }
             set
             {
+                Position = value.Position;
                 _parent = value;
                 _parentUpdate = true;
+                _wasUpdate = true;
+            }
+        }
+
+        public bool IsFlying
+        {
+            get { return _isFlying; }
+            private set
+            {
+                _isFlying = value;
                 _wasUpdate = true;
             }
         }
@@ -78,6 +85,8 @@ namespace Server.Model.Extensions.UnitExts
         [SerializeField]
         private UnitMovement _parent;
 
+        private bool _isFlying;
+
         #endregion
 
         //property getters
@@ -95,15 +104,17 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     float distance = Vector3.Distance(_lastPositionSent, _position);
                     Vector3 difference = _position - _lastPositionSent;
-                    float angleInDegrees = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
+
 
                     UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                    UnprecieseMovementPacket.Mask = new BitArray(new []{_isFlying});
 
-                    UnprecieseMovementPacket.Angle = angleInDegrees;
+                    UnprecieseMovementPacket.YAngle = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
+                    UnprecieseMovementPacket.XAngle = Mathf.Atan2(difference.z, difference.y) * 180 / Mathf.PI;
                     UnprecieseMovementPacket.Face = Rotation;
                     UnprecieseMovementPacket.Distance = distance;
                     UnprecieseMovementPacket.UnitID = Unit.ID;
-
+                    
                     _lastPositionSent = _position;
                 }
             }
@@ -150,6 +161,30 @@ namespace Server.Model.Extensions.UnitExts
             if (Parent != null)
                 return;
 
+            _force *= ForceFade;
+
+            if (IsFlying)
+            {
+                //Stop walking on floor
+                _path = null;
+
+                //Raycast next hit
+                RaycastHit hit;
+                Physics.Raycast(_position, Force, out hit, _force.magnitude, 1 << 8);
+                if (hit.collider != null)
+                {
+                    Position = hit.point;
+                    _force = Vector3.zero;
+                    IsFlying = false;
+                }
+                else
+                {
+                    Position += _force;
+                    _force += Vector3.down/25f;
+                }
+                return;
+            }
+
             if (Running && Unit.Combat.Energy < 20)
             {
                 Running = false;
@@ -173,12 +208,6 @@ namespace Server.Model.Extensions.UnitExts
             {
                 _path = null;
             }
-
-            if (_force.magnitude > 0.017f)
-            {
-                Position += Force;
-            }
-            _force *= ForceFade;
 
             /*
             RotateTo(Quaternion.LookRotation(new Vector3(destination.x, 0, destination.z) - new Vector3(_position.x, 0, _position.z)).eulerAngles.y);
@@ -212,19 +241,13 @@ namespace Server.Model.Extensions.UnitExts
 
                 if (dirMagnitude > 0.3f)
                 {
-                    /*if (
-                    RotateTo(
-                        Quaternion.LookRotation(dir * _rotationSpeed * (1.0f + Unit.Attributes[UnitAttributeProperty.Mobility]) *
-                                                Time.fixedDeltaTime +
-                                                (Quaternion.Euler(new Vector3(0, _rotation, 0)) * Vector3.forward)).eulerAngles.y))
-                {*/
                     RotateTo(Quaternion.LookRotation(dir).eulerAngles.y);
                     //eq holding space
                     if (!_dontWalk /*&&
                         Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint)*/)
                     {
                         MoveForward(CurrentSpeed * time);
-                        _position.y += (waypoint.y - _position.y) / 5f;
+                        _position.y += (waypoint.y - _position.y) * (CurrentSpeed * time);
                     }
 
                 }
@@ -329,14 +352,14 @@ namespace Server.Model.Extensions.UnitExts
             WalkTo(_position + direction * (Unit.Display.Size + 0.5f));
         }
 
-        private bool RotateTo(float newRotation)
+        private void RotateTo(float newRotation)
         {
             if (CanRotate)
             {
                 Rotation = newRotation;
-                return true;
+                return;
             }
-            return false;
+            return;
         }
 
         public void Teleport(Vector3 location)
@@ -372,7 +395,7 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
 
             Unit = entity as ServerUnit;
-            
+
             if (!Unit.IsStatic())
             {
                 _seeker = entity.gameObject.AddComponent<Seeker>();
@@ -390,11 +413,11 @@ namespace Server.Model.Extensions.UnitExts
         #region StateSerialization
         protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(true, true, true, true, true);
+            packet.AddFlag(true, true, true, true, true, _isFlying);
             packet.AddPosition6B(_position);
 
             packet.AddAngle1B(_rotation);
-            
+
             packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
             packet.AddByte(ParentPlaneID);
         }
@@ -402,7 +425,7 @@ namespace Server.Model.Extensions.UnitExts
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
         {
             bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
-            packet.AddFlag(_positionUpdate, _rotationUpdate, Teleported, _correction, _parentUpdate);
+            packet.AddFlag(_positionUpdate, _rotationUpdate, Teleported, _correction, _parentUpdate, _isFlying);
             if (_correction)
             {
                 if (_positionUpdate)
@@ -467,7 +490,7 @@ namespace Server.Model.Extensions.UnitExts
             movement.AddField("z", "" + Position.z);
 
             movement.AddField("rot", "" + Rotation);
-            
+
             j.AddField("movement", movement);
         }
 
@@ -482,6 +505,20 @@ namespace Server.Model.Extensions.UnitExts
         public void _UnSafeMoveTo(Vector3 position)
         {
             Position = position;
+        }
+
+        public void Fly(Vector3 wayAndStrenght)
+        {
+            _force += wayAndStrenght;
+            IsFlying = true;
+        }
+
+        public void Jump()
+        {
+            if (!_isFlying)
+            {
+                Fly(Vector3.up * 0.3f + Forward * 0.1f);
+            }
         }
     }
 }

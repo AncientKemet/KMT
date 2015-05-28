@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/UI/Core/tk2dUICamera")]
 public class tk2dUICamera : MonoBehaviour {

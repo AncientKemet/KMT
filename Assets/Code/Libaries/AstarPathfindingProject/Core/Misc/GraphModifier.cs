@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Pathfinding {
 	/** GraphModifier for modifying graphs or processing graph data based on events.

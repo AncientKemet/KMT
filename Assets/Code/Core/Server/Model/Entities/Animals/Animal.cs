@@ -3,7 +3,6 @@ using Random = UnityEngine.Random;
 using System;
 using System.Collections.Generic;
 using Code.Libaries.Generic.Trees;
-using Server.Model.Entities.Vegetation;
 using Server.Model.Entities.Vegetation.HC;
 using Server.Model.Extensions;
 using Server.Model.Extensions.AnimalExtensions;

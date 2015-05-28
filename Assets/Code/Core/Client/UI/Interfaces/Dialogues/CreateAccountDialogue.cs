@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Client.Net;
+﻿using Client.Net;
 using Client.UI.Controls;
 using Client.UI.Controls.Inputs;
 using Libaries.IO;

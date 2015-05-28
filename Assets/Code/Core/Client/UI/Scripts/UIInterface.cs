@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Code.Core.Client.UI;
 using Code.Core.Client.UI.Controls;
-using Code.Libaries.UnityExtensions.Independent;
 using Libaries.UnityExtensions.Independent;
 using UnityEngine;
 using Object = UnityEngine.Object;

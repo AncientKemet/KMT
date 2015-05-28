@@ -38,7 +38,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #region Namespaces
 
 using UnityEngine;
-using System.Collections;
 
 #endregion
 

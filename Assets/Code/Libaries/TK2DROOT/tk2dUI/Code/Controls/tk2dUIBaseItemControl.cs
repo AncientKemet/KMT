@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Button base class. Button controls can extend this to get some base level structure and inspector editor support

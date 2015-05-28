@@ -1,5 +1,4 @@
 ﻿using Client.Units;
-using Code.Core.Client.Units;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces

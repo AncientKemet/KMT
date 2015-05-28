@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/Sprite/tk2dTiledSprite")]
 [RequireComponent(typeof(MeshRenderer))]

@@ -1,4 +1,3 @@
-using Code.Core.Shared.Content.Types.ItemExtensions;
 #if SERVER
 using Code.Code.Libaries.Net;
 using Server.Model.Entities;
@@ -77,7 +76,7 @@ namespace Server.Model.Extensions.UnitExts
             return 0x08;
         }
 
-        protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
+        protected override void pSerializeState(ByteStream packet)
         {
             packet.AddFlag(new []{true,true,true,false});
             packet.AddString(StandAnimation);
@@ -86,9 +85,8 @@ namespace Server.Model.Extensions.UnitExts
             packet.AddShort(_lookingAt == null ? -1 : _lookingAt.ID);
         }
 
-        protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
+        protected override void pSerializeUpdate(ByteStream packet)
         {
-
             packet.AddFlag( _stand, _walk, _run, _action);
 
             if (_stand)
@@ -120,11 +118,12 @@ namespace Server.Model.Extensions.UnitExts
         public void SetDefaults()
         {
             UnitEquipment eq = Unit.GetExt<UnitEquipment>();
-            if (eq != null && eq.MainHand.Item.EQ != null)
+            if (eq != null && eq.MainHand != null && eq.MainHand.Item.EQ != null)
             {
                 var ieq = eq.MainHand.Item.EQ;
                 StandAnimation = ieq.StandAnim;
                 WalkAnimation = ieq.WalkAnim;
+                RunAnimation = "Run";
                 return;
             }
             StandAnimation = "Idle";

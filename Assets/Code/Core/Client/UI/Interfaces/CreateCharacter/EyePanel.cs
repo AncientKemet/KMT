@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Code.Core.Client.Units;
-using Libaries.Generic.Managers;
+﻿using Libaries.Generic.Managers;
 using Libaries.Net.Packets.ForServer;
 using UnityEngine;
 

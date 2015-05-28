@@ -7,7 +7,6 @@
 #define ASTAR_LEVELGRIDNODE_FEW_LAYERS //Reduces the max number of layers for LayeredGridGraphs from 255 to 16. Saves memory.
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using Pathfinding.Serialization.JsonFx;
 using Pathfinding.Serialization;

@@ -4,9 +4,6 @@
 //#define ASTARDEBUG
 
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 //Mem - 4+1+4+1+[4]+[4]+1+1+4+4+4+4+4+  12+12+12+12+12+12+4+4+4+4+4+1+1+(4)+4+4+4+4+4+4+4 ? 166 bytes

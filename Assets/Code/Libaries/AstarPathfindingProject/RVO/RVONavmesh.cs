@@ -1,8 +1,5 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.RVO;
 
 namespace Pathfinding.RVO {
 	/** Adds a navmesh as RVO obstacles.

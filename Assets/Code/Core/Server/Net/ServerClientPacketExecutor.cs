@@ -10,7 +10,6 @@ using Server.Model.ContentHandling;
 using System;
 using Server.Model.Entities.Human;
 using Code.Code.Libaries.Net;
-using Code.Code.Libaries.Net.Packets;
 using Code.Libaries.Net.Packets.ForServer;
 using Code.Libaries.Net.Packets.InGame;
 using Server.Model.Entities;

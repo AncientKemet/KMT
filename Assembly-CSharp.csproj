@@ -140,11 +140,9 @@
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\UIInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Unit2D.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\ASpellRadius.cs" />
-     <Compile Include="Assets\Code\Core\Client\Units\Extensions\CombatUnit.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Face.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Managed\UnitFactory.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Managed\UnitManager.cs" />
-     <Compile Include="Assets\Code\Core\Client\Units\Models\ModelFactory.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\PlayerUnit.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\AngleConeRadius90.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\UnitControllers\UnitDisplay.cs" />
@@ -795,40 +793,40 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.ClipperLib">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.JsonFx">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Poly2Tri">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/Parse.Unity.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/System.Drawing.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

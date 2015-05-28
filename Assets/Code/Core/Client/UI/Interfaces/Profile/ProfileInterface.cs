@@ -2,10 +2,7 @@
 using Client.UI.Scripts;
 using Client.Units;
 using Code.Code.Libaries.Net.Packets;
-using Code.Core.Client.UI.Interfaces.LowerRightFaces;
-using Code.Core.Client.Units;
 using Code.Core.Client.Units.Managed;
-using Code.Libaries.UnityExtensions.Independent;
 using Libaries.Net.Packets.ForClient;
 using UnityEngine;
 

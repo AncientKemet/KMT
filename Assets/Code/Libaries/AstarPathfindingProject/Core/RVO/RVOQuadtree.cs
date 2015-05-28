@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using Pathfinding.RVO.Sampled;
 
 namespace Pathfinding.RVO {

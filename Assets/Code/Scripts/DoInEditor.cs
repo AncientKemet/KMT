@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Server;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
 
 [InitializeOnLoad]
 class DoInEditor

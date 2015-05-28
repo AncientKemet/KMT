@@ -3,12 +3,9 @@
 using Libaries.Net.Packets.ForClient;
 
 using Shared.Content.Types;
-using Code.Code.Libaries.Net;
-using Server.Model.Entities.Animals;
 using System.Collections.Generic;
 using Server.Model.Entities;
 using Server.Model.Entities.Human;
-using Server.Model.Entities.Items;
 using UnityEngine;
 
 namespace Server.Model.Extensions.UnitExts

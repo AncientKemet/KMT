@@ -2,9 +2,7 @@
 //#define ASTARDEBUG
 #define ASTAR_GRID_CUSTOM_CONNECTIONS	
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding.Nodes;
 using Pathfinding.Serialization.JsonFx;
 using Pathfinding.Serialization;
 

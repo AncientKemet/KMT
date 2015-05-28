@@ -2,10 +2,7 @@
 //#define ASTARDEBUG
 //#define ASTAR_RECAST_ARRAY_BASED_LINKED_LIST
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
 
 namespace Pathfinding.Voxels {
 #if ASTAR_RECAST_VOXEL_DEBUG

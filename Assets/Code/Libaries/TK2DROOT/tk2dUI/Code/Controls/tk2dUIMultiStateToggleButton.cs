@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// ToggleButton which can have multi-different states which it will toggle between

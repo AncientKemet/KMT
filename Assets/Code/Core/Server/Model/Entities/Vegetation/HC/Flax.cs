@@ -1,7 +1,5 @@
 #if SERVER
 
-using Random = UnityEngine.Random;
-
 namespace Server.Model.Entities.Vegetation.HC
 {
     public class Flax : Plant

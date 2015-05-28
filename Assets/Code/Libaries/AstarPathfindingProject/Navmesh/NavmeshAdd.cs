@@ -1,8 +1,6 @@
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Adds new geometry to a recast graph.

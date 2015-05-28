@@ -4,11 +4,7 @@
 #endif
 
 using UnityEngine;
-using System.Collections;
-using Pathfinding;
-using Pathfinding.RVO;
 using System.Collections.Generic;
-using Pathfinding.RVO.Sampled;
 
 namespace Pathfinding.RVO {
 	/** RVO Character Controller.

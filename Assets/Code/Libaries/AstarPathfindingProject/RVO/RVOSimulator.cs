@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using Pathfinding.RVO;
 
 namespace Pathfinding.RVO {
 	/** Unity front end for an RVO simulator.

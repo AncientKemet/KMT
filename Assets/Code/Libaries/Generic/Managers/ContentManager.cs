@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Code.Core.Shared.Content.Types;
 using Pathfinding;
 using Shared.Content.Types;
 using UnityEngine;

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Client.UI.Interfaces;
 using Client.Units;
-using Code.Core.Client.UI.Interfaces;
-using Code.Core.Client.Units;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

@@ -5,7 +5,6 @@ using Client.UI.Interfaces.StatsBar;
 using Client.UI.Scripts;
 using Client.Units;
 using Code.Core.Client.UI.Controls;
-using Code.Core.Client.Units;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces

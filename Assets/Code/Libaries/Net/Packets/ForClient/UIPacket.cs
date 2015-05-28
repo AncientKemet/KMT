@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-using System;
+
 namespace Code.Code.Libaries.Net.Packets
 {
     public class UIPacket : BasePacket

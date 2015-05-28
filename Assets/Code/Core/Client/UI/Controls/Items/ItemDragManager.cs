@@ -1,7 +1,5 @@
 ﻿using System;
 using Client.Net;
-using Code.Code.Libaries.Net.Packets;
-using Code.Libaries.Net.Packets.ForServer;
 using Libaries.Net.Packets.ForServer;
 
 namespace Client.UI.Controls.Items

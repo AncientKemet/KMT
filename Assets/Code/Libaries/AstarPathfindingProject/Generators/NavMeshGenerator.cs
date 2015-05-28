@@ -1,11 +1,9 @@
 //#define ASTARDEBUG    //Some debugging
 //#define ASTAR_NO_JSON
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using Pathfinding.Serialization.JsonFx;
 using Pathfinding.Serialization;
-using Pathfinding;
 
 
 namespace Pathfinding {

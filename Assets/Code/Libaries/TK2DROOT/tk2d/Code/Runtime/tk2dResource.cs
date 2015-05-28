@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class tk2dResource : ScriptableObject
 {

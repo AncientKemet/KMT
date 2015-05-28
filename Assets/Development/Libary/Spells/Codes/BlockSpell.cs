@@ -1,8 +1,6 @@
 #if SERVER
 
 
-using Code.Core.Shared.Content;
-using Code.Core.Shared.Content.Types;
 using Server.Model.Entities;
 using Shared.Content.Types;
 #if UNITY_EDITOR

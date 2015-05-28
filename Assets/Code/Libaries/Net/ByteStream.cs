@@ -259,6 +259,43 @@ namespace Code.Code.Libaries.Net
             }
             return i;
         }
+        private static int CreateBitMask(BitArray updates)
+        {
+            int i = 0;
+            if (updates.Length >= 1)
+            {
+                i = (i | (updates[0] ? 0x01 : 0x00));
+            }
+            if (updates.Length >= 2)
+            {
+                i = (i | (updates[1] ? 0x02 : 0x00));
+            }
+            if (updates.Length >= 3)
+            {
+                i = (i | (updates[2] ? 0x04 : 0x00));
+            }
+            if (updates.Length >= 4)
+            {
+                i = (i | (updates[3] ? 0x08 : 0x00));
+            }
+            if (updates.Length >= 5)
+            {
+                i = (i | (updates[4] ? 0x10 : 0x00));
+            }
+            if (updates.Length >= 6)
+            {
+                i = (i | (updates[5] ? 0x20 : 0x00));
+            }
+            if (updates.Length >= 7)
+            {
+                i = (i | (updates[6] ? 0x40 : 0x00));
+            }
+            if (updates.Length >= 8)
+            {
+                i = (i | (updates[7] ? 0x80 : 0x00));
+            }
+            return i;
+        }
 
         public void AddBytes(byte[] p)
         {
@@ -340,7 +377,7 @@ namespace Code.Code.Libaries.Net
             return GetUnsignedByte()/0.7f;
         }
 
-        public void AddIdMask2B(int id, bool[] mask)
+        public void AddIdMask2B(int id, BitArray mask)
         {
             int s = (short) (CreateBitMask(mask) << (16 - mask.Length));
             AddShort(s | id);

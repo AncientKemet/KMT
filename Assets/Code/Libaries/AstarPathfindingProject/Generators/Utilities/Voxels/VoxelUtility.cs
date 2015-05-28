@@ -2,7 +2,6 @@
 //#define ASTARDEBUG
 
 using UnityEngine;
-using System.Collections;
 
 namespace Pathfinding.Voxels {
 	/** \astarpro */

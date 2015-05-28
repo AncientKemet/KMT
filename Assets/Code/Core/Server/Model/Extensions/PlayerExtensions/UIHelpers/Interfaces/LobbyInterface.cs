@@ -1,6 +1,5 @@
 #if SERVER
 using Code.Core.Client.UI;
-using Server.Model.Entities.Human;
 using UnityEngine;
 
 namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces

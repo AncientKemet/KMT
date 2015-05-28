@@ -3,11 +3,7 @@
 //#define ASTAR_RECAST_ARRAY_BASED_LINKED_LIST //Faster Recast scan and nicer to GC, but might be worse at handling very large tile sizes. Makes Recast use linked lists based on structs in arrays instead of classes and references.
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Threading;
-using Pathfinding.Voxels;
 
 namespace Pathfinding.Voxels {
 	/** Voxelizer for recast graphs.

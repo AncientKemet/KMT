@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 using Pathfinding.ClipperLib;
 using Pathfinding.Poly2Tri;
 

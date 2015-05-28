@@ -3,7 +3,6 @@
 #endif
 
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// TextInput control

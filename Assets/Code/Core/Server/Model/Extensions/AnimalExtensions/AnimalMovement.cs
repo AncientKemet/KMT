@@ -1,5 +1,4 @@
 #if SERVER
-using Code.Code.Libaries.Net;
 using Server.Model.Entities;
 using Server.Model.Entities.Animals;
 using UnityEngine;

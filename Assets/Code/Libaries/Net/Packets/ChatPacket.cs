@@ -8,9 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using Code.Code.Libaries.Net;
-using Code.Core.Client.UI;
 
 namespace Code.Libaries.Net.Packets.ForServer
 {

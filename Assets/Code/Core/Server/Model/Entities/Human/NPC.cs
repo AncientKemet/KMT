@@ -1,7 +1,5 @@
 using Server.Model.Content.Spawns;
 #if SERVER
-using Server.Servers;
-using Server.Model.Extensions.UnitExts;
 using UnityEngine;
 
 namespace Server.Model.Entities.Human

@@ -2,11 +2,6 @@
 #define TUPLE
 #pragma warning disable 162
 #pragma warning disable 429
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Pathfinding;
-
 namespace Pathfinding {
 //Binary Heap
 	
