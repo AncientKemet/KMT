@@ -1,13 +1,8 @@
-﻿using System.Security.Cryptography;
-using Client.Net;
+﻿using Client.Net;
 using Client.UI.Controls;
 using Client.UI.Controls.Inputs;
 using Client.UI.Scripts;
-using Code.Code.Libaries.Net.Packets;
-using Code.Core.Client.UI;
-using Code.Core.Client.UI.Controls;
 using Libaries.Net.Packets;
-using UnityEngine;
 
 namespace Client.UI.Interfaces
 {

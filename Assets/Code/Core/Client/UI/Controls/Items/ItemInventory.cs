@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Client.UI.Controls.Items;
 using Code.Core.Client.UI.Scripts;
-using Code.Core.Shared.Content.Types;
 using Code.Libaries.Generic.Managers;
 using Shared.Content.Types;
 using UnityEngine;

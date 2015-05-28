@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
 namespace Pathfinding {
 	[AddComponentMenu ("Pathfinding/Modifiers/Advanced Smooth")]

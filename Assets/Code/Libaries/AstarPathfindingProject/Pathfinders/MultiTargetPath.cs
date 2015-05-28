@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** A path which searches from one point to a number of different targets in one search or from a number of different start points to a single target.

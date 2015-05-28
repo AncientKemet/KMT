@@ -5,7 +5,6 @@
 //#define ASTAR_NO_JSON
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using Pathfinding.Util;
 using Pathfinding.Serialization.JsonFx;

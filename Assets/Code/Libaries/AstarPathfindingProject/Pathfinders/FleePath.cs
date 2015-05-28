@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Returns a path heading away from a specified point to avoid.

@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-using System;
+
 using System.Collections.Generic;
 using UnityEngine;
 namespace AssemblyCSharp.Code.Libaries.MeshUtils

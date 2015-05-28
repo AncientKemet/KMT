@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 using Code.Code.Libaries.Net;
 using UnityEngine;
-using Code.Core.Shared.Content.Types;
 using Server.Model.Entities;
 
 namespace Server.Model.Extensions.UnitExts
@@ -87,6 +86,7 @@ namespace Server.Model.Extensions.UnitExts
         }
 
         private int[] _characterCustomalizations = new int[10];
+        private bool _visible = true;
 
         public int HairColor
         {
@@ -149,6 +149,16 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                _wasUpdate = true;
+            }
+        }
+
         public override byte UpdateFlag()
         {
             return 0x02;
@@ -156,7 +166,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(ByteStream packet)
         {
-            packet.AddFlag(IsItem, false, Unit.IsStatic(), false, false, _modelId == 0 || _modelId == 1);
+            packet.AddFlag(IsItem, false, Unit.IsStatic(), false, false, _modelId == 0 || _modelId == 1, _visible);
             packet.AddByte(ModelID);
             packet.AddFloat4B(_size);
             if (_modelId == 0 || _modelId == 1)
@@ -171,7 +181,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeUpdate(ByteStream packet)
         {
-            packet.AddFlag(IsItem, Destroy, Unit.IsStatic(), _addedEffects.Count > 0, _hasCharacterCustomalization);
+            packet.AddFlag(IsItem, Destroy, Unit.IsStatic(), _addedEffects.Count > 0, _hasCharacterCustomalization, _visible);
             packet.AddByte(ModelID);
             packet.AddFloat4B(_size);
 

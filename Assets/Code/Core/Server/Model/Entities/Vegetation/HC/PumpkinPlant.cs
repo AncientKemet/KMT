@@ -1,10 +1,8 @@
 using Shared.Content.Types;
 #if SERVER
-using System;
 using System.Collections.Generic;
 using Code.Libaries.Generic.Managers;
 using Server.Model.Entities.Items;
-using Server.Model.Extensions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

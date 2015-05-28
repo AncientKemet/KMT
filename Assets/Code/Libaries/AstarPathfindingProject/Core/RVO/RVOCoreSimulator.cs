@@ -1,8 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Pathfinding;
 using Pathfinding.RVO.Sampled;
 
 #if NETFX_CORE
@@ -11,7 +9,6 @@ using ParameterizedThreadStart = Pathfinding.WindowsStore.ParameterizedThreadSta
 using ThreadStart = Pathfinding.WindowsStore.ThreadStart;
 #else
 using Thread = System.Threading.Thread;
-using ParameterizedThreadStart = System.Threading.ParameterizedThreadStart;
 using ThreadStart = System.Threading.ThreadStart;
 #endif
 

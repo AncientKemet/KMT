@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 [AddComponentMenu("2D Toolkit/UI/Core/tk2dUILayoutContainerSizer")]
 public class tk2dUILayoutContainerSizer : tk2dUILayoutContainer {

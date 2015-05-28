@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
-using Client.Units;
-using Code.Core.Client.Units.Extensions;
+using System.Linq;
 using Code.Core.Client.Units.Managed;
-using Code.Core.Shared.Content;
-using Code.Core.Shared.Content.Types;
-using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.GameObjects;
 using Code.Libaries.Generic.Managers;
 using Code.Libaries.UnityExtensions.Independent;
@@ -14,14 +10,14 @@ using Libaries.UnityExtensions.Independent;
 using Shared.Content.Types;
 using UnityEngine;
 
-namespace Code.Core.Client.Units.UnitControllers
+namespace Client.Units.UnitControllers
 {
     public class UnitDisplay : MonoBehaviour
     {
-        [SerializeField]
-        private float MaxMovementSpeed = 0.2f;
+        private const float MinWalkSpeed = 0.02f;
+        private const float MaxRunSpeed = 1f;
 
-        const float FADE_OUT_TIME = 0.25f;
+        const float FadeOutTime = 0.25f;
 
         private PlayerUnit _unit;
         private Animation _animation;
@@ -45,9 +41,12 @@ namespace Code.Core.Client.Units.UnitControllers
 
         public Transform NeckBone, BodyBone, Offhand, Mainhand, LeftShoulder, RightShoulder;
 
-        private string _standAnimation = "Idle";
-        private string _walkAnimation = "Walk";
-        private string _runAnimation = "Run";
+        [SerializeField]
+        private string _standAnimation;
+        [SerializeField]
+        private string _walkAnimation;
+        [SerializeField]
+        private string _runAnimation;
         private string _actionAnimation;
 
         public float LookStrenght = 0.5f;
@@ -68,7 +67,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     Item[] items = GetComponentsInChildren<Item>();
                     foreach (var item in items)
                     {
-                        if (item != null && (item.transform.parent == Offhand || item.transform.parent ==  Mainhand))
+                        if (item != null && (item.transform.parent == Offhand || item.transform.parent == Mainhand))
                         {
                             var rigid = item.GetComponent<Rigidbody>();
                             if (rigid != null)
@@ -79,22 +78,22 @@ namespace Code.Core.Client.Units.UnitControllers
                                 }
                                 else
                                 {
-                                    
-                                        rigid.isKinematic = true;
+
+                                    rigid.isKinematic = true;
                                     Item item1 = item;
                                     CorotineManager.Instance.StartCoroutine(Ease.Vector(
                                             item.transform.localPosition,
                                             new Vector3(-0.1f, 0, -0.06f),
-                                            vector3 => item1.transform.localPosition = vector3, null, 0.3f)
+                                            vector3 => item1.transform.localPosition = vector3)
                                             );
 
                                     Item item2 = item;
                                     CorotineManager.Instance.StartCoroutine(Ease.Vector(
                                             item.transform.localEulerAngles,
                                             new Vector3(270, 0, 0),
-                                            vector3 => item2.transform.localEulerAngles = vector3, null, 0.3f)
+                                            vector3 => item2.transform.localEulerAngles = vector3)
                                             );
-                                    
+
                                 }
                             }
                         }
@@ -111,18 +110,22 @@ namespace Code.Core.Client.Units.UnitControllers
             {
                 if (_standAnimation != value)
                 {
-                    _animation.Blend(_standAnimation, 0f, FADE_OUT_TIME);
+                    if (_animation[value] == null)
+                    {
+                        Debug.LogError("missing animation named ["+value+"]");
+                        return;
+                    }
+                    _animation[value].wrapMode = WrapMode.Loop;
+                    //Turn off old anim
+                    if(_animation.GetClip(_standAnimation) != null)
+                        _animation.Blend(_standAnimation, 0f, FadeOutTime);
 
                     bool shouldBeRigid = false;
 
-                    foreach (var anim in RigidAnimations.Split(" "[0]))
+                    if (RigidAnimations.Split(" "[0]).Any(anim => anim == value))
                     {
-                        if (anim == value)
-                        {
-                            ItemsRigid = true;
-                            shouldBeRigid = true;
-                            break;
-                        }
+                        ItemsRigid = true;
+                        shouldBeRigid = true;
                     }
 
                     if (!shouldBeRigid)
@@ -141,7 +144,11 @@ namespace Code.Core.Client.Units.UnitControllers
             {
                 if (_walkAnimation != value)
                 {
-                    _animation.Blend(_walkAnimation, 0f, FADE_OUT_TIME);
+                    _animation[value].wrapMode = WrapMode.Loop;
+
+                    //turn off old anim
+                    if (_animation.GetClip(_walkAnimation) != null)
+                        _animation.Blend(_walkAnimation, 0f, FadeOutTime);
                 }
                 _walkAnimation = value;
             }
@@ -150,7 +157,18 @@ namespace Code.Core.Client.Units.UnitControllers
         public string RunAnimation
         {
             get { return _runAnimation; }
-            set { _runAnimation = value; }
+            set
+            {
+                if (_runAnimation != value)
+                {
+                    _animation[value].wrapMode = WrapMode.Loop;
+
+                    //turn off old anim
+                    if (_animation.GetClip(_runAnimation) != null)
+                        _animation.Blend(_runAnimation, 0f, FadeOutTime);
+                }
+                _runAnimation = value;
+            }
         }
 
         public string ActionAnimation
@@ -165,7 +183,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     }
                 _actionAnimation = value;
 
-                StartCoroutine(FocusAnimation(value));
+                StartCoroutine(RunAcionAnimation(value));
 
             }
         }
@@ -186,7 +204,7 @@ namespace Code.Core.Client.Units.UnitControllers
             }
         }
 
-        private UnitPrefab _InUseModel;
+        private UnitPrefab _inUseModel;
         public Action<int> OnModelChange;
 
         public int Model
@@ -203,12 +221,12 @@ namespace Code.Core.Client.Units.UnitControllers
                         Debug.Log("Invalid model Id: " + value);
                         return;
                     }
-                    if (_InUseModel != null)
+                    if (_inUseModel != null)
                     {
-                        Destroy(_InUseModel.gameObject);
+                        Destroy(_inUseModel.gameObject);
                     }
-                    _InUseModel = ((GameObject)Instantiate(ContentManager.I.Models[_model].gameObject)).GetComponent<UnitPrefab>();
-                    SetModel(_InUseModel);
+                    _inUseModel = Instantiate(ContentManager.I.Models[_model].gameObject).GetComponent<UnitPrefab>();
+                    SetModel(_inUseModel);
                     if (OnModelChange != null)
                         OnModelChange(value);
                 }
@@ -217,7 +235,7 @@ namespace Code.Core.Client.Units.UnitControllers
 
         public UnitPrefab UnitPrefab
         {
-            get { return _InUseModel; }
+            get { return _inUseModel; }
         }
 
         public int HeadId { get; private set; }
@@ -259,7 +277,7 @@ namespace Code.Core.Client.Units.UnitControllers
         }
 
         /// <summary>
-        /// Processes the walk and stand.
+        /// Processes the walk and stand animations.
         /// </summary>
         private void ProcessWalkAndStand()
         {
@@ -267,36 +285,43 @@ namespace Code.Core.Client.Units.UnitControllers
                 return;
 
             float speed = _unit.VisualSpeed;
-            float maxSpeed = MaxMovementSpeed;
-            float weightRun = _unit.VisualSpeed / maxSpeed;
-            float weightWalk = 1f - weightRun;
 
-            if (speed <= 0.017f)
+            float weightStand = speed < MinWalkSpeed ? 1f : 0f;
+            float weightWalk = (speed > MinWalkSpeed ? 1f - (speed / MaxRunSpeed) : 0f) * 1.3f;
+            float weightRun = speed > MinWalkSpeed ? 1f - weightWalk : 0f;
+
+            _animation.Blend(StandAnimation, weightStand, FadeOutTime);
+            _animation.Blend(WalkAnimation, weightWalk, FadeOutTime);
+            _animation.Blend(RunAnimation, weightRun, FadeOutTime);
+
+            /*if (speed <= MinWalkSpeed)
             {
-                _animation.Blend(StandAnimation, 1f, FADE_OUT_TIME);
-                _animation.Blend(WalkAnimation, 0f, FADE_OUT_TIME);
-                _animation.Blend(RunAnimation, 0f, FADE_OUT_TIME);
-            }
+                _animation.Blend(StandAnimation, 1f, FadeOutTime);
+                _animation.Blend(WalkAnimation, 0f, FadeOutTime);
+                _animation.Blend(RunAnimation, 0f, FadeOutTime);
+            }*
             else
             {
+                /*
                 float walkSpeed = 0.7f + weightRun * 0.7f;
-                if (speed <= MaxMovementSpeed / 2f)
+                if (speed <= (MaxRunSpeed) / 2f)
                 {
                     _animation[WalkAnimation].speed = walkSpeed;
                     _animation[RunAnimation].speed = walkSpeed;
-                    _animation.Blend(StandAnimation, 0f, FADE_OUT_TIME);
-                    _animation.Blend(WalkAnimation, 1f, FADE_OUT_TIME);
-                    _animation.Blend(RunAnimation, 0, FADE_OUT_TIME);
+                    _animation.Blend(StandAnimation, 0f, FadeOutTime);
+                    _animation.Blend(WalkAnimation, 1f, FadeOutTime);
+                    _animation.Blend(RunAnimation, 0, FadeOutTime);
                 }
                 else
                 {
                     _animation[WalkAnimation].speed = walkSpeed;
                     _animation[RunAnimation].speed = walkSpeed;
-                    _animation.Blend(StandAnimation, 0f, FADE_OUT_TIME);
-                    _animation.Blend(WalkAnimation, weightWalk, FADE_OUT_TIME);
-                    _animation.Blend(RunAnimation, weightRun, FADE_OUT_TIME);
+                    _animation.Blend(StandAnimation, 0f, FadeOutTime);
+                    _animation.Blend(WalkAnimation, weightWalk, FadeOutTime);
+                    _animation.Blend(RunAnimation, weightRun, FadeOutTime);
                 }
-            }
+                
+            }*/
         }
 
         void ProcessLookAtRotation()
@@ -304,14 +329,9 @@ namespace Code.Core.Client.Units.UnitControllers
             if (!_updateWalkRunStand)
                 return;
 
-            bool lookAtItReally = true;
-            if (_lookAtUnit == null ||
-                Vector3.Distance(transform.position + transform.forward, _lookAtUnit.transform.position) >
-                Vector3.Distance(transform.position + transform.forward * -1f, _lookAtUnit.transform.position) ||
-                _lookAtUnit == _unit)
-            {
-                lookAtItReally = false;
-            }
+            bool lookAtItReally = _lookAtUnit != null && _lookAtUnit.gameObject != gameObject && (Vector3.Distance(transform.position + transform.forward, _lookAtUnit.transform.position) >
+                                                          Vector3.Distance(transform.position + transform.forward * -1f, _lookAtUnit.transform.position) ||
+                                                          _lookAtUnit == _unit);
 
             _lookAtPositionLerped = Vector3.Lerp(_lookAtPositionLerped, !lookAtItReally ? transform.position + transform.forward * 10f : _lookAtUnit.transform.position, Time.deltaTime * 10);
             LookAtBone(BodyBone, LookStrenght);
@@ -327,39 +347,6 @@ namespace Code.Core.Client.Units.UnitControllers
                 Quaternion rot = Quaternion.Lerp(Quaternion.Euler(euler), bone.rotation, strenght);
                 bone.rotation = rot;
             }
-        }
-
-        public void PlayAnimation(string id, int layer, float strenght)
-        {
-            if (id != "-1")
-                if (_animation != null)
-                {
-                    if (_animation[id] == null)
-                    {
-                        Debug.LogError("missing anim id: " + id);
-                        return;
-                    }
-
-                    _animation[id].layer = layer;
-                    _animation.Blend(id, strenght, FADE_OUT_TIME);
-                    if (layer == 1)
-                    {
-                        _animation[id].AddMixingTransform(BodyBone);
-                    }
-                    if (layer == 2)
-                    {
-                        _animation[id].AddMixingTransform(LeftShoulder);
-                    }
-                    if (layer == 3)
-                    {
-                        _animation[id].AddMixingTransform(RightShoulder);
-                    }
-                }
-        }
-
-        public void PlayAnimation(string id, int layer)
-        {
-            PlayAnimation(id, layer, 1f);
         }
 
         public void SetModel(UnitPrefab model)
@@ -388,13 +375,6 @@ namespace Code.Core.Client.Units.UnitControllers
             LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.Visual.transform);
             RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.Visual.transform);
 
-            if (_animation != null)
-            {
-                _animation[StandAnimation].wrapMode = WrapMode.Loop;
-                _animation[RunAnimation].wrapMode = WrapMode.Loop;
-                _animation[WalkAnimation].wrapMode = WrapMode.Loop;
-            }
-
             //If its human male or female model
             if (_model == 0 || _model == 1)
             {
@@ -404,30 +384,30 @@ namespace Code.Core.Client.Units.UnitControllers
                 //Lets get the existing materials and create new instances of them so we can change the equipment
                 _chestRenderer = TransformHelper.FindTraverseChildren("BodyMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
-                _chest = (Material)Instantiate(_chestRenderer.materials[0]);
+                _chest = Instantiate(_chestRenderer.materials[0]);
                 _chestRenderer.materials[0] = _chest;
                 _chestRenderer.enabled = false;
 
                 _bootsRenderer = TransformHelper.FindTraverseChildren("Boots", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
-                _boots = (Material)Instantiate(_bootsRenderer.materials[0]);
+                _boots = Instantiate(_bootsRenderer.materials[0]);
                 _bootsRenderer.materials[0] = _boots;
                 _bootsRenderer.enabled = false;
 
                 _skirtRenderer = TransformHelper.FindTraverseChildren("SkirtMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
-                _skirt = (Material)Instantiate(_skirtRenderer.materials[0]);
+                _skirt = Instantiate(_skirtRenderer.materials[0]);
                 _skirtRenderer.materials[0] = _skirt;
                 _skirtRenderer.enabled = false;
 
-                SkinnedMeshRenderer skinMesh = TransformHelper.FindTraverseChildren("SkinMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
+                var skinMesh = TransformHelper.FindTraverseChildren("SkinMesh", model.Visual.transform).GetComponent<SkinnedMeshRenderer>();
 
                 var mats = skinMesh.materials;
 
-                _underWear = (Material)Instantiate(skinMesh.materials[0]);
+                _underWear = Instantiate(skinMesh.materials[0]);
                 mats[0] = _underWear;
 
-                _skin = (Material)Instantiate(skinMesh.materials[1]);
+                _skin = Instantiate(skinMesh.materials[1]);
                 mats[1] = _skin;
                 skinMesh.materials = mats;
 
@@ -438,11 +418,16 @@ namespace Code.Core.Client.Units.UnitControllers
                 var shield = TransformHelper.FindTraverseChildren("ExampleShield", model.Visual.transform);
 
                 //Remove Example weapons
-                if(wep != null)
+                if (wep != null)
                     Destroy(wep.gameObject);
-                if(shield != null)
+                if (shield != null)
                     Destroy(shield.gameObject);
-                
+            }
+            if (_animation != null)
+            {
+                StandAnimation = "Idle";
+                WalkAnimation = "Walk";
+                RunAnimation = "Run";
             }
         }
 
@@ -467,7 +452,7 @@ namespace Code.Core.Client.Units.UnitControllers
             return false;
         }
 
-        IEnumerator FocusAnimation(string animationName)
+        IEnumerator RunAcionAnimation(string animationName)
         {
 
             if (_animation == null || _animation.GetClip(animationName) == null)
@@ -487,9 +472,9 @@ namespace Code.Core.Client.Units.UnitControllers
                 _animation.Blend(WalkAnimation, 0);
                 _animation.Blend(RunAnimation, 0);
 
-                _animation.Blend(animationName, 1, FADE_OUT_TIME);
-                yield return new WaitForSeconds(_animation[animationName].length - FADE_OUT_TIME);
-                _animation.Blend(animationName, 0, FADE_OUT_TIME );
+                _animation.Blend(animationName, 1, FadeOutTime);
+                yield return new WaitForSeconds(_animation[animationName].length - FadeOutTime);
+                _animation.Blend(animationName, 0, FadeOutTime);
 
                 _updateWalkRunStand = true;
 
@@ -498,7 +483,7 @@ namespace Code.Core.Client.Units.UnitControllers
             {
                 _animation[animationName].layer = 1;
                 _animation[animationName].AddMixingTransform(BodyBone);
-                _animation.Blend(animationName, 1, FADE_OUT_TIME/ (animationName.Contains("Power") ? 0.5f : 3f));
+                _animation.Blend(animationName, 1, FadeOutTime / (animationName.Contains("Power") ? 0.5f : 3f));
             }
         }
 
@@ -542,9 +527,9 @@ namespace Code.Core.Client.Units.UnitControllers
                     _boots.mainTexture =
                         ContentManager.I.Items[BootsId].GetComponentInChildren<Renderer>().material.mainTexture;
                 }
-                catch  (ArgumentOutOfRangeException e)
+                catch (ArgumentOutOfRangeException)
                 {
-                    Debug.LogError("un existing boots item id: "+BootsId);
+                    Debug.LogError("un existing boots item id: " + BootsId);
                 }
             }
 
@@ -561,7 +546,7 @@ namespace Code.Core.Client.Units.UnitControllers
                     _chest.mainTexture =
                         ContentManager.I.Items[ChestId].GetComponentInChildren<Renderer>().material.mainTexture;
                 }
-                catch  (ArgumentOutOfRangeException e)
+                catch (ArgumentOutOfRangeException)
                 {
                     Debug.LogError("un existing chest item id: " + ChestId);
                 }
@@ -579,81 +564,16 @@ namespace Code.Core.Client.Units.UnitControllers
                 {
                     item = ContentManager.I.Items[LegsId];
                 }
-                catch  (ArgumentOutOfRangeException e)
+                catch (ArgumentOutOfRangeException)
                 {
                     Debug.LogError("un existing legs item id: " + LegsId);
                 }
-                MeshRenderer renderer = item.transform.GetChild(0).GetComponent<MeshRenderer>();
-                Material material = renderer.material;
+                // ReSharper disable once PossibleNullReferenceException
+                var meshRenderer = item.transform.GetChild(0).GetComponent<MeshRenderer>();
+                Material material = meshRenderer.material;
 
                 _skirtRenderer.enabled = true;
                 _skirt.mainTexture = material.GetTexture(0);
-            }
-        }
-
-        private void EquipItemUnit(int itemId, Transform rootBone)
-        {
-            //new unit is parented
-            if(true)
-                return;
-
-            //old
-
-            Item item = rootBone.GetComponentInChildren<Item>();
-            if (item != null)
-            {
-                if (item.InContentManagerIndex != itemId)
-                {
-                    Destroy(item.gameObject);
-                }
-                else
-                {
-                    return;
-                }
-            }
-            if(_animation != null)
-            if (rootBone == Mainhand)
-            {
-                try
-                {
-                    string HoldAnimName = "HandRight" + (itemId == -1 ? "Free" : "Hold");
-                    _animation[HoldAnimName].layer = 2;
-                    foreach (var v in Mainhand)
-                    {
-                        Transform t = (Transform) v;
-                        _animation[HoldAnimName].AddMixingTransform(t);
-                    }
-                    _animation.Blend(HoldAnimName, 1, FADE_OUT_TIME);
-                }
-                catch (Exception e)
-                {
-                    
-                }
-            }
-            if (itemId != -1)
-            {
-                GameObject newItem = (GameObject)Instantiate(ContentManager.I.Items[itemId].gameObject);
-                newItem.transform.parent = rootBone;
-
-                    var rigid = newItem.GetComponentInChildren<Rigidbody>();
-                    if (rigid != null)
-                    {
-                        rigid.isKinematic = true;
-                    }
-
-                //Exceptions  hands
-                if (rootBone == Offhand || rootBone == Mainhand)
-                {
-                    newItem.transform.localPosition = new Vector3(-0.1f, 0, -0.06f);
-                    newItem.transform.localEulerAngles = new Vector3(270, 0, 0);
-                    newItem.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    newItem.transform.localPosition = Vector3.zero;
-                    newItem.transform.localRotation = Quaternion.identity;
-                    newItem.transform.localScale = Vector3.one;
-                }
             }
         }
 
@@ -662,10 +582,12 @@ namespace Code.Core.Client.Units.UnitControllers
             //FACE
             try
             {
-                var FaceCollection = _model == 1 ? HumanModelConfig.I.MaleFaceTextures : HumanModelConfig.I.FemaleFaceTextures;
+                var faceCollection = _model == 1 ? HumanModelConfig.I.MaleFaceTextures : HumanModelConfig.I.FemaleFaceTextures;
 
-                Face.FaceRenderer.material = new Material(Face.FaceRenderer.material);
-                Face.FaceRenderer.material.mainTexture = FaceCollection[customs[2]];
+                Face.FaceRenderer.material = new Material(Face.FaceRenderer.material)
+                {
+                    mainTexture = faceCollection[customs[2]]
+                };
                 Face.FaceRenderer.material.SetColor("Red", HumanModelConfig.I.FaceColors[customs[3]]);
             }
             catch (Exception e) { Debug.LogException(e); }
@@ -673,33 +595,35 @@ namespace Code.Core.Client.Units.UnitControllers
             //Hair
             try
             {
-                var HairCollection = _model == 1 ? HumanModelConfig.I.MaleHairs : HumanModelConfig.I.FemaleHairs;
+                var hairCollection = _model == 1 ? HumanModelConfig.I.MaleHairs : HumanModelConfig.I.FemaleHairs;
 
                 if (Hair != null)
                 {
                     Destroy(Hair);
                 }
 
-                Hair = (GameObject) Instantiate(HairCollection[customs[1]].gameObject);
-                
+                Hair = Instantiate(hairCollection[customs[1]].gameObject);
 
-                var _hairRenderer = Hair.GetComponent<MeshRenderer>();
-                if (_hairRenderer != null)
+
+                var hairRenderer = Hair.GetComponent<MeshRenderer>();
+                if (hairRenderer != null)
                 {
-                    if (_hairRenderer.material != null)
+                    if (hairRenderer.material != null)
                     {
-                        _hairRenderer.material = new Material(_hairRenderer.material);
-                        _hairRenderer.material.color = HumanModelConfig.I.HairsColors[customs[0]];
+                        hairRenderer.material = new Material(hairRenderer.material)
+                        {
+                            color = HumanModelConfig.I.HairsColors[customs[0]]
+                        };
                     }
                 }
 
                 Hair.transform.parent = NeckBone;
-                Hair.transform.localPosition = Vector3.zero + new Vector3(-0.12f, 0 , -0.03f);
+                Hair.transform.localPosition = Vector3.zero + new Vector3(-0.12f, 0, -0.03f);
                 Hair.transform.localRotation = Quaternion.identity;
                 Hair.transform.localEulerAngles = new Vector3(0, 270, 90);
                 Hair.transform.localScale = Vector3.one;
             }
-            catch (Exception e) { Debug.LogException(e);}
+            catch (Exception e) { Debug.LogException(e); }
 
             //Skin
             try

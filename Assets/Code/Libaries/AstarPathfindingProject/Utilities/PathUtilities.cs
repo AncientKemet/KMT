@@ -1,7 +1,5 @@
 //#define ASTAR_PROFILE
 
-using Pathfinding;
-using Pathfinding.Util;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/Sprite/tk2dAnimatedSprite (Obsolete)")]
 public class tk2dAnimatedSprite : tk2dSprite

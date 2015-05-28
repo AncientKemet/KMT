@@ -1,6 +1,5 @@
 //#define ASTAR_NoTagPenalty
 using UnityEngine;
-using Pathfinding;
 using Pathfinding.Serialization;
 
 namespace Pathfinding {

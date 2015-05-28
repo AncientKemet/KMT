@@ -5,7 +5,6 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Pathfinding;
 
 namespace Pathfinding {
 	public class AstarProfiler

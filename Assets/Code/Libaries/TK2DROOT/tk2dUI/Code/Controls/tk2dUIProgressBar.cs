@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/UI/tk2dUIProgressBar")]
 public class tk2dUIProgressBar : MonoBehaviour

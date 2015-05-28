@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-// author paris stefanou
+﻿// author paris stefanou
 
 public static class GV  {
 	//melle minions MM

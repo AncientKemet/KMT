@@ -1,11 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Client.UI.Interfaces;
-using Client.UI.Scripts;
-using Code.Core.Client.UI;
-using Code.Core.Client.UI.Interfaces;
-using Code.Core.Client.UI.Interfaces.UpperLeft;
-using Code.Core.Shared.Content.Types;
 using Shared.Content.Types;
 using UnityEngine;
 #if UNITY_EDITOR

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Code.Libaries.Building
+﻿namespace Code.Libaries.Building
 {
     public class BuildingWall
     {

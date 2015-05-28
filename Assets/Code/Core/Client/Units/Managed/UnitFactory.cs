@@ -1,7 +1,6 @@
 ﻿using Client.Enviroment;
 using Client.Units;
-using Code.Core.Client.Units.Extensions;
-using Code.Core.Client.Units.UnitControllers;
+using Client.Units.UnitControllers;
 using Code.Libaries.Generic;
 using UnityEngine;
 

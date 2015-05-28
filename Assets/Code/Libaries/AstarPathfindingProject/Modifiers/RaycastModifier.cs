@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Simplifies a path using raycasting.

@@ -5,15 +5,11 @@ using Shared.Content.Types;
 using Server.Model.Content;
 
 using System;
-using System.Configuration;
-using Code.Code.Libaries.Net;
 using Code.Libaries.Generic.Managers;
 using Code.Libaries.Net.Packets.ForServer;
-using Code.Libaries.UnityExtensions;
 using Server.Model.Entities.Items;
 using UnityEngine;
 using System.Collections.Generic;
-using Code.Core.Shared.Content.Types;
 using Server.Model.Entities;
 using Server.Model.Entities.Human;
 

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/UI/tk2dUIToggleButtonGroup")]
 public class tk2dUIToggleButtonGroup : MonoBehaviour

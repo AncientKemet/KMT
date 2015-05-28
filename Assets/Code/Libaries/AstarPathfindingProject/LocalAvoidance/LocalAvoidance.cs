@@ -1,8 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using System;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Local Avoidance (beta) [obsolete].

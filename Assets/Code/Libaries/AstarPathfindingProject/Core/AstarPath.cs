@@ -10,7 +10,6 @@ using Server.Model.Pathfinding;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using Pathfinding;
 
 #if NETFX_CORE

@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections;
-using System;
 #if NETFX_CORE
 using System.Threading;
 using System.Threading.Tasks;

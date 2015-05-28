@@ -1,8 +1,6 @@
 #pragma warning disable 0162
 #pragma warning disable 0414
 #define PROFILE
-using System;
-
 namespace Pathfinding
 {
 	

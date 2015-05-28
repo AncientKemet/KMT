@@ -1,6 +1,4 @@
-﻿
-using Development.Libary.Spells.Codes;
-using Shared.Content.Types;
+﻿using Shared.Content.Types;
 
 #if UNITY_EDITOR
 using UnityEditor;

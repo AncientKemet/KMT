@@ -1,8 +1,6 @@
 #if SERVER
 using System.Collections.Generic;
-using System.Linq;
 using Server.Model.Entities;
-using Server.Model.Entities.Human;
 using UnityEngine;
 
 namespace Code.Libaries.Generic.Trees

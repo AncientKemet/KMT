@@ -1,7 +1,7 @@
-﻿using Code.Code.Libaries.Net;
+﻿using System.Collections;
+using Code.Code.Libaries.Net;
 using Code.Core.Client.Units.Managed;
 using Shared.NET;
-using UnityEngine;
 
 namespace Libaries.Net.Packets.ForClient
 {
@@ -13,12 +13,13 @@ namespace Libaries.Net.Packets.ForClient
 
         public int UnitID { get; set; }
 
-        public bool[] Mask { get; set; }
+        public BitArray Mask { get; set; }
 
         public float Distance { get; set; }
 
-        public float Angle { get; set; }
+        public float YAngle { get; set; }
 
+        public float XAngle { get; set; }
 
         public override int Port
         {
@@ -27,17 +28,18 @@ namespace Libaries.Net.Packets.ForClient
 
         public override int Size
         {
-            get { return 4; }
+            get { return 6; }
         }
-
+        
         public override void Deserialize(ByteStream b)
         {
             int IdMask = b.GetUnsignedShort();
+            Mask = b.GetIdMask2BMASK(IdMask);
             UnitID = b.GetIdMask2BID(IdMask);
-            Angle = b.GetAngle1B();
+            YAngle = b.GetAngle1B();
+            XAngle = b.GetAngle1B();
             Face = b.GetAngle1B();
             Distance = b.GetUnsignedByte() / DistanceTo256Ratio;
-            //Mask = b.GetIdMask2BMASK(IdMask); // this works but is not neccecary
         }
 
         public override void Execute()
@@ -50,9 +52,9 @@ namespace Libaries.Net.Packets.ForClient
 
         public override void Serialize(ByteStream b)
         {
-            
-            b.AddIdMask2B(UnitID, Mask == null ? new bool[4] : Mask);
-            b.AddAngle1B(Angle);
+            b.AddIdMask2B(UnitID, Mask);
+            b.AddAngle1B(YAngle);
+            b.AddAngle1B(XAngle);
             b.AddAngle1B(Face);
             b.AddByte((int) (Distance * DistanceTo256Ratio));
         }

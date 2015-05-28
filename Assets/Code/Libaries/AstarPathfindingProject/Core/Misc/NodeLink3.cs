@@ -1,9 +1,7 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
 #if UNITY_EDITOR
-using UnityEditor;
+
 #endif
 
 namespace Pathfinding {

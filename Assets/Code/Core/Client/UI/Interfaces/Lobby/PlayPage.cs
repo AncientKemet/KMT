@@ -1,6 +1,5 @@
 ﻿using Client.Net;
 using Libaries.IO;
-using Libaries.Net.Packets;
 using UnityEngine;
 
 namespace Client.UI.Interfaces.Lobby

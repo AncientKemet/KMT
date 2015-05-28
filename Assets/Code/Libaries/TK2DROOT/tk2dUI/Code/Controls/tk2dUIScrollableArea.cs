@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Scrollable Area Control. Can be actually by changing Value, external scrollbar or swipe gesture

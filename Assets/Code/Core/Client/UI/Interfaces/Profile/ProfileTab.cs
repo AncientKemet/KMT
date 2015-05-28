@@ -1,7 +1,6 @@
 ﻿using Client.Net;
 using Client.Units;
 using Code.Core.Client.UI.Controls;
-using Code.Core.Client.Units;
 using Code.Libaries.Net.Packets.ForServer;
 using UnityEngine;
 

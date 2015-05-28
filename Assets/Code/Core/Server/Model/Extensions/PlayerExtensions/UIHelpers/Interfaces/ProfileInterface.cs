@@ -1,8 +1,6 @@
 using System;
-using System.Collections.ObjectModel;
 using Server.Model.Content.Spawns.NpcSpawns;
 using Server.Model.Extensions.UnitExts;
-using Shared.Content.Types;
 #if SERVER
 using Code.Core.Shared.Content.Types.ItemExtensions;
 

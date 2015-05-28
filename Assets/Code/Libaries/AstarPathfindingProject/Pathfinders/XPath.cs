@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections;
-
 namespace Pathfinding {
 #if FALSE
 	/** Extended Path.

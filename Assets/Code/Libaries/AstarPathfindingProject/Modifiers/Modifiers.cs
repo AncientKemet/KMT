@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Pathfinding {
 	//To be able to serialize modifiers, we store it in a holder which can contain any modifier type

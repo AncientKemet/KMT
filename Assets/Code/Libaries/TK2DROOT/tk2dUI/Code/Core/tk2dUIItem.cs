@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// UI primary class. All colliders that need to response to touch/mouse events need to have this attached. This will then handle and dispatch events

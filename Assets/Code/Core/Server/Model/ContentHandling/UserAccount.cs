@@ -1,13 +1,9 @@
 using Server.Servers;
 #if SERVER
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Code.Libaries.Generic;
 using Server.Model.ContentHandling.Player.AccounteExtensions;
 
 using Libaries.Net.Packets.Data;
-using Code.Code.Libaries.Net;
 using System;
 using Libaries.IO;
 using Server.IO.Encryption;

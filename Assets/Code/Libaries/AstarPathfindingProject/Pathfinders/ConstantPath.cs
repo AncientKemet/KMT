@@ -1,9 +1,7 @@
 //#define ASTARDEBUG //Draws a ray for each node visited
 
 using UnityEngine;
-using System;
 using System.Collections.Generic;
-using Pathfinding;
 
 namespace Pathfinding {
 	

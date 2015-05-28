@@ -3,12 +3,8 @@ using Libaries.IO;
 using Shared.Content.Types;
 #if SERVER
 using Server.Model.Content;
-
-using System.Diagnostics;
 using Code.Code.Libaries.Net;
-using Code.Core.Shared.Content.Types;
 using Code.Core.Shared.Content.Types.ItemExtensions;
-using Code.Libaries.UnityExtensions;
 using Server.Model.Entities;
 using Server.Model.Entities.Items;
 using Debug = UnityEngine.Debug;
@@ -116,25 +112,25 @@ namespace Server.Model.Extensions.UnitExts
             switch (type)
             {
                 case EquipmentItem.Type.Helm:
-                    _EquipItem(null, ref _head);
+                    _EquipItemSafe(null, ref _head);
                     break;
                 case EquipmentItem.Type.Boots:
-                    _EquipItem(null, ref _boots);
+                    _EquipItemSafe(null, ref _boots);
                     break;
                 case EquipmentItem.Type.Body:
-                    _EquipItem(null, ref _body);
+                    _EquipItemSafe(null, ref _body);
                     break;
                 case EquipmentItem.Type.Legs:
-                    _EquipItem(null, ref _legs);
+                    _EquipItemSafe(null, ref _legs);
                     break;
                 case EquipmentItem.Type.MainHand:
-                    _EquipItem(null, ref _mainHand);
+                    _EquipItemSafe(null, ref _mainHand);
                     break;
                 case EquipmentItem.Type.OffHand:
-                    _EquipItem(null, ref _offHand);
+                    _EquipItemSafe(null, ref _offHand);
                     break;
                 case EquipmentItem.Type.TwoHand:
-                    _EquipItem(null, ref _mainHand);
+                    _EquipItemSafe(null, ref _mainHand);
                     break;
             }
         }
@@ -144,25 +140,25 @@ namespace Server.Model.Extensions.UnitExts
             switch (type)
             {
                 case EquipmentItem.Type.Helm:
-                    _EquipItem(null, ref _head, false);
+                    _EquipItemSafe(null, ref _head, false);
                     break;
                 case EquipmentItem.Type.Boots:
-                    _EquipItem(null, ref _boots, false);
+                    _EquipItemSafe(null, ref _boots, false);
                     break;
                 case EquipmentItem.Type.Body:
-                    _EquipItem(null, ref _body, false);
+                    _EquipItemSafe(null, ref _body, false);
                     break;
                 case EquipmentItem.Type.Legs:
-                    _EquipItem(null, ref _legs, false);
+                    _EquipItemSafe(null, ref _legs, false);
                     break;
                 case EquipmentItem.Type.MainHand:
-                    _EquipItem(null, ref _mainHand, false);
+                    _EquipItemSafe(null, ref _mainHand, false);
                     break;
                 case EquipmentItem.Type.OffHand:
-                    _EquipItem(null, ref _offHand, false);
+                    _EquipItemSafe(null, ref _offHand, false);
                     break;
                 case EquipmentItem.Type.TwoHand:
-                    _EquipItem(null, ref _mainHand, false);
+                    _EquipItemSafe(null, ref _mainHand, false);
                     break;
             }
         }
@@ -173,25 +169,27 @@ namespace Server.Model.Extensions.UnitExts
             switch (item.EquipType)
             {
                 case EquipmentItem.Type.Helm:
-                    return _EquipItem(unit, ref _head);
+                    return _EquipItemSafe(unit, ref _head);
                 case EquipmentItem.Type.Boots:
-                    return _EquipItem(unit, ref _boots);
+                    return _EquipItemSafe(unit, ref _boots);
                 case EquipmentItem.Type.Body:
-                    return _EquipItem(unit, ref _body);
+                    return _EquipItemSafe(unit, ref _body);
                 case EquipmentItem.Type.Legs:
-                    return _EquipItem(unit, ref _legs);
+                    return _EquipItemSafe(unit, ref _legs);
                 case EquipmentItem.Type.MainHand:
-                    return _EquipItem(unit, ref _mainHand);
+                    return _EquipItemSafe(unit, ref _mainHand);
                 case EquipmentItem.Type.OffHand:
-                    return _EquipItem(unit, ref _offHand);
+                    return _EquipItemSafe(unit, ref _offHand);
                 case EquipmentItem.Type.TwoHand:
-                    return _EquipItem(unit, ref _mainHand);
+                    return _EquipItemSafe(unit, ref _mainHand);
             }
             return false;
         }
 
         public bool EquipItem(Item.ItemInstance _item)
         {
+            if (_item != null)
+            {
                 DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
 
                 droppedItem.Movement.Teleport(Unit.Movement.Position + Unit.Movement.Forward);
@@ -199,7 +197,9 @@ namespace Server.Model.Extensions.UnitExts
                 Unit.CurrentWorld.AddEntity(droppedItem);
 
                 return EquipItem(droppedItem);
-         }
+            }
+            return false;
+        }
 
         #region Private Handling
         /// <summary>
@@ -207,7 +207,7 @@ namespace Server.Model.Extensions.UnitExts
         /// </summary>
         /// <param name="item"></param>
         /// <param name="_itemRef"></param>
-        private bool _EquipItem(DroppedItem unit, ref DroppedItem _itemRef, bool unequip = true)
+        private bool _EquipItemSafe(DroppedItem unit, ref DroppedItem _itemRef, bool unequip = true)
         {
             EquipmentItem item = null;
 
@@ -216,26 +216,37 @@ namespace Server.Model.Extensions.UnitExts
 
             if (_itemRef != null)
             {
-
                 if (_UnequipItem(ref _itemRef, unequip))
                 {
                     _itemRef = unit;
 
                     if (unit != null)
                     {
-                        unit.Movement.Parent = Unit.Movement;
                         if (item.EquipType == EquipmentItem.Type.MainHand)
                         {
+                            unit.Movement.Parent = Unit.Movement;
                             unit.Movement.ParentPlaneID = 1;
                         }
-                        if (item.EquipType == EquipmentItem.Type.OffHand)
+                        else if (item.EquipType == EquipmentItem.Type.OffHand)
                         {
+                            unit.Movement.Parent = Unit.Movement;
                             unit.Movement.ParentPlaneID = 2;
+                        }
+                        else if (item.EquipType == EquipmentItem.Type.Helm)
+                        {
+                            unit.Movement.Parent = Unit.Movement;
+                            unit.Movement.ParentPlaneID = 0;
+                        }
+                        else
+                        {
+                            unit.Movement.Parent = Unit.Movement;
+                            unit.Display.Visible = false;
                         }
                     }
 
                     if (item != null && item.Spells != null)
-                        Unit.Spells.EquipSpells(item.Spells);
+                        if (item.EquipType == EquipmentItem.Type.OffHand || item.EquipType == EquipmentItem.Type.MainHand)
+                            Unit.Spells.EquipSpells(item.Spells);
                     
                     _wasUpdate = true;
                     return true;
@@ -327,22 +338,22 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(ByteStream p)
         {
-            p.AddShort(_head == null ? -1 : _head.ID);
+            p.AddShort(_head == null ? -1 : _head.Item.Item.InContentManagerIndex);
             p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
             p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
             p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
-            p.AddShort(_mainHand == null ? -1 : _mainHand.ID);
-            p.AddShort(_offHand == null ? -1 : _offHand.ID);
+            p.AddShort(_mainHand == null ? -1 : _mainHand.Item.Item.InContentManagerIndex);
+            p.AddShort(_offHand == null ? -1 : _offHand.Item.Item.InContentManagerIndex);
         }
 
         protected override void pSerializeUpdate(ByteStream p)
         {
-            p.AddShort(_head == null ? -1 : _head.ID);
+            p.AddShort(_head == null ? -1 : _head.Item.Item.InContentManagerIndex);
             p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
             p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
             p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
-            p.AddShort(_mainHand == null ? -1 : _mainHand.ID);
-            p.AddShort(_offHand == null ? -1 : _offHand.ID);
+            p.AddShort(_mainHand == null ? -1 : _mainHand.Item.Item.InContentManagerIndex);
+            p.AddShort(_offHand == null ? -1 : _offHand.Item.Item.InContentManagerIndex);
         }
 
         protected override void OnExtensionWasAdded()
@@ -355,12 +366,13 @@ namespace Server.Model.Extensions.UnitExts
         {
             JSONObject equipment = new JSONObject();
 
-            equipment.AddField("MainHand", SerializeInstance(MainHandUnit == null ? new Item.ItemInstance(null,0) : MainHandUnit.Item));
+            equipment.AddField("MainHand", SerializeInstance(MainHandUnit == null ? new Item.ItemInstance(null, 0) : MainHandUnit.Item));
             equipment.AddField("OffHand", SerializeInstance(OffHandUnit == null ? new Item.ItemInstance(null, 0) : OffHandUnit.Item));
             equipment.AddField("Head", SerializeInstance(HeadUnit == null ? new Item.ItemInstance(null, 0) : HeadUnit.Item));
-
-            //TODO rest of equipment
-
+            equipment.AddField("Boots", SerializeInstance(_boots == null ? new Item.ItemInstance(null, 0) : _boots.Item));
+            equipment.AddField("Body", SerializeInstance(_body == null ? new Item.ItemInstance(null, 0) : _body.Item));
+            equipment.AddField("Legs", SerializeInstance(_legs == null ? new Item.ItemInstance(null, 0) : _legs.Item));
+            
             j.AddField("equipment", equipment);
         }
 
@@ -371,12 +383,19 @@ namespace Server.Model.Extensions.UnitExts
             var mainHand = DeserializeInstance(equipment.GetField("MainHand").str);
             var offHand = DeserializeInstance(equipment.GetField("OffHand").str);
             var head = DeserializeInstance(equipment.GetField("Head").str);
+            var boots = DeserializeInstance(equipment.GetField("Boots").str);
+            var body = DeserializeInstance(equipment.GetField("Body").str);
+            var legs = DeserializeInstance(equipment.GetField("Legs").str);
 
-            //TODO rest of equipment
-
-            EquipItem(mainHand);
-            EquipItem(offHand);
-            EquipItem(head);
+            Unit.OnFinishDeserialization += () =>
+            {
+                EquipItem(mainHand);
+                EquipItem(offHand);
+                EquipItem(head);
+                EquipItem(boots);
+                EquipItem(body);
+                EquipItem(legs);
+            };
 
         }
 

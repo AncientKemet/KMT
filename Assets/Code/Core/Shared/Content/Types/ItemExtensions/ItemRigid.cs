@@ -6,7 +6,6 @@ using Client.Net;
 using Client.Units;
 using Code.Core.Client.Settings;
 using Code.Core.Client.UI.Controls;
-using Code.Core.Shared.Content.Types;
 using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Net.Packets.ForServer;
 using UnityEngine;

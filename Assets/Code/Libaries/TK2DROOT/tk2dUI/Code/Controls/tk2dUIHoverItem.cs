@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// On HoverOver and HoverOut will switch states. Hover needs to be enabled to work (Hover actived(tk2dUIManager.areHoverEventsTracked), using a mouse

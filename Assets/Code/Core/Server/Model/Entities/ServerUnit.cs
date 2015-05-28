@@ -35,7 +35,11 @@ namespace Server.Model.Entities
         private List<UnitUpdateExt> _updateExtensions;
 
         protected virtual void OnEnterWorld(World world)
-        { }
+        {
+            if (OnFinishDeserialization != null)
+                OnFinishDeserialization();
+            OnFinishDeserialization = null;
+        }
 
         public override World CurrentWorld
         {
@@ -265,6 +269,7 @@ namespace Server.Model.Entities
 
         #endregion
 
+        public event Action OnFinishDeserialization;
     }
 }
 

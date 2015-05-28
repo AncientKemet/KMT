@@ -1,7 +1,6 @@
 #if SERVER
 using System;
 using System.IO;
-using System.Threading;
 using UnityEngine;
 
 namespace Server.IO.File

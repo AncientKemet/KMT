@@ -1,13 +1,8 @@
-using UnityEngine;
 #if SERVER
 using Server.Servers;
 
 using System;
 using System.Net.Sockets;
-using Code.Libaries.UnityExtensions;
-using Server.Model.Entities.Human;
-using Server.Model.Extensions.PlayerExtensions;
-using Server.Net;
 
 namespace Server
 {

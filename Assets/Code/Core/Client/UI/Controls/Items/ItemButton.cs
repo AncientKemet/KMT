@@ -2,8 +2,6 @@
 using Code.Core.Client.UI;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Scripts;
-using Code.Core.Shared.Content.Types;
-using Code.Libaries.GameObjects;
 using Shared.Content.Types;
 using UnityEngine;
 

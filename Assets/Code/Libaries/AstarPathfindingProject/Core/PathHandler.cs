@@ -1,4 +1,3 @@
-using Pathfinding;
 using System.Collections.Generic;
 
 namespace Pathfinding

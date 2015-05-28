@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Client.Net;
 using Client.UI.Controls;
 using Client.UI.Controls.Tool;
 using Client.UI.Interfaces.Dialogues;
 using Code.Core.Client.UI.Controls;
 using Code.Libaries.Net.Packets.ForServer;
-using Code.Libaries.UnityExtensions.Independent;
-using Code.Scripts;
 using Libaries.Net.Packets.Data;
 using UnityEngine;
 

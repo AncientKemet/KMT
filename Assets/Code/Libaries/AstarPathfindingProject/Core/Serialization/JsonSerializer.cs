@@ -3,7 +3,6 @@
 //#define ASTAR_NO_JSON //Strips out usage of the JsonFx library. Slightly lower build size but reduces backwards and forwards compatibility of saving graph settings. Only works properly with the NavmeshGraph right now. You can remove the Pathfinding.JsonFx.dll file if you enable this.
 //#define ASTAR_NO_ZIP
 using System;
-using Pathfinding;
 using Pathfinding.Serialization.JsonFx;
 
 #if !ASTAR_NO_ZIP
@@ -14,7 +13,6 @@ using Pathfinding.Serialization.Zip;
 
 using System.IO;
 using UnityEngine;
-using System.Collections.Generic;
 using Pathfinding.Util;
 
 namespace Pathfinding.Serialization

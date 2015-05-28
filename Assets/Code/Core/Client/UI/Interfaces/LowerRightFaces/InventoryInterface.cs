@@ -4,9 +4,7 @@ using Client.UI.Scripts;
 using Code.Core.Client.Controls;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Controls.Items;
-using Code.Libaries.UnityExtensions.Independent;
 using Libaries.UnityExtensions.Independent;
-using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces.LowerRightFaces

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Pathfinding;
 
 namespace Pathfinding {
 	/** Finds a path in a random direction from the start node.

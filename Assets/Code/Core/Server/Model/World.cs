@@ -3,12 +3,9 @@ using Server.Servers;
 using Server.Model.Content;
 
 using Client.Enviroment;
-using Server.Model.Pathfinding;
-
 using Server.Model.ContentHandling;
 using System.Collections.Generic;
 using Code.Libaries.Generic.Trees;
-using Code.Libaries.UnityExtensions;
 using Server.Model.Entities;
 using Server.Model.Entities.Human;
 using UnityEngine;

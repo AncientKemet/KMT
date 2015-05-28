@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Client.UI.Interfaces.Lobby
+﻿namespace Client.UI.Interfaces.Lobby
 {
     public class PreferencesPage : LobbyPage {
         

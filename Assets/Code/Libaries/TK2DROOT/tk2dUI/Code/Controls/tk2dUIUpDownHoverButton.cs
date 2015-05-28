@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// UpDown Button, changes state based on if it is up or down, plus hover

@@ -1,7 +1,6 @@
 ﻿using Client.Net;
 using Code.Core.Client.UI.Controls;
 using Code.Libaries.Net.Packets.ForServer;
-using UnityEngine;
 
 namespace Client.UI.Controls
 {

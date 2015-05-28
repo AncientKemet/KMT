@@ -1,7 +1,4 @@
-using UnityEngine;
-using System.Collections;
 using System.Threading;
-using Pathfinding;
 
 namespace Pathfinding {
 	public class ThreadControlQueue {

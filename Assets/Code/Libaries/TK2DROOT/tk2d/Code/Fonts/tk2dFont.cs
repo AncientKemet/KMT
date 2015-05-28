@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("2D Toolkit/Backend/tk2dFont")]
 public class tk2dFont : MonoBehaviour 

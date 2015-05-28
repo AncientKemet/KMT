@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Client.Net;
 using Code.Core.Client.UI.Controls;
 using Libaries.Net.Packets.ForServer;

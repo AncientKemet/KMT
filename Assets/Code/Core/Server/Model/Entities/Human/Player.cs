@@ -5,8 +5,6 @@ using Server.Servers;
 using Code.Core.Client.UI;
 
 using Server.Model.ContentHandling.Player;
-
-using UnityEngine;
 using Code.Code.Libaries.Net.Packets;
 using Server.Model.Entities.Groups;
 using Server.Model.Extensions.PlayerExtensions;
@@ -72,6 +70,8 @@ namespace Server.Model.Entities.Human
 
             GetExt<UnitInventory>().ListeningPlayers.Add(this);
             GetExt<UnitInventory>().RefreshFull();
+
+            base.OnEnterWorld(world);
         }
 
         public void SetupNewPlayer(WorldServer worldServer)

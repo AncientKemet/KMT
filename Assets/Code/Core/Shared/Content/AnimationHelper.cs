@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Code.Core.Shared.Content
+﻿namespace Code.Core.Shared.Content
 {
     public static class AnimationHelper 
     {

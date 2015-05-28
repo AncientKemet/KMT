@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
 
 namespace Pathfinding
 {
