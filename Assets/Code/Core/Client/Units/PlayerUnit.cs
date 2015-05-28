@@ -80,71 +80,7 @@ namespace Client.Units
         }
 
         public bool IsFlying { get; set; }
-
-        public int ParentId
-        {
-            get { return _parentId; }
-            set
-            {
-                if (_parentId != value)
-                {
-                    if (value == -1)
-                    {
-                        transform.parent = KemetMap.Instance.transform;
-                    }
-                    else
-                    {
-                        if (_parentPlaneId == -1)
-                        {
-                            if (UnitManager.Instance.HasUnit(value))
-                            {
-                                var parent = UnitManager.Instance[value];
-                                StartCoroutine(Ease.Join(
-                                    transform,
-                                    parent.transform,
-                                    () => { transform.parent = parent.transform; },
-                                    0.3f));
-                            }
-                            else
-                            {
-                                //todo wait for parent to come visible
-                            }
-                        }
-                    }
-                }
-                _parentId = value;
-            }
-        }
-
-        public int ParentPlaneId
-        {
-            get { return _parentPlaneId; }
-            set
-            {
-                if (_parentPlaneId != value)
-                {
-                    if (_parentId != -1)
-                    {
-                        if (UnitManager.Instance.HasUnit(_parentId))
-                        {
-                            var parent = UnitManager.Instance[_parentId];
-                            var plane = parent.Display.UnitPrefab.Planes[value];
-                            StartCoroutine(Ease.Join(
-                                    transform,
-                                    plane,
-                                    () => { transform.parent = plane; },
-                                    0.3f));
-                        }
-                        else
-                        {
-                            //todo wait for parent to come visible
-                        }
-                    }
-                }
-                _parentPlaneId = value;
-            }
-        }
-
+        
         public static PlayerUnit MyPlayerUnit { get; set; }
 
         public string Name
@@ -305,7 +241,7 @@ namespace Client.Units
         protected virtual void Update()
         {
 
-            if (ParentId != -1)
+            if (_parentId != -1)
                 return;
 
             _distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
@@ -344,9 +280,8 @@ namespace Client.Units
         public void DecodeUnitUpdate(UnitUpdatePacket p)
         {
             ByteStream b = p.SubPacketData;
-            int mask = b.GetByte();
 
-            var bitArray = new BitArray(new[] { mask });
+            var bitArray = b.GetBitArray();
 
             bool movementUpdate = bitArray[0];
             bool displayUpdate = bitArray[1];
@@ -354,67 +289,51 @@ namespace Client.Units
             bool animUpdate = bitArray[3];
             bool equipmentUpdate = bitArray[4];
             bool detailsUpdate = bitArray[5];
-#if DEBUG_NETWORK
-            string log = "";
-            log += "\n" + "Packet size " + b.GetSize();
-
-            log += "\n" + "nMovementUpdate " + movementUpdate;
-            log += "\n" + "ndisplayUpdate " + displayUpdate;
-            log += "\n" + "combatUpdate " + combatUpdate;
-            log += "\n" + "animUpdate " + animUpdate;
-            Debug.Log(log);
-#endif
 
             if (movementUpdate)
             {
                 int mask2 = b.GetByte();
-                bitArray = new BitArray(new[] { mask2 });
+                var movementMask = new BitArray(new[] { mask2 });
 
-                bool positionUpdate = bitArray[0];
-                bool rotationUpdate = bitArray[1];
-                bool teleported = bitArray[2];
-                bool correction = bitArray[3];
-                bool parented = bitArray[4];
-                bool isFlying = bitArray[5];
-                if (correction)
-                {
-                    if (positionUpdate)
-                    {
+                bool teleported = movementMask[0];
+                bool parentUpdate = movementMask[1];
+                IsFlying = movementMask[2];
+
                         Vector3 pos = b.GetPosition6B();
                         if (!teleported && !IsStatic)
                         {
-                            //has not teleported
                             MovementTargetPosition = pos;
                         }
                         else
                         {
-                            //has teleported
                             MovementTargetPosition = pos;
-                            FixYOnTerrain(ref pos);
                             transform.localPosition = pos;
                         }
-                    }
 
-                    if (rotationUpdate)
-                    {
                         float rotation = b.GetAngle1B();
                         TargetRotation = rotation;
+                    
+                
+                if (parentUpdate)
+                {
+                    _parentId = b.GetShort();
+                    _parentPlaneId = b.GetByte();
+                    if (_parentId != -1)
+                    {
+                        if (UnitManager.Instance[_parentId].Display.Model != -1)
+                        {
+                            JoinParent();
+                        }
+                        else
+                        {
+                            UnitManager.Instance[_parentId].Display.OnModelChange += JoinParent;
+                        }
+                    }
+                    else
+                    {
+                        transform.parent = KemetMap.Instance.transform;
                     }
                 }
-                if (parented)
-                {
-                    ParentId = b.GetShort();
-                    ParentPlaneId = b.GetByte();
-                }
-                IsFlying = isFlying;
-
-#if DEBUG_NETWORK
-                log = "";
-                log += "\n" + "post movement offset " + b.Offset;
-                log += "\n" + "positionUpdate " + positionUpdate;
-                log += "\n" + "rotationUpdate " + rotationUpdate;
-                Debug.Log(log);
-#endif
             }
 
             if (displayUpdate)
@@ -436,24 +355,16 @@ namespace Client.Units
                     {
                         if (Display.Model != modelId)
                         {
-
-                            /*StartCoroutine(Ease.Vector(Vector3.zero, Vector3.one * size, vector3 =>
-                            {
-                                transform.localScale = vector3;
-                                if (_projector != null)
-                                {
-                                    _projector.orthoGraphicSize = vector3.x;
-                                }
-                            }, () => { },
-                                0.3f));*/
                             Display.Model = modelId;
-
                         }
                     }
                 }
                 else
                 {
-                    var item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
+                    if(item != null)
+                        Destroy(item.gameObject);
+
+                    item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
                     transform.localPosition += Vector3.up;
                     item.transform.parent = transform;
                     item.transform.localPosition = Vector3.zero;
@@ -491,7 +402,8 @@ namespace Client.Units
                             Debug.Log("null unit id: " + unitID);
                         }
                     }
-                    Debug.Log("destroying object :" + name);
+                    if(OnBeforeDestroy !=null)
+                        OnBeforeDestroy();
                     Destroy(gameObject);
                 }
 
@@ -530,18 +442,11 @@ namespace Client.Units
                 gameObject.SetActive(_visible);
 
                 transform.localScale = Vector3.one * size;
-
-#if DEBUG_NETWORK
-                log = "";
-                log += "\n" + "post display offset " + b.Offset;
-                log += "\n" + "modelId " + modelId;
-                log += "\n" + "isItem " + isItem;
-                Debug.Log(log);
-#endif
             }
 
             if (combatUpdate)
             {
+
                 int health = b.GetUnsignedByte();
                 int maxhealth = b.GetUnsignedByte();
                 int energy = b.GetUnsignedByte();
@@ -558,28 +463,11 @@ namespace Client.Units
                     StatsBarInterfaces.I.ENBar.Progress = ((float)energy / ((float)maxenergy + 0.01f));
                 }
 
-#if DEBUG_NETWORK
-                log = "";
-                log += "\n" + "post combat offset " + b.Offset;
-                log += "\n" + "health " + health;
-                log += "\n" + "energy " + energy;
-                Debug.Log(log);
-#endif
             }
 
             if (animUpdate)
             {
-                int mask2 = b.GetByte();
-
-                var bitArray2 = new BitArray(new[] { mask2 });
-
-#if DEBUG_NETWORK
-                log = "";
-                log += "\n" + "pre anim offset " + b.Offset;
-                log += "\n" + "bitArray2 " + bitArray2;
-                Debug.Log(log);
-#endif
-
+                var bitArray2 = b.GetBitArray();
                 if (bitArray2[0])
                 {
                     string a = b.GetString();
@@ -607,7 +495,7 @@ namespace Client.Units
 
                 int lookingAtUnitID = b.GetShort();
 
-                Display.LookAtUnit = lookingAtUnitID == -1 ? null : UnitManager.Instance.GetUnit(lookingAtUnitID);
+                Display.LookAtUnit = lookingAtUnitID == -1 ? null : UnitManager.Instance[lookingAtUnitID];
             }
 
             if (equipmentUpdate)
@@ -637,6 +525,27 @@ namespace Client.Units
                     }
             }
 
+        }
+
+        private void JoinParent(int obj)
+        {
+            JoinParent();
+        }
+
+        private void JoinParent()
+        {
+            var parent = UnitManager.Instance[_parentId];
+            var plane = _parentPlaneId == -1 ? parent.transform : parent.Display.UnitPrefab.Planes[_parentPlaneId];
+
+            gameObject.SetActive(true);
+            StartCoroutine(Ease.Join(
+                transform,
+                plane,
+                () => { transform.parent = plane; },
+                0.3f));
+
+            if (parent.Display.OnModelChange != null)
+                parent.Display.OnModelChange -= JoinParent;
         }
 
         public static bool GetBit(int byt, int index)
@@ -671,21 +580,20 @@ namespace Client.Units
 
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
-            float angleY = p.YAngle / (180 / Mathf.PI);
-            float angleX = p.XAngle / (180 / Mathf.PI);
-
-            var vector = new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY));
-
-            if (IsFlying)
+            
+            if (p.Mask[0])
             {
-               vector = new Vector3(
-                   Mathf.Sin(angleX) * Mathf.Cos(angleY),
-                   Mathf.Cos(angleX),
-                   Mathf.Sin(angleX) * Mathf.Sin(angleY));
+                _movementTargetPosition = _movementTargetPosition + p.Difference;
             }
-
-            _movementTargetPosition = _movementTargetPosition + (vector * p.Distance);
-            TargetRotation = p.Face;
+            else
+            {
+                float angleY = p.YAngle/(180/Mathf.PI);
+                _movementTargetPosition = _movementTargetPosition + ( new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY)) * p.Distance);
+                TargetRotation = p.Face;
+            }
         }
+
+        public Action OnBeforeDestroy;
+        private Item item;
     }
 }

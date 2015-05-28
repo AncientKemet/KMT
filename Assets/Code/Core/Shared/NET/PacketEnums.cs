@@ -8,7 +8,8 @@ namespace Code.Core.Shared.NET
         {
             ToogleRun,
             StopWalk,
-            ContinueWalk
+            ContinueWalk,
+            Jump
         }
     }
 }
