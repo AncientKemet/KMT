@@ -202,6 +202,7 @@ namespace Shared.Content.Types
                         AssetDatabase.LoadAssetAtPath("Assets/Development/Libary/Items/Icons/" + name + ".png",
                             typeof (Texture2D));
             }
+            EditorUtility.SetDirty(gameObject);
         }
 #endif
     }

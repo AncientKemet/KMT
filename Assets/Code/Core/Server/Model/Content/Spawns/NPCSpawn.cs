@@ -16,6 +16,7 @@ namespace Server.Model.Content.Spawns
 
         public float MinSleepTime = 1;
         public float MaxSleepTime = 5;
+        public bool EnableWalking = true;
 
         public Vector3 StaticPosition { get; set; }
 

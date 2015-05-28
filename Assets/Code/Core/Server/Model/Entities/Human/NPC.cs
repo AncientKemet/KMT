@@ -15,7 +15,7 @@ namespace Server.Model.Entities.Human
         {
             base.Progress(time);
 
-            if(Spawn.WalkRange > 0)
+            if(Spawn.EnableWalking)
             if (!Movement.IsWalkingSomeWhere)
             {
                 _sleepTime -= Time.fixedDeltaTime;

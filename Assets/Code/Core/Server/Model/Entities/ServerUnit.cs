@@ -262,7 +262,7 @@ namespace Server.Model.Entities
 
 #if DEBUG_NETWORK
             string log = "";
-            log += "\n" + "WorldServer created packet size " + _updatePacket;
+            log += "\n" + "WorldServer created packet size " + _updatePacket+" id is: "+ID;
             Debug.Log(log);
 #endif
         }

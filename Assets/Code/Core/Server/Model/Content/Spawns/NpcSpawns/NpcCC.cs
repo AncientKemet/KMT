@@ -1,17 +1,19 @@
-﻿using Server.Model.Content.Spawns.NpcSpawns;
-using Server.Model.Entities.Human;
+﻿using Server.Model.Entities.Human;
 
-public class NpcCC : NpcSpawnExtension
+namespace Server.Model.Content.Spawns.NpcSpawns
 {
-    public int faceType, faceColor, skinColor, hairType, hairColor;
-
-    public override void Apply(NPC n)
+    public class NpcCC : NpcSpawnExtension
     {
-        base.Apply(n);
-        n.Display.FaceType = faceType;
-        n.Display.FaceColor = faceColor;
-        n.Display.SkinColor = skinColor;
-        n.Display.Hairtype = hairType;
-        n.Display.HairColor = hairColor;
+        public int faceType, faceColor, skinColor, hairType, hairColor;
+
+        public override void Apply(NPC n)
+        {
+            base.Apply(n);
+            n.Display.FaceType = faceType;
+            n.Display.FaceColor = faceColor;
+            n.Display.SkinColor = skinColor;
+            n.Display.Hairtype = hairType;
+            n.Display.HairColor = hairColor;
+        }
     }
 }

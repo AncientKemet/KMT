@@ -27,10 +27,6 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                 {
                     ShowInventory(id);
                 }
-                else
-                {
-                    Debug.LogError("Inventory not opened");
-                }
 
                 var packet = new UIInventoryInterfacePacket();
 

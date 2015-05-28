@@ -153,6 +153,7 @@
      <Compile Include="Assets\Code\Core\Server\IO\IDataProvider.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\ServerMonoBehaviour.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NPCSpawn.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcAnimation.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcCC.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcEquip.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Content\Spawns\NpcSpawns\NpcShop.cs" />

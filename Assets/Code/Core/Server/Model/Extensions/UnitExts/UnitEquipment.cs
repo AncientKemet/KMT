@@ -338,12 +338,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(ByteStream p)
         {
-            p.AddShort(_head == null ? -1 : _head.Item.Item.InContentManagerIndex);
-            p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
-            p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
-            p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
-            p.AddShort(_mainHand == null ? -1 : _mainHand.Item.Item.InContentManagerIndex);
-            p.AddShort(_offHand == null ? -1 : _offHand.Item.Item.InContentManagerIndex);
+            SerializeUpdate(p);
         }
 
         protected override void pSerializeUpdate(ByteStream p)
