@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Client.Units;
 using Pathfinding;
 using Shared.Content.Types;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Code.Libaries.Generic.Managers
         public List<Spell> Spells;
         public List<Buff> Buffs;
         public List<GameObject> Effects;
+        public List<ASpellRadius> SpellRadiuses; 
         public Spell RestSpell;
         public Buff OverpowerDebuff;
 

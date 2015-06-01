@@ -188,7 +188,7 @@ namespace Server.Model.Extensions.UnitExts
                 return;
             }
 
-            if (Running && Unit.Combat.Energy < 20)
+            if (Running && Unit.Combat.CurrentEnergy < 20)
             {
                 Running = false;
             }

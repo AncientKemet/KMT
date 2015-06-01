@@ -4,26 +4,24 @@ using Shared.Content.Types;
 
 namespace Libaries.Net.Packets.ForClient
 {
+
+    public enum SpellUpdateState
+    {
+        Enable,
+        Disable,
+        SetSpell,
+        StartedCasting,
+        FinishedCasting,
+        StrenghtChange
+    }
+
     public class SpellUpdatePacket : BasePacket
     {
-        /// <summary>
-        /// Index of spell
-        /// </summary>
         public int Index { get; set; }
-
-        public bool IsEnabled { get; set; }
-        public bool SetSpell { get; set; }
-        public bool IsCasting { get; set; }
-
-        /// <summary>
-        /// Only used if SetSpell is True
-        /// </summary>
         public Spell Spell { get; set; }
-
-        /// <summary>
-        /// Only used if IsCasting is True
-        /// </summary>
         public float Strenght { get; set; }
+
+        public SpellUpdateState UpdateState { get; set; }
 
         protected override int GetOpCode()
         {
@@ -33,31 +31,27 @@ namespace Libaries.Net.Packets.ForClient
         protected override void enSerialize(ByteStream bytestream)
         {
             bytestream.AddByte(Index);
-            bytestream.AddFlag(IsEnabled, SetSpell, IsCasting);
+            bytestream.AddByte((int) UpdateState);
 
-            if(SetSpell)
+            if (UpdateState == SpellUpdateState.SetSpell)
                 bytestream.AddShort(Spell == null ? -1 : Spell.InContentManagerId);
 
-            if(IsCasting)
+            if (UpdateState == SpellUpdateState.StrenghtChange)
                 bytestream.AddFloat2B(Strenght);
         }
 
         protected override void deSerialize(ByteStream bytestream)
         {
             Index = bytestream.GetByte();
-            var mask = bytestream.GetBitArray();
+            UpdateState = (SpellUpdateState) bytestream.GetUnsignedByte();
 
-            IsEnabled = mask[0];
-            SetSpell = mask[1];
-            IsCasting = mask[2];
-
-            if (SetSpell)
+            if (UpdateState == SpellUpdateState.SetSpell)
             {
                 int spellID = bytestream.GetShort();
                 Spell = spellID == -1 ? null : ContentManager.I.Spells[spellID];
             }
 
-            if (IsCasting)
+            if (UpdateState == SpellUpdateState.StrenghtChange)
                 Strenght = bytestream.GetFloat2B();
         }
     }

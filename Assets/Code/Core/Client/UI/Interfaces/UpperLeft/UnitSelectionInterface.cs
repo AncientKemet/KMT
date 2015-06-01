@@ -92,8 +92,8 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             if (_unit == null) Unit = _unit;
 
             if (Unit == null) return;
-            _healthBar.Progress = Unit.Health / Unit.MaxHealth;
-            _energyBar.Progress = Unit.Energy / Unit.MaxEnergy;
+            _healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
+            _energyBar.Progress = Unit.PlayerUnitAttributes.CurrentEnergy / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Energy);
         }
 
         public void OnDataRecieved(UnitSelectionPacketData data)

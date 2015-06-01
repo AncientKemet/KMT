@@ -13,9 +13,9 @@ namespace UnityStandardAssets.Water
     [ExecuteInEditMode]
     public class WaterBase : MonoBehaviour
     {
+        public bool edgeBlend = true;
         public Material sharedMaterial;
         public WaterQuality waterQuality = WaterQuality.High;
-        public bool edgeBlend = true;
 
 
         public void UpdateShader()

@@ -5,6 +5,7 @@ using Client.UI.Interfaces.StatsBar;
 using Client.UI.Scripts;
 using Client.Units;
 using Code.Core.Client.UI.Controls;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces
@@ -26,12 +27,12 @@ namespace Code.Core.Client.UI.Interfaces
             base.OnFixedUpdate();
             if (PlayerUnit.MyPlayerUnit != null)
             {
-                HPLabel.text = PlayerUnit.MyPlayerUnit.Health + " / " + PlayerUnit.MyPlayerUnit.MaxHealth;
-                ENLabel.text = PlayerUnit.MyPlayerUnit.Energy + " / " + PlayerUnit.MyPlayerUnit.MaxEnergy;
-                HPRegen.text = (PlayerUnit.MyPlayerUnit.HealthRegen > 0 ? "+" : "") + "" +
-                               (float) ((int) (PlayerUnit.MyPlayerUnit.HealthRegen*10f))/10f;
-                ENRegen.text = (PlayerUnit.MyPlayerUnit.EnergyRegen > 0 ? "+" : "") + "" +
-                               (float) ((int) (PlayerUnit.MyPlayerUnit.EnergyRegen*10f))/10f;
+                HPLabel.text = PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.CurrentHealth + " / " + PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
+                ENLabel.text = PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.CurrentEnergy + " / " + PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Energy);
+                HPRegen.text = (PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.HealthRegen) > 0 ? "+" : "") + "" +
+                               (float) ((int) (PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.HealthRegen)*10f))/10f;
+                ENRegen.text = (PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.EnergyRegen) > 0 ? "+" : "") + "" +
+                               (float)((int)(PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.EnergyRegen) * 10f)) / 10f;
 
                 if (!_hasInjectedMyPlayer)
                 {

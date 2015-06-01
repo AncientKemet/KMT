@@ -56,13 +56,6 @@ namespace Client.Units
         private int _parentId = -1;
         private int _parentPlaneId = -1;
 
-        public float Health { get; private set; }
-        public float Energy { get; private set; }
-        public float MaxHealth { get; private set; }
-        public float MaxEnergy { get; private set; }
-        public float HealthRegen { get; private set; }
-        public float EnergyRegen { get; private set; }
-
         public List<BuffInstance> BuffInstances { get; private set; }
         public event Action<BuffInstance> OnBuffWasAdded;
         public event Action<BuffInstance> OnBuffWasRemoved;
@@ -152,6 +145,11 @@ namespace Client.Units
                 }
                 return _projector;
             }
+        }
+
+        public PlayerUnitAttributes PlayerUnitAttributes
+        {
+            get { return _playerUnitAttributes; }
         }
 
         public void AddBuff(BuffInstance b)
@@ -452,10 +450,10 @@ namespace Client.Units
                 int energy = b.GetUnsignedByte();
                 int maxenergy = b.GetUnsignedByte();
 
-                Health = health;
-                MaxHealth = maxhealth;
-                Energy = energy;
-                MaxEnergy = maxenergy;
+                PlayerUnitAttributes.curr = health;
+                PlayerUnitAttributes.MaxHealth = maxhealth;
+                PlayerUnitAttributes.Energy = energy;
+                PlayerUnitAttributes.MaxEnergy = maxenergy;
 
                 if (this == MyPlayerUnit)
                 {
@@ -595,5 +593,6 @@ namespace Client.Units
 
         public Action OnBeforeDestroy;
         private Item item;
+        private readonly PlayerUnitAttributes _playerUnitAttributes = new PlayerUnitAttributes();
     }
 }

@@ -18,10 +18,9 @@ namespace Client.Units
             }
         }
 
-        protected abstract float Strengt { get; set; }
-        protected abstract float Range { get; set; }
-        protected abstract float CriticalChance { get; set; }
+        public abstract float Strenght { get; set; }
+        public abstract float Range { get; set; }
+        public abstract float CriticalChance { get; set; }
 
-        protected abstract void Update();
     }
 }

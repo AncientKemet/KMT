@@ -1,4 +1,5 @@
-﻿#if SERVER
+﻿using Client.Units;
+#if SERVER
 using Server.Model.Entities;
 using Server.Model.Extensions.UnitExts;
 #endif
@@ -44,6 +45,38 @@ namespace Development.Libary.Spells.Codes
             return "";
         }
 
+#if CLIENT
+        private ASpellRadius CurrentRadius;
+        public void OnEnable()
+        {
+            ClientOnStartedCasting += unit =>
+            {
+                switch (_radiusType)
+                {
+                    case RadiusType.Line:
+
+                        CurrentRadius = Instantiate(ContentManager.I.SpellRadiuses[0]);
+                        CurrentRadius.transform.transform.parent = unit.transform;
+                        CurrentRadius.transform.localPosition = Vector3.zero;
+                        CurrentRadius.transform.localRotation = Quaternion.identity;
+
+                        break;
+                }
+            };
+
+            ClientOnStrenghtChanged += (unit, f) =>
+            {
+                if (CurrentRadius != null)
+                    CurrentRadius.Strenght = f;
+            };
+
+            ClientOnFinishedCasting += unit =>
+            {
+                if(CurrentRadius != null)
+                    Destroy(CurrentRadius.gameObject);
+            };
+        }
+#endif
 #if SERVER
 
         public override void OnFinishCasting(ServerUnit unit, float strenght)

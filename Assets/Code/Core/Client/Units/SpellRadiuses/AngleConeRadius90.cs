@@ -9,9 +9,9 @@ namespace Client.Units.SpellRadiuses
         private float _range;
         private float _criticalChance;
 
-        protected override float Strengt { get; set; }
+        public override float Strenght { get; set; }
 
-        protected override float Range
+        public override float Range
         {
             get { return _range; }
             set
@@ -22,7 +22,7 @@ namespace Client.Units.SpellRadiuses
             }
         }
 
-        protected override float CriticalChance
+        public override float CriticalChance
         {
             get { return _criticalChance; }
             set
@@ -30,10 +30,6 @@ namespace Client.Units.SpellRadiuses
                 _criticalChance = value;
                 CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalChance;
             }
-        }
-
-        protected override void Update()
-        {
         }
     }
 }

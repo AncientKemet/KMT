@@ -1,4 +1,6 @@
-﻿using Code.Core.Client.UI;
+﻿using System;
+using Client.Units;
+using Code.Core.Client.UI;
 using Code.Libaries.Generic;
 #if SERVER
 using Server.Model.Entities;
@@ -56,6 +58,13 @@ namespace Shared.Content.Types
                 return _inContentManagerId;
             }
         }
+
+        [Obsolete]
+        public Action<PlayerUnit> ClientOnStartedCasting;
+        [Obsolete]
+        public Action<PlayerUnit,float> ClientOnStrenghtChanged;
+        [Obsolete]
+        public Action<PlayerUnit> ClientOnFinishedCasting;
 
 #if SERVER
         [System.Obsolete("Use Unit.Spells.StartSpell")]

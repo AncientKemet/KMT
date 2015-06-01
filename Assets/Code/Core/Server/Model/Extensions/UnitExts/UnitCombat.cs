@@ -1,3 +1,6 @@
+#region
+
+using System.Collections;
 using Libaries.IO;
 #if SERVER
 using System;
@@ -6,11 +9,20 @@ using Shared.Content.Types;
 using Server.Model.Entities;
 using UnityEngine;
 
+#endregion
+
 namespace Server.Model.Extensions.UnitExts
 {
+    /// <summary>
+    /// This is kinda strange update 
+    /// </summary>
     public class UnitCombat : UnitUpdateExt
     {
-
+        private const int RegenUpdateTick = 20;
+        private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
+        private int RegenTick;
+        private bool _dead;
+        private UnitAttributes _unitAttributes;
         public ServerUnit Unit { get; private set; }
 
         private UnitAttributes UnitAttributes
@@ -25,13 +37,9 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        public event Action<float> OnHit;
-        public event Action<Spell.DamageType, Spell.HitType, Spell.HitStrenght> OnHitT;
-        public event Action<Dictionary<ServerUnit, float>> OnDeath;
+        public float CurrenHealth { get; private set; }
 
-        public float Health { get; private set; }
-        public float Energy { get; private set; }
-        public float EnergyRatio { get { return Energy / 100f; } }
+        public float CurrentEnergy { get; private set; }
 
         public bool Dead
         {
@@ -57,13 +65,9 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        private int RegenTick = 0;
-
-        private UnitAttributes _unitAttributes;
-        private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
-        private bool _dead;
-
-        const int RegenUpdateTick = 20;
+        public event Action<float> OnHit;
+        public event Action<Spell.DamageType, Spell.HitType, Spell.HitStrenght> OnHitT;
+        public event Action<Dictionary<ServerUnit, float>> OnDeath;
 
         public override void Progress(float time)
         {
@@ -75,10 +79,10 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     RegenTick = 0;
 
-                    Energy += UnitAttributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
-                    Energy = Mathf.Clamp(Energy, 0, 100);
-                    Health += UnitAttributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
-                    Health = Mathf.Clamp(Health, 0, 100);
+                    CurrentEnergy += UnitAttributes[UnitAttributeProperty.EnergyRegen]*time*RegenUpdateTick;
+                    CurrentEnergy = Mathf.Clamp(CurrentEnergy, 0, 100);
+                    CurrenHealth += UnitAttributes[UnitAttributeProperty.HealthRegen]*time*RegenUpdateTick;
+                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
                     _wasUpdate = true;
                 }
         }
@@ -87,8 +91,8 @@ namespace Server.Model.Extensions.UnitExts
         {
             JSONObject combat = new JSONObject();
 
-            combat.AddField("hp", "" + Health);
-            combat.AddField("en", "" + Energy);
+            combat.AddField("hp", "" + CurrenHealth);
+            combat.AddField("en", "" + CurrentEnergy);
 
             j.AddField("combat", combat);
         }
@@ -98,9 +102,9 @@ namespace Server.Model.Extensions.UnitExts
             JSONObject combat = j.GetField("combat");
 
             if (combat.HasField("hp"))
-                Health = Mathf.Max(float.Parse(combat.GetField("hp").str), 1f);
+                CurrenHealth = Mathf.Max(float.Parse(combat.GetField("hp").str), 1f);
             if (combat.HasField("en"))
-                Energy = Mathf.Max(float.Parse(combat.GetField("en").str), 1f);
+                CurrentEnergy = Mathf.Max(float.Parse(combat.GetField("en").str), 1f);
         }
 
         protected override void OnExtensionWasAdded()
@@ -108,8 +112,8 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
 
             Unit = entity as ServerUnit;
-            Energy = 100;
-            Health = 100;
+            CurrentEnergy = 100;
+            CurrenHealth = 100;
 
             _wasUpdate = true;
         }
@@ -119,32 +123,16 @@ namespace Server.Model.Extensions.UnitExts
             return 0x04;
         }
 
-        protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
-        {
-            packet.AddByte((int)Health);
-            packet.AddByte((int)UnitAttributes.MaxHealth);
-            packet.AddByte((int)Energy);
-            packet.AddByte((int)UnitAttributes.MaxEnergy);
-        }
-
-        protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
-        {
-            packet.AddByte((int)Health);
-            packet.AddByte((int)UnitAttributes.MaxHealth);
-            packet.AddByte((int)Energy);
-            packet.AddByte((int)UnitAttributes.MaxEnergy);
-        }
-
         internal void ReduceEnergy(float amount)
         {
-            Energy -= amount;
-            Energy = Mathf.Clamp(Energy, 0, 100);
+            CurrentEnergy -= amount;
+            CurrentEnergy = Mathf.Clamp(CurrentEnergy, 0, 100);
             _wasUpdate = true;
         }
 
         internal void ReduceHealth(UnitCombat dealer, float amount)
         {
-            if (Health > 0)
+            if (CurrenHealth > 0)
             {
                 if (_damageRecieved.ContainsKey(dealer.Unit))
                 {
@@ -164,25 +152,25 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (OnHit != null)
                 {
-                    OnHit(Health - amount);
+                    OnHit(CurrenHealth - amount);
                 }
             }
-            Health -= amount;
+            CurrenHealth -= amount;
 
-            if (Health <= 0)
+            if (CurrenHealth <= 0)
             {
                 if (!Dead)
                 {
-                    Health = Mathf.Clamp(Health, 0, 100);
+                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
                     _wasUpdate = true;
                     Dead = true;
-                    if(OnDeath != null)
+                    if (OnDeath != null)
                         OnDeath(_damageRecieved);
                     return;
                 }
             }
 
-            Health = Mathf.Clamp(Health, 0, 100);
+            CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
             _wasUpdate = true;
         }
 
@@ -191,38 +179,62 @@ namespace Server.Model.Extensions.UnitExts
             if (Dead)
             {
                 Dead = false;
-                Health = _health;
-                Health = Mathf.Clamp(Health, 0, 100);
+                CurrenHealth = _health;
+                CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
                 _wasUpdate = true;
             }
         }
 
+        #region Update packet serialization
+
+        protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
+        {
+            packet.AddBitArray(new BitArray(new[] {}));
+            packet.AddByte((int) CurrenHealth);
+            packet.AddByte((int) UnitAttributes.MaxHealth);
+            packet.AddByte((int) CurrentEnergy);
+            packet.AddByte((int) UnitAttributes.MaxEnergy);
+        }
+
+        protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
+        {
+            packet.AddByte((int) CurrenHealth);
+            packet.AddByte((int) UnitAttributes.MaxHealth);
+            packet.AddByte((int) CurrentEnergy);
+            packet.AddByte((int) UnitAttributes.MaxEnergy);
+        }
+
+        #endregion
+
+        #region Hiteffects
+
         private void MeleePhysicalHitEffects(Spell.HitStrenght strenght, UnitCombat dealer, float damage)
         {
             float distance = Vector3.Distance(Unit.Movement.Position, dealer.Unit.Movement.Position);
-            float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward, dealer.Unit.Movement.Position);
+            float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward,
+                                                         dealer.Unit.Movement.Position);
 
-            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), (float)strenght);
+            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), (float) strenght);
 
             if (Unit.Anim != null)
                 Unit.Anim.ActionAnimation = "Hit" + (distance < distanceFromForward ? "Back" : "Front");
         }
 
-        public void Hit(Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, UnitCombat dealer, float damage)
+        public void Hit(Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, UnitCombat dealer,
+            float damage)
         {
             if (dmgType == Spell.DamageType.Physical)
             {
-                
-                    MeleePhysicalHitEffects(strenght, dealer, damage);
+                MeleePhysicalHitEffects(strenght, dealer, damage);
 
-                float modifiedDamage = (damage * (1.0f + dealer.UnitAttributes[UnitAttributeProperty.PhysicalDamage])) *
-                                        (1.0f - Unit.Attributes[UnitAttributeProperty.Armor]);
+                float modifiedDamage = (damage*(1.0f + dealer.UnitAttributes[UnitAttributeProperty.PhysicalDamage]))*
+                                       (1.0f - Unit.Attributes[UnitAttributeProperty.Armor]);
                 ReduceHealth(dealer, modifiedDamage);
             }
             else if (dmgType == Spell.DamageType.Magical)
             {
-                ReduceHealth(dealer, (damage * (1.0f + dealer.UnitAttributes[UnitAttributeProperty.MagicalDamage])) *
-                                        (1.0f - Unit.Attributes[UnitAttributeProperty.MagicResist]));
+                ReduceHealth(dealer, (damage*(1.0f + dealer.UnitAttributes[UnitAttributeProperty.MagicalDamage]))*
+                                     (1.0f - Unit.Attributes[UnitAttributeProperty.MagicResist]));
             }
             else if (dmgType == Spell.DamageType.True)
             {
@@ -232,6 +244,24 @@ namespace Server.Model.Extensions.UnitExts
             if (OnHitT != null)
                 OnHitT(dmgType, hitType, strenght);
         }
+
+        #endregion
+
+        #region Attribute update handling
+
+        private Dictionary<UnitAttributeProperty, float> _attrbuteChanges =
+            new Dictionary<UnitAttributeProperty, float>();
+
+        private bool _attributeUpdate;
+
+        public void AttributeHasChanged(UnitAttributeProperty property, float value)
+        {
+            _attributeUpdate = true;
+            _attrbuteChanges.Add(property, value);
+        }
+
+        #endregion
     }
 }
+
 #endif
