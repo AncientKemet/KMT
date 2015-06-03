@@ -390,6 +390,7 @@
     <Compile Include="Assets\Code\Libaries\Net\Packets\Data\DataSetPacket.cs" />
     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\BuffUpdatePacket.cs" />
     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\CharacterCustomalizationDataPacket.cs" />
+    <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\DamagePacket.cs" />
     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\EnterWorldPacket.cs" />
     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\LoginResponsePacket.cs" />
     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\ProfileInterfaceUpdatePacket.cs" />

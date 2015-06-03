@@ -40,7 +40,7 @@ namespace Server.Model.Entities.Human
         /// </summary>
         public string Password { get; set; }
 
-        public override void Awake()
+        protected override void Awake()
         {
             PlayerInput = AddExt<PlayerInput>();
             PlayerUdp = AddExt<PlayerUDP>();

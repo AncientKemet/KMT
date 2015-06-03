@@ -36,9 +36,9 @@ namespace Server.Model.Entities
 
         protected virtual void OnEnterWorld(World world)
         {
-            if (OnFinishDeserialization != null)
-                OnFinishDeserialization();
-            OnFinishDeserialization = null;
+            if (OnLastSetup != null)
+                OnLastSetup();
+            OnLastSetup = null;
         }
 
         public override World CurrentWorld
@@ -56,10 +56,11 @@ namespace Server.Model.Entities
             }
         }
 
-        public virtual void Awake()
+        protected virtual void Awake()
         {
             _updateExtensions = new List<UnitUpdateExt>();
 
+            Attributes = AddExt<UnitAttributes>();
             Movement = AddExt<UnitMovement>();
             Display = AddExt<UnitDisplay>();
             Access = AddExt<UnitAccessOwnership>();
@@ -269,7 +270,7 @@ namespace Server.Model.Entities
 
         #endregion
 
-        public event Action OnFinishDeserialization;
+        public event Action OnLastSetup;
     }
 }
 

@@ -90,10 +90,13 @@ namespace Server.Model.Extensions.UnitExts
         //property getters
         public Vector3 Position
         {
-            get { return _position; }
+            get { return Parent == null ? _position : Parent._position; }
             private set
             {
                 _position = value;
+
+                transform.position = value;
+
                 bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
                 if (_correction)
                     _wasUpdate = true;
@@ -367,7 +370,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public void Teleport(Vector3 location)
         {
-            Position = location;
+            _position = location;
             Teleported = true;
             _wasUpdate = true;
         }
@@ -423,6 +426,7 @@ namespace Server.Model.Extensions.UnitExts
 
             packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
             packet.AddByte(ParentPlaneID);
+            _lastPositionSent = _position;
         }
 
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
@@ -473,7 +477,7 @@ namespace Server.Model.Extensions.UnitExts
         public void Push(Vector3 vector3, float strenght)
         {
             if (CanMove)
-                MoveTo(_position + vector3 * strenght);
+                MoveTo(_position + vector3.normalized * strenght);
         }
 
         public override void Serialize(JSONObject j)

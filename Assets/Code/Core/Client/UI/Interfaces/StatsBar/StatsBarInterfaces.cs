@@ -39,7 +39,6 @@ namespace Code.Core.Client.UI.Interfaces
                     _hasInjectedMyPlayer = true;
                     PlayerUnit.MyPlayerUnit.OnBuffWasAdded += instance =>
                     {
-                        Debug.Log("add buff : "+instance.Index);
                         var n = ((GameObject)Instantiate(BuffInstance.gameObject)).GetComponent<BuffControl>();
                         n.Buff = instance;
                         n.gameObject.SetActive(true);
@@ -49,7 +48,6 @@ namespace Code.Core.Client.UI.Interfaces
                     };
                     PlayerUnit.MyPlayerUnit.OnBuffWasRemoved += instance =>
                     {
-                        Debug.Log("remove buff : " + instance.Index);
                         try
                         {
                             var c = BuffControls.Find(control => control.Buff.Index == instance.Index);

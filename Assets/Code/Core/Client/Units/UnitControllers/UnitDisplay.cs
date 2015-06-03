@@ -39,7 +39,7 @@ namespace Client.Units.UnitControllers
         private Material _skirt;
         private Material _chest;
 
-        public Transform NeckBone, BodyBone, Offhand, Mainhand, LeftShoulder, RightShoulder;
+        public Transform NeckBone, BodyBone, Offhand, Mainhand,RightHand,LeftHand, LeftShoulder, RightShoulder;
 
         [SerializeField]
         private string _standAnimation;
@@ -329,7 +329,7 @@ namespace Client.Units.UnitControllers
             if (!_updateWalkRunStand)
                 return;
 
-            bool lookAtItReally = _lookAtUnit != null && _lookAtUnit.gameObject != gameObject && (Vector3.Distance(transform.position + transform.forward, _lookAtUnit.transform.position) >
+            bool lookAtItReally = _lookAtUnit != null && _lookAtUnit.gameObject != gameObject && (Vector3.Distance(transform.position + transform.forward, _lookAtUnit.transform.position) <
                                                           Vector3.Distance(transform.position + transform.forward * -1f, _lookAtUnit.transform.position) ||
                                                           _lookAtUnit == _unit);
 
@@ -370,14 +370,22 @@ namespace Client.Units.UnitControllers
             NeckBone = TransformHelper.FindTraverseChildren("Neck", model.Visual.transform);
             BodyBone = TransformHelper.FindTraverseChildren("Body", model.Visual.transform);
 
-            Mainhand = TransformHelper.FindTraverseChildren("MainHand", model.Visual.transform);
-            Offhand = TransformHelper.FindTraverseChildren("OffHand", model.Visual.transform);
+            
             LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.Visual.transform);
             RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.Visual.transform);
 
             //If its human male or female model
             if (_model == 0 || _model == 1)
             {
+                Mainhand = TransformHelper.FindTraverseChildren("MainHand", model.Visual.transform);
+                Offhand = TransformHelper.FindTraverseChildren("OffHand", model.Visual.transform);
+                RightHand = Mainhand.parent;
+                LeftHand = Offhand.parent;
+
+                _animation["HandRightHold"].wrapMode = WrapMode.Clamp;
+                _animation["HandRightHold"].layer = 4;
+                _animation["HandRightHold"].AddMixingTransform(RightHand);
+
                 //First create an face.
                 Face = UnitFactory.Instance.CreateFace(this);
 
@@ -431,6 +439,16 @@ namespace Client.Units.UnitControllers
             }
         }
 
+        private bool IsPowerAnim(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return false;
+
+            if (id.Contains("Power"))
+            {
+                return true;
+            }
+            return false;
+        }
         private bool IsAttackAnim(string id)
         {
             if (string.IsNullOrEmpty(id)) return false;
@@ -483,6 +501,8 @@ namespace Client.Units.UnitControllers
             {
                 _animation[animationName].layer = 1;
                 _animation[animationName].AddMixingTransform(BodyBone);
+                if(IsPowerAnim(animationName))
+                _animation[animationName].wrapMode = WrapMode.ClampForever; 
                 _animation.Blend(animationName, 1, FadeOutTime / (animationName.Contains("Power") ? 0.5f : 3f));
             }
         }
@@ -513,6 +533,10 @@ namespace Client.Units.UnitControllers
             /*EquipItemUnit(head, NeckBone);
             EquipItemUnit(mainHand, Mainhand);
             EquipItemUnit(offHand, Offhand);*/
+            if(mainHand == -1)
+                _animation.Play("HandRightHold");
+            else
+                _animation.Stop("HandRightHold");
 
             if (BootsId == -1)
             {

@@ -26,7 +26,7 @@ namespace Client.Units
     {
         [SerializeField]
         private int _id = -1;
-        
+
         private UnitDisplay _display;
 
         private bool IsStatic
@@ -73,7 +73,7 @@ namespace Client.Units
         }
 
         public bool IsFlying { get; set; }
-        
+
         public static PlayerUnit MyPlayerUnit { get; set; }
 
         public string Name
@@ -235,7 +235,7 @@ namespace Client.Units
 
             MovementTargetPosition = transform.localPosition;
         }
-        
+
         protected virtual void Update()
         {
 
@@ -254,7 +254,7 @@ namespace Client.Units
                 calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
 
                 if (!IsFlying)
-                FixYOnTerrain(ref calculatedPosition);
+                    FixYOnTerrain(ref calculatedPosition);
                 transform.localPosition = calculatedPosition;
             }
 
@@ -297,21 +297,21 @@ namespace Client.Units
                 bool parentUpdate = movementMask[1];
                 IsFlying = movementMask[2];
 
-                        Vector3 pos = b.GetPosition6B();
-                        if (!teleported && !IsStatic)
-                        {
-                            MovementTargetPosition = pos;
-                        }
-                        else
-                        {
-                            MovementTargetPosition = pos;
-                            transform.localPosition = pos;
-                        }
+                Vector3 pos = b.GetPosition6B();
+                if (!teleported && !IsStatic)
+                {
+                    MovementTargetPosition = pos;
+                }
+                else
+                {
+                    MovementTargetPosition = pos;
+                    transform.localPosition = pos;
+                }
 
-                        float rotation = b.GetAngle1B();
-                        TargetRotation = rotation;
-                    
-                
+                float rotation = b.GetAngle1B();
+                TargetRotation = rotation;
+
+
                 if (parentUpdate)
                 {
                     _parentId = b.GetShort();
@@ -346,7 +346,7 @@ namespace Client.Units
                 bool hasEffects = displayMask[3];
                 bool _hasCharacterCustoms = displayMask[4];
                 bool _visible = displayMask[5];
-                
+
                 if (!isItem)
                 {
                     if (Display != null)
@@ -359,7 +359,7 @@ namespace Client.Units
                 }
                 else
                 {
-                    if(item != null)
+                    if (item != null)
                         Destroy(item.gameObject);
 
                     item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
@@ -400,7 +400,7 @@ namespace Client.Units
                             Debug.Log("null unit id: " + unitID);
                         }
                     }
-                    if(OnBeforeDestroy !=null)
+                    if (OnBeforeDestroy != null)
                         OnBeforeDestroy();
                     Destroy(gameObject);
                 }
@@ -444,21 +444,27 @@ namespace Client.Units
 
             if (combatUpdate)
             {
+                BitArray mask = b.GetBitArray();
 
-                int health = b.GetUnsignedByte();
-                int maxhealth = b.GetUnsignedByte();
-                int energy = b.GetUnsignedByte();
-                int maxenergy = b.GetUnsignedByte();
+                bool _hpUpdate = mask[0], _enUpdate = mask[1], _attributesUpdate = mask[2];
 
-                PlayerUnitAttributes.curr = health;
-                PlayerUnitAttributes.MaxHealth = maxhealth;
-                PlayerUnitAttributes.Energy = energy;
-                PlayerUnitAttributes.MaxEnergy = maxenergy;
+                if (_hpUpdate)
+                    PlayerUnitAttributes.CurrentHealth = b.GetUnsignedByte();
 
-                if (this == MyPlayerUnit)
+                if (_enUpdate)
+                    PlayerUnitAttributes.CurrentEnergy = b.GetUnsignedByte();
+
+                if (_attributesUpdate)
                 {
-                    StatsBarInterfaces.I.HPBar.Progress = (float)health / ((float)maxhealth + 0.01f);
-                    StatsBarInterfaces.I.ENBar.Progress = ((float)energy / ((float)maxenergy + 0.01f));
+                    int count = b.GetUnsignedByte();
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        var property = (UnitAttributeProperty)b.GetByte();
+                        float value = b.GetShort() / 100f;
+
+                        PlayerUnitAttributes.SetAttribute(property, value);
+                    }
                 }
 
             }
@@ -512,10 +518,10 @@ namespace Client.Units
                             action,
                             delegate
                             {
-// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                                 if (this != null)
                                 {
-                                    var packet = new UnitActionPacket {UnitId = Id, ActionName = action};
+                                    var packet = new UnitActionPacket { UnitId = Id, ActionName = action };
                                     ClientCommunicator.Instance.SendToServer(packet);
                                 }
                             }
@@ -539,7 +545,18 @@ namespace Client.Units
             StartCoroutine(Ease.Join(
                 transform,
                 plane,
-                () => { transform.parent = plane; },
+                () => { StartCoroutine(Ease.Join(
+                              transform,
+                              plane,
+                              () =>
+                              {
+                                  transform.parent = plane;
+                                  transform.localPosition = Vector3.zero;
+                                  transform.localRotation = Quaternion.identity;
+                                  transform.localScale = Vector3.one;
+                              },
+                              0.3f));
+                },
                 0.3f));
 
             if (parent.Display.OnModelChange != null)
@@ -578,15 +595,15 @@ namespace Client.Units
 
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
-            
+
             if (p.Mask[0])
             {
                 _movementTargetPosition = _movementTargetPosition + p.Difference;
             }
             else
             {
-                float angleY = p.YAngle/(180/Mathf.PI);
-                _movementTargetPosition = _movementTargetPosition + ( new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY)) * p.Distance);
+                float angleY = p.YAngle / (180 / Mathf.PI);
+                _movementTargetPosition = _movementTargetPosition + (new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY)) * p.Distance);
                 TargetRotation = p.Face;
             }
         }

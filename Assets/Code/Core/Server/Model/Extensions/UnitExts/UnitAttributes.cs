@@ -1,3 +1,4 @@
+using Code.Core.Shared.Content.Types.ItemExtensions;
 #if SERVER
 using System;
 using Libaries.Net.Packets.ForClient;
@@ -15,17 +16,8 @@ namespace Server.Model.Extensions.UnitExts
     {
         private List<BuffInstance> _buffs = new List<BuffInstance>();
         public Dictionary<UnitAttributeProperty, float> Attributes = new Dictionary<UnitAttributeProperty, float>();
-
-        public float Strenght { get; set; }
-        public float Dexterity { get; set; }
-        public float Wisdom { get; set; }
-
-        public float MaxHealth { get { return 100 + (Strenght * (1.0f + Get(UnitAttributeProperty.StrenghtBonus))) * 0.33f; } }
-        public float MaxEnergy { get { return 100 + Dexterity * 0.33f; } }
-
+        
         public ServerUnit Unit { get; private set; }
-
-        public float BaseArmor { get; set; }
 
         private int _updateTick = 0;
 
@@ -50,14 +42,30 @@ namespace Server.Model.Extensions.UnitExts
             Attributes.Add(type, 0);
             return 0;
         }
+
         public void Set(UnitAttributeProperty type, float val)
         {
             if (Attributes.ContainsKey(type))
                 Attributes[type] = val;
             else
                 Attributes.Add(type, val);
+
+            if(Unit.Combat != null)
+                Unit.Combat.AttributeHasChanged(type, val);
         }
-        public float this[UnitAttributeProperty type] { get { return Get(type); } set { Set(type, value); } }
+
+        public void Add(UnitAttributeProperty type, float val)
+        {
+            Set(type, Get(type) + val);
+        }
+
+        public void Remove(UnitAttributeProperty type, float val)
+        {
+            Set(type, Get(type) - val);
+        }
+
+        public float this[UnitAttributeProperty type] { get { return Get(type); }
+            private set { Set(type, value); } }
 
 
         protected override void OnExtensionWasAdded()
@@ -65,6 +73,20 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
             Unit = entity as ServerUnit;
 
+            Add(UnitAttributeProperty.Health, 100);
+            Add(UnitAttributeProperty.Energy, 100);
+            Add(UnitAttributeProperty.HealthRegen, 0.5f);
+            Add(UnitAttributeProperty.EnergyRegen, 1.0f);
+            Add(UnitAttributeProperty.CriticalArea, 0.10f);
+            Add(UnitAttributeProperty.CriticalDamage, 1.5f);
+            Add(UnitAttributeProperty.Armor, 0.1f);
+            Add(UnitAttributeProperty.MagicResist, 0.1f);
+            Add(UnitAttributeProperty.MovementSpeed, 0);
+            Add(UnitAttributeProperty.WeaponReach, 1f);
+            Add(UnitAttributeProperty.PhysicalDamage, 0f);
+            Add(UnitAttributeProperty.MagicalDamage, 0f);
+            Add(UnitAttributeProperty.ChargeSpeed, 0);
+            
             OnBuffUpdate += (instance, b) =>
             {
                 var pa = new BuffUpdatePacket();
@@ -81,9 +103,7 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     if(listener == null || !(listener is Player) && listener == Unit)
                         continue;
-
                     Player p = listener as Player;
-
                     p.Client.ConnectionHandler.SendPacket(pa);
                 }
             };
@@ -151,6 +171,21 @@ namespace Server.Model.Extensions.UnitExts
         /// </summary>
         public Action<BuffInstance, bool> OnBuffUpdate;
 
+        public void AddStats(EquipmentItem item)
+        {
+            foreach (var attribute in item.Attributes)
+            {
+                Add(attribute.Property, attribute.Value);
+            }
+        }
+
+        public void RemoveStats(EquipmentItem item)
+        {
+            foreach (var attribute in item.Attributes)
+            {
+                Remove(attribute.Property, attribute.Value);
+            }
+        }
     }
 }
 #endif

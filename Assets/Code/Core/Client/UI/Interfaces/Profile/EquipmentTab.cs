@@ -1,6 +1,9 @@
-﻿using Client.UI.Controls.Items;
+﻿using System.Collections.Generic;
+using Client.UI.Controls.Items;
 using Client.Units;
 using Code.Libaries.Generic.Managers;
+using Shared.Content.Types;
+using UnityEngine;
 
 namespace Client.UI.Interfaces.Profile
 {
@@ -11,18 +14,29 @@ namespace Client.UI.Interfaces.Profile
 
         public ItemButton HeadButton, ChestButton, LegsButton, BootsButton, MainHandButton, OffHandButton;
 
-        public override void ReloadFromUnit(PlayerUnit unit)
+        public Transform AttributeContainer;
+
+        private Dictionary<UnitAttributeProperty, Attribute> Attributes;
+
+       public override void ReloadFromUnit(PlayerUnit unit)
         {
             if (Unit != unit)
             {
                 if (Unit != null)
                 {
                     Unit.Display.OnEquipmentChanged -= RefreshItems;
+                    Unit.PlayerUnitAttributes.OnChange -= RefreshStats;
                 }
             }
             Unit = unit;
             base.ReloadFromUnit(unit);
             RefreshItems();
+
+            foreach (var o in Unit.PlayerUnitAttributes)
+            {
+                var kv = (KeyValuePair<UnitAttributeProperty, float>) o;
+                RefreshStats(kv.Key, kv.Value);
+            }
         }
 
         private void RefreshItems()
@@ -40,13 +54,40 @@ namespace Client.UI.Interfaces.Profile
             if (Unit != null)
             {
                 Unit.Display.OnEquipmentChanged += RefreshItems;
+                Unit.PlayerUnitAttributes.OnChange += RefreshStats;
             }
         }
+
+        private void RefreshStats(UnitAttributeProperty property, float f)
+        {
+            if (Attributes == null)
+            {
+                Attributes = new Dictionary<UnitAttributeProperty, Attribute>();
+
+                foreach (var att in AttributeContainer.GetComponentsInChildren<Attribute>(true))
+                {
+                    Attributes.Add(att.Property, att);
+                }
+            }
+            if(property == UnitAttributeProperty.DamageToAnimal || property == UnitAttributeProperty.DamageToAnimal || property == UnitAttributeProperty.DamageToTreePalm || property == UnitAttributeProperty.DamageToShield || property == UnitAttributeProperty.DamageToMineral || property == UnitAttributeProperty.Mobility)
+                return;
+            try
+            {
+                string formatedValue = UnitAttributePropertySerializable.GetLabeledString(property, f);
+                Attributes[property].ValueLabel.text = (f > 0 ? "+" : "") + formatedValue;
+            }
+            catch (KeyNotFoundException e)
+            {
+                Debug.LogError("Missing property: "+property);
+            }
+        }
+
         private void OnDisable()
         {
             if (Unit != null)
             {
                 Unit.Display.OnEquipmentChanged -= RefreshItems;
+                Unit.PlayerUnitAttributes.OnChange -= RefreshStats;
             }
         }
     }

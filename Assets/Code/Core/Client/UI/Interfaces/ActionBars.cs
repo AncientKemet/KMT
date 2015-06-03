@@ -21,7 +21,8 @@ namespace Code.Core.Client.UI.Interfaces
 
         public SpellButton Q, W, E, R;
 
-        [CanBeNull] private Spell currentCastingSpell;
+        [CanBeNull]
+        private Spell currentCastingSpell;
 
         protected override void OnStart()
         {
@@ -74,10 +75,10 @@ namespace Code.Core.Client.UI.Interfaces
             if (p.UpdateState == SpellUpdateState.StrenghtChange)
             {
                 ChannelBar.Progress = p.Strenght;
-                if(currentCastingSpell != null)
+                if (currentCastingSpell != null)
                     if (currentCastingSpell.ClientOnStrenghtChanged != null)
                         currentCastingSpell.ClientOnStrenghtChanged(PlayerUnit.MyPlayerUnit, p.Strenght);
-                
+
             }
             //Set spell packets
             if (p.UpdateState == SpellUpdateState.SetSpell)
@@ -138,36 +139,21 @@ namespace Code.Core.Client.UI.Interfaces
             {
                 if (p.Index == 0)
                 {
-                    if (currentCastingSpell != Q.spell)
-                    {
-                        currentCastingSpell = Q.spell;
-                        Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
-                    }
+                    Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 1)
                 {
-                    if (currentCastingSpell != W.spell)
-                    {
-                        currentCastingSpell = W.spell;
-                        W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
-                    }
+                    W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 2)
                 {
-                    if (currentCastingSpell != E.spell)
-                    {
-                        currentCastingSpell = E.spell;
-                        E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
-                    }
+                    E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 3)
                 {
-                    if (currentCastingSpell != R.spell)
-                    {
-                        currentCastingSpell = R.spell;
-                        R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
-                    }
+                    R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
+                currentCastingSpell = null;
             }
         }
     }

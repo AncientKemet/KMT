@@ -1,4 +1,5 @@
 ﻿using Client.Units;
+using Client.Units.SpellRadiuses;
 #if SERVER
 using Server.Model.Entities;
 using Server.Model.Extensions.UnitExts;
@@ -27,23 +28,14 @@ namespace Development.Libary.Spells.Codes
         }
 
         public RadiusType _radiusType;
-        [Range(0,2f)]
-        public float CriticalAreaMultiplier = 1f;
-
-        public float RadiusSize = 1f;
+        public float LineWidth = 0.5f;
 
         public string PowerAnim = "LeftHandSlashPower";
         public string AttackAnim = "LeftHandSlashAttack";
 
-        public float LowestDamage = 0;
-        public float HighestDamage = 0;
+        public float BaseDamage = 10;
 
-        public Spell.DamageType DamageType = Spell.DamageType.Physical;
-
-        public string GetDescription()
-        {
-            return "";
-        }
+        public DamageType DamageType = DamageType.Physical;
 
 #if CLIENT
         private ASpellRadius CurrentRadius;
@@ -55,9 +47,14 @@ namespace Development.Libary.Spells.Codes
                 {
                     case RadiusType.Line:
 
-                        CurrentRadius = Instantiate(ContentManager.I.SpellRadiuses[0]);
+                        CurrentRadius = Instantiate(ContentManager.I.SpellRadiuses[0].gameObject).GetComponent<ASpellRadius>();
+
+                        CurrentRadius.CriticalArea = unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.CriticalArea);
+                        CurrentRadius.Range = unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.WeaponReach);
+                        (CurrentRadius as MeleeLineRadius).Width = LineWidth;
+
                         CurrentRadius.transform.transform.parent = unit.transform;
-                        CurrentRadius.transform.localPosition = Vector3.zero;
+                        CurrentRadius.transform.localPosition = Vector3.up;
                         CurrentRadius.transform.localRotation = Quaternion.identity;
 
                         break;
@@ -72,7 +69,7 @@ namespace Development.Libary.Spells.Codes
 
             ClientOnFinishedCasting += unit =>
             {
-                if(CurrentRadius != null)
+                if (CurrentRadius != null)
                     Destroy(CurrentRadius.gameObject);
             };
         }
@@ -81,31 +78,47 @@ namespace Development.Libary.Spells.Codes
 
         public override void OnFinishCasting(ServerUnit unit, float strenght)
         {
-
+            var hitStrenght = strenght < 0.33f
+                ? HitStrenght.Weak
+                : strenght > 0.66f ? HitStrenght.Strong : HitStrenght.Normal;
             unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "") + (strenght < 0.33 ? "Weak" : "");
 
             if (strenght > 0.66f)
                 unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 0.5f);
 
-
-            foreach (var o in unit.CurrentBranch.ActiveObjectsVisible)
-            {
-                ServerUnit u = o as ServerUnit;
-
-                if (u == null)
-                    continue;
-
-                if (u == unit)
-                    continue;
-
-                UnitCombat com = u.Combat;
-
-                if (com != null)
+            if (_radiusType != RadiusType.Line)
+                foreach (var o in unit.CurrentBranch.ActiveObjectsVisible)
                 {
-                    if (!DoLocationTest(unit, u.Movement.Position, u.Display.Size / 2f))
+                    ServerUnit u = o as ServerUnit;
+
+                    if (u == null)
                         continue;
 
-                    com.Hit(DamageType, Spell.HitType.Melee, Spell.HitStrenght.Normal, unit.Combat, LowestDamage + (HighestDamage-LowestDamage) * strenght);
+                    if (u == unit)
+                        continue;
+
+                    UnitCombat com = u.Combat;
+
+                    if (com != null)
+                    {
+                        if (!DoNormalHitBoxTestAngle(unit, u.Movement.Position, u.Display.Size / 2f))
+                            continue;
+
+                        com.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * strenght);
+                    }
+                }
+            else // for line radius we use unity physics
+            {
+                Vector3 origin = unit.Movement.Position;
+                Vector3 direction = unit.Movement.Forward;
+                int layer = 1 << 30;
+                foreach (var hit in Physics.SphereCastAll(origin + direction* LineWidth/2f, LineWidth, direction, unit.Attributes.Get(UnitAttributeProperty.WeaponReach) - LineWidth/2f, layer))
+                {
+                    var combat = hit.collider.GetComponent<UnitCombat>();
+                    if (combat != null && combat != unit.Combat)
+                    {
+                        combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * strenght);
+                    }
                 }
             }
         }
@@ -125,10 +138,12 @@ namespace Development.Libary.Spells.Codes
             unit.Anim.ActionAnimation = "CancelAction";
         }
 
-        protected bool DoLocationTest(ServerUnit unit, Vector3 target, float targetRadius)
+        private bool DoNormalHitBoxTestAngle(ServerUnit unit, Vector3 target, float targetRadius)
         {
             float distance = Vector3.Distance(unit.Movement.Position, target);
-            if (distance < unit.Display.Size + RadiusSize + targetRadius)
+            float weaponReach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
+            //Angle stuff
+            if (distance < unit.Display.Size + weaponReach + targetRadius)
             {
                 Vector3 referenceForward = unit.Movement.Forward;
                 Vector3 referenceRight = Vector3.Cross(Vector3.up, referenceForward);
@@ -153,30 +168,9 @@ namespace Development.Libary.Spells.Codes
                     return true;
                 }
             }
-            if (_radiusType == RadiusType.Line)
-            {
-                return true;
-            }
             return false;
         }
 
-        public static float LineHitDetection(Vector3 _dealerPos, float _width, float _length, float _angletoX, Vector3 _targetPos, float _targetRadius)
-        {
-            _targetPos.x -= _dealerPos.x;
-            _targetPos.z -= _dealerPos.z;
-
-            float r;
-            float f;
-            r = Vector3.Distance(Vector3.zero, _targetPos);
-            f = (float)Math.Asin(_targetPos.z / r);
-            r -= _targetRadius;
-            f -= _angletoX;
-            if (Math.Abs(r * Math.Sin(f)) <= _length / 2 && r * Math.Cos(f) <= _width)
-            {
-                return (float)(Math.Abs(r * Math.Cos(f)));
-            }
-            return (-1);
-        }
 
 #endif
 #if UNITY_EDITOR

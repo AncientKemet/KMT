@@ -10,7 +10,7 @@ namespace Client.Units.SpellRadiuses
         public float Width = 1f;
 
         [SerializeField]
-        private float _criticalChance;
+        private float _criticalArea;
 
 
         [SerializeField]
@@ -25,21 +25,21 @@ namespace Client.Units.SpellRadiuses
             set { _range = value; }
         }
 
-        public override float CriticalChance
+        public override float CriticalArea
         {
-            get { return _criticalChance; }
-            set { _criticalChance = value; }
+            get { return _criticalArea; }
+            set { _criticalArea = value; }
         }
 
         private void Update()
         {
             //width
-            Normal.aspectRatio = OneRatio * (Width) / (_range - (_range * _criticalChance)) * OneSize;
-            Crit.aspectRatio = OneRatio * (Width) / (_range * _criticalChance) * OneSize;
+            Normal.aspectRatio = OneRatio * (Width) / (_range - (_range * _criticalArea)) * OneSize;
+            Crit.aspectRatio = OneRatio * (Width) / (_range * _criticalArea) * OneSize;
             //range
-            Normal.orthographicSize = (_range - (_range * _criticalChance)) * OneSize;
-            Crit.orthographicSize = (_range * _criticalChance) * OneSize;
-            Crit.transform.localPosition = new Vector3(0, 0, _range - (_range * _criticalChance));
+            Normal.orthographicSize = (_range - (_range * _criticalArea)) * OneSize;
+            Crit.orthographicSize = (_range * _criticalArea) * OneSize;
+            Crit.transform.localPosition = new Vector3(0, 0, _range - (_range * _criticalArea));
         }
     }
 }

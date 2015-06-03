@@ -24,10 +24,9 @@ namespace Server.Model.Entities.Human
             return false;
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             Anim = AddExt<UnitAnim>();
-            Attributes = AddExt<UnitAttributes>();
             Combat = AddExt<UnitCombat>();
             Inventory = AddExt<UnitInventory>();
             Equipment = AddExt<UnitEquipment>();

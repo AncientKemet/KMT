@@ -23,8 +23,6 @@ namespace Shared.Content.Types
         public string Description = "";
         public string Subtitle = "";
         
-        public List<UnitAttributePropertySerializable> Attributes;
-
         public string[] ActionsStrings;
 
         [Range(0f, 20f)]
@@ -108,9 +106,10 @@ namespace Shared.Content.Types
         {
             string s = "";
 
-            foreach (var attribute in Attributes)
+            if(EQ != null)
+            foreach (var attribute in EQ.Attributes)
             {
-                s += UnitAttributePropertySerializable.GetLabeledString(attribute) + "\n";
+                s += UnitAttributePropertySerializable.GetLabeledString(attribute.Property, attribute.Value) + "\n";
             }
 
             return Description + "\n" + s;

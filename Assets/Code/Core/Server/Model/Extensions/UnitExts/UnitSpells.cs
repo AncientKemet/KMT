@@ -32,9 +32,9 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (CurrentCastingSpell.HasEnergyCost)
                 {
-                    Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost * Unit.Combat.EnergyRatio);
+                    Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost);
                 }
-                _currentSpellTime += time * Unit.Combat.EnergyRatio;
+                _currentSpellTime += time;
                 CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
 
                 //If the unit is player we'll send them direct Spell strenght Update packet.
@@ -123,6 +123,16 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     _currentCastingSpellId = id;
                     _spells[id].StartCasting(Unit);
+                    if (Unit is Player)
+                    {
+                        Player p = Unit as Player;
+
+                        SpellUpdatePacket packet = new SpellUpdatePacket();
+                        packet.Index = _currentCastingSpellId;
+                        packet.UpdateState = SpellUpdateState.StartedCasting;
+
+                        p.Client.ConnectionHandler.SendPacket(packet);
+                    }
                 }
         }
 
