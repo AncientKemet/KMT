@@ -14,23 +14,28 @@ namespace UnityStandardAssets.Water
             Refractive = 2,
         };
 
+        private static bool s_InsideWater;
 
-        public WaterMode waterMode = WaterMode.Refractive;
-        public bool disablePixelLights = true;
-        public int textureSize = 256;
+
         public float clipPlaneOffset = 0.07f;
-        public LayerMask reflectLayers = -1;
-        public LayerMask refractLayers = -1;
-
-
-        private Dictionary<Camera, Camera> m_ReflectionCameras = new Dictionary<Camera, Camera>(); // Camera -> Camera table
-        private Dictionary<Camera, Camera> m_RefractionCameras = new Dictionary<Camera, Camera>(); // Camera -> Camera table
-        private RenderTexture m_ReflectionTexture;
-        private RenderTexture m_RefractionTexture;
+        public bool disablePixelLights = true;
         private WaterMode m_HardwareWaterSupport = WaterMode.Refractive;
         private int m_OldReflectionTextureSize;
         private int m_OldRefractionTextureSize;
-        private static bool s_InsideWater;
+
+        private Dictionary<Camera, Camera> m_ReflectionCameras = new Dictionary<Camera, Camera>();
+            // Camera -> Camera table
+
+        private RenderTexture m_ReflectionTexture;
+
+        private Dictionary<Camera, Camera> m_RefractionCameras = new Dictionary<Camera, Camera>();
+            // Camera -> Camera table
+
+        private RenderTexture m_RefractionTexture;
+        public LayerMask reflectLayers = -1;
+        public LayerMask refractLayers = -1;
+        public int textureSize = 256;
+        public WaterMode waterMode = WaterMode.Refractive;
 
 
         // This is called when it's known that the object will be rendered by some
@@ -92,7 +97,7 @@ namespace UnityStandardAssets.Water
                 CalculateReflectionMatrix(ref reflection, reflectionPlane);
                 Vector3 oldpos = cam.transform.position;
                 Vector3 newpos = reflection.MultiplyPoint(oldpos);
-                reflectionCamera.worldToCameraMatrix = cam.worldToCameraMatrix * reflection;
+                reflectionCamera.worldToCameraMatrix = cam.worldToCameraMatrix*reflection;
 
                 // Setup oblique projection matrix so that near plane is our reflection
                 // plane. This way we clip everything below/above it for free.
@@ -160,7 +165,7 @@ namespace UnityStandardAssets.Water
 
 
         // Cleanup all the objects we possibly have created
-        void OnDisable()
+        private void OnDisable()
         {
             if (m_ReflectionTexture)
             {
@@ -187,7 +192,7 @@ namespace UnityStandardAssets.Water
 
         // This just sets up some matrices in the material; for really
         // old cards to make water texture scroll.
-        void Update()
+        private void Update()
         {
             if (!GetComponent<Renderer>())
             {
@@ -201,22 +206,22 @@ namespace UnityStandardAssets.Water
 
             Vector4 waveSpeed = mat.GetVector("WaveSpeed");
             float waveScale = mat.GetFloat("_WaveScale");
-            Vector4 waveScale4 = new Vector4(waveScale, waveScale, waveScale * 0.4f, waveScale * 0.45f);
+            Vector4 waveScale4 = new Vector4(waveScale, waveScale, waveScale*0.4f, waveScale*0.45f);
 
             // Time since level load, and do intermediate calculations with doubles
-            double t = Time.timeSinceLevelLoad / 20.0;
+            double t = Time.timeSinceLevelLoad/20.0;
             Vector4 offsetClamped = new Vector4(
-                (float)Math.IEEERemainder(waveSpeed.x * waveScale4.x * t, 1.0),
-                (float)Math.IEEERemainder(waveSpeed.y * waveScale4.y * t, 1.0),
-                (float)Math.IEEERemainder(waveSpeed.z * waveScale4.z * t, 1.0),
-                (float)Math.IEEERemainder(waveSpeed.w * waveScale4.w * t, 1.0)
+                (float) Math.IEEERemainder(waveSpeed.x*waveScale4.x*t, 1.0),
+                (float) Math.IEEERemainder(waveSpeed.y*waveScale4.y*t, 1.0),
+                (float) Math.IEEERemainder(waveSpeed.z*waveScale4.z*t, 1.0),
+                (float) Math.IEEERemainder(waveSpeed.w*waveScale4.w*t, 1.0)
                 );
 
             mat.SetVector("_WaveOffset", offsetClamped);
             mat.SetVector("_WaveScale4", waveScale4);
         }
 
-        void UpdateCameraModes(Camera src, Camera dest)
+        private void UpdateCameraModes(Camera src, Camera dest)
         {
             if (dest == null)
             {
@@ -252,7 +257,7 @@ namespace UnityStandardAssets.Water
 
 
         // On-demand create any objects we need for water
-        void CreateWaterObjects(Camera currentCamera, out Camera reflectionCamera, out Camera refractionCamera)
+        private void CreateWaterObjects(Camera currentCamera, out Camera reflectionCamera, out Camera refractionCamera)
         {
             WaterMode mode = GetWaterMode();
 
@@ -279,7 +284,10 @@ namespace UnityStandardAssets.Water
                 m_ReflectionCameras.TryGetValue(currentCamera, out reflectionCamera);
                 if (!reflectionCamera) // catch both not-in-dictionary and in-dictionary-but-deleted-GO
                 {
-                    GameObject go = new GameObject("Water Refl Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(), typeof(Camera), typeof(Skybox));
+                    GameObject go =
+                        new GameObject(
+                            "Water Refl Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(),
+                            typeof (Camera), typeof (Skybox));
                     reflectionCamera = go.GetComponent<Camera>();
                     reflectionCamera.enabled = false;
                     reflectionCamera.transform.position = transform.position;
@@ -311,8 +319,9 @@ namespace UnityStandardAssets.Water
                 if (!refractionCamera) // catch both not-in-dictionary and in-dictionary-but-deleted-GO
                 {
                     GameObject go =
-                        new GameObject("Water Refr Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(),
-                            typeof(Camera), typeof(Skybox));
+                        new GameObject(
+                            "Water Refr Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(),
+                            typeof (Camera), typeof (Skybox));
                     refractionCamera = go.GetComponent<Camera>();
                     refractionCamera.enabled = false;
                     refractionCamera.transform.position = transform.position;
@@ -324,7 +333,7 @@ namespace UnityStandardAssets.Water
             }
         }
 
-        WaterMode GetWaterMode()
+        private WaterMode GetWaterMode()
         {
             if (m_HardwareWaterSupport < waterMode)
             {
@@ -333,7 +342,7 @@ namespace UnityStandardAssets.Water
             return waterMode;
         }
 
-        WaterMode FindHardwareWaterSupport()
+        private WaterMode FindHardwareWaterSupport()
         {
             if (!SystemInfo.supportsRenderTextures || !GetComponent<Renderer>())
             {
@@ -360,32 +369,32 @@ namespace UnityStandardAssets.Water
         }
 
         // Given position/normal of the plane, calculates plane in camera space.
-        Vector4 CameraSpacePlane(Camera cam, Vector3 pos, Vector3 normal, float sideSign)
+        private Vector4 CameraSpacePlane(Camera cam, Vector3 pos, Vector3 normal, float sideSign)
         {
-            Vector3 offsetPos = pos + normal * clipPlaneOffset;
+            Vector3 offsetPos = pos + normal*clipPlaneOffset;
             Matrix4x4 m = cam.worldToCameraMatrix;
             Vector3 cpos = m.MultiplyPoint(offsetPos);
-            Vector3 cnormal = m.MultiplyVector(normal).normalized * sideSign;
+            Vector3 cnormal = m.MultiplyVector(normal).normalized*sideSign;
             return new Vector4(cnormal.x, cnormal.y, cnormal.z, -Vector3.Dot(cpos, cnormal));
         }
 
         // Calculates reflection matrix around the given plane
-        static void CalculateReflectionMatrix(ref Matrix4x4 reflectionMat, Vector4 plane)
+        private static void CalculateReflectionMatrix(ref Matrix4x4 reflectionMat, Vector4 plane)
         {
-            reflectionMat.m00 = (1F - 2F * plane[0] * plane[0]);
-            reflectionMat.m01 = (- 2F * plane[0] * plane[1]);
-            reflectionMat.m02 = (- 2F * plane[0] * plane[2]);
-            reflectionMat.m03 = (- 2F * plane[3] * plane[0]);
+            reflectionMat.m00 = (1F - 2F*plane[0]*plane[0]);
+            reflectionMat.m01 = (- 2F*plane[0]*plane[1]);
+            reflectionMat.m02 = (- 2F*plane[0]*plane[2]);
+            reflectionMat.m03 = (- 2F*plane[3]*plane[0]);
 
-            reflectionMat.m10 = (- 2F * plane[1] * plane[0]);
-            reflectionMat.m11 = (1F - 2F * plane[1] * plane[1]);
-            reflectionMat.m12 = (- 2F * plane[1] * plane[2]);
-            reflectionMat.m13 = (- 2F * plane[3] * plane[1]);
+            reflectionMat.m10 = (- 2F*plane[1]*plane[0]);
+            reflectionMat.m11 = (1F - 2F*plane[1]*plane[1]);
+            reflectionMat.m12 = (- 2F*plane[1]*plane[2]);
+            reflectionMat.m13 = (- 2F*plane[3]*plane[1]);
 
-            reflectionMat.m20 = (- 2F * plane[2] * plane[0]);
-            reflectionMat.m21 = (- 2F * plane[2] * plane[1]);
-            reflectionMat.m22 = (1F - 2F * plane[2] * plane[2]);
-            reflectionMat.m23 = (- 2F * plane[3] * plane[2]);
+            reflectionMat.m20 = (- 2F*plane[2]*plane[0]);
+            reflectionMat.m21 = (- 2F*plane[2]*plane[1]);
+            reflectionMat.m22 = (1F - 2F*plane[2]*plane[2]);
+            reflectionMat.m23 = (- 2F*plane[3]*plane[2]);
 
             reflectionMat.m30 = 0F;
             reflectionMat.m31 = 0F;

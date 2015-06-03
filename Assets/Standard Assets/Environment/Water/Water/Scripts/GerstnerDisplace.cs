@@ -4,6 +4,8 @@ using UnityEngine;
 namespace UnityStandardAssets.Water
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(WaterBase))]
-    public class GerstnerDisplace : Displace { }
+    [RequireComponent(typeof (WaterBase))]
+    public class GerstnerDisplace : Displace
+    {
+    }
 }

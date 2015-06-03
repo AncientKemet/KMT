@@ -14,8 +14,6 @@ namespace Code.Core.Client.UI.Interfaces
         public tk2dTextMesh TitleLabel,DescriptionLabel;
 
         [SerializeField] private tk2dSlicedSprite _background;
-
-        private static bool Visible;
         
         internal static void Show(Spell spell, Vector3 vector3)
         {

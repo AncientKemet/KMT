@@ -6,7 +6,7 @@ namespace Server.Model.Entities.Human.Mythical
 {
     public class Zombie : Human
     {
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
             Display.ModelID = 50;

@@ -69,7 +69,6 @@ namespace Client.UI.Interfaces
             //finalPos.x += - vpSize.x/4f;
             finalPos.z = 0;
 
-            Debug.Log("mousePos.x " + mousePos.x + " vpSize.x " + vpSize.x);
             if (mousePos.x + vpSize.x > 1.0f)
             {
                 finalPos.x = 1f - vpSize.x;

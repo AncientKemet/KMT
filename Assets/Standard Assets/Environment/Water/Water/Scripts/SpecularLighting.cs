@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace UnityStandardAssets.Water
 {
-    [RequireComponent(typeof(WaterBase))]
+    [RequireComponent(typeof (WaterBase))]
     [ExecuteInEditMode]
     public class SpecularLighting : MonoBehaviour
     {
-        public Transform specularLight;
         private WaterBase m_WaterBase;
+        public Transform specularLight;
 
 
         public void Start()
         {
-            m_WaterBase = (WaterBase)gameObject.GetComponent(typeof(WaterBase));
+            m_WaterBase = (WaterBase) gameObject.GetComponent(typeof (WaterBase));
         }
 
 
@@ -21,7 +21,7 @@ namespace UnityStandardAssets.Water
         {
             if (!m_WaterBase)
             {
-                m_WaterBase = (WaterBase)gameObject.GetComponent(typeof(WaterBase));
+                m_WaterBase = (WaterBase) gameObject.GetComponent(typeof (WaterBase));
             }
 
             if (specularLight && m_WaterBase.sharedMaterial)

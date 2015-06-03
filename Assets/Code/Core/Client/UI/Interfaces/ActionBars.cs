@@ -1,9 +1,12 @@
 ﻿using Client.UI.Controls;
 using Client.UI.Scripts;
+using Client.Units;
 using Code.Core.Client.UI.Controls;
 using Code.Libaries.UnityExtensions.Independent;
+using JetBrains.Annotations;
 using Libaries.Net.Packets.ForClient;
 using Libaries.UnityExtensions.Independent;
+using Shared.Content.Types;
 using UnityEngine;
 
 namespace Code.Core.Client.UI.Interfaces
@@ -11,12 +14,15 @@ namespace Code.Core.Client.UI.Interfaces
     public class ActionBars : UIInterface<ActionBars>
     {
 
-        private Vector3 HiddenPos = Vector3.zero + Vector3.down*20f;
+        private Vector3 HiddenPos = Vector3.zero + Vector3.down * 20f;
 
         [SerializeField]
         private ChannelBar ChannelBar;
 
-        public SpellButton Q,W,E,R;
+        public SpellButton Q, W, E, R;
+
+        [CanBeNull]
+        private Spell currentCastingSpell;
 
         protected override void OnStart()
         {
@@ -66,12 +72,16 @@ namespace Code.Core.Client.UI.Interfaces
         public void OnPacket(SpellUpdatePacket p)
         {
             //Cast spell packets
-            if (p.IsCasting)
+            if (p.UpdateState == SpellUpdateState.StrenghtChange)
             {
                 ChannelBar.Progress = p.Strenght;
+                if (currentCastingSpell != null)
+                    if (currentCastingSpell.ClientOnStrenghtChanged != null)
+                        currentCastingSpell.ClientOnStrenghtChanged(PlayerUnit.MyPlayerUnit, p.Strenght);
+
             }
             //Set spell packets
-            if (p.SetSpell)
+            if (p.UpdateState == SpellUpdateState.SetSpell)
             {
                 if (p.Index == 0)
                 {
@@ -89,6 +99,61 @@ namespace Code.Core.Client.UI.Interfaces
                 {
                     R.spell = p.Spell;
                 }
+            }
+            else if (p.UpdateState == SpellUpdateState.StartedCasting)
+            {
+                if (p.Index == 0)
+                {
+                    if (currentCastingSpell != Q.spell)
+                    {
+                        currentCastingSpell = Q.spell;
+                        Q.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                    }
+                }
+                else if (p.Index == 1)
+                {
+                    if (currentCastingSpell != W.spell)
+                    {
+                        currentCastingSpell = W.spell;
+                        W.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                    }
+                }
+                else if (p.Index == 2)
+                {
+                    if (currentCastingSpell != E.spell)
+                    {
+                        currentCastingSpell = E.spell;
+                        E.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                    }
+                }
+                else if (p.Index == 3)
+                {
+                    if (currentCastingSpell != R.spell)
+                    {
+                        currentCastingSpell = R.spell;
+                        R.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                    }
+                }
+            }
+            else if (p.UpdateState == SpellUpdateState.FinishedCasting)
+            {
+                if (p.Index == 0)
+                {
+                    Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                }
+                else if (p.Index == 1)
+                {
+                    W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                }
+                else if (p.Index == 2)
+                {
+                    E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                }
+                else if (p.Index == 3)
+                {
+                    R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                }
+                currentCastingSpell = null;
             }
         }
     }

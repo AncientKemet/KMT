@@ -379,7 +379,7 @@ namespace Code.Code.Libaries.Net
 
         public void AddIdMask2B(int id, BitArray mask)
         {
-            int s = (short) (CreateBitMask(mask) << (16 - mask.Length));
+            int s = CreateBitMask(mask) << (12);
             AddShort(s | id);
         }
 

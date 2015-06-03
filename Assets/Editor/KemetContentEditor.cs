@@ -43,10 +43,12 @@ class KemetContentEditor : EditorWindow
                         if (GUILayout.Button("Remove Nulls"))
                         {
                             ContentManager.I.Items.RemoveAll(item => item == null);
+                            EditorUtility.SetDirty(ContentManager.I);
                         }
                         if (GUILayout.Button("Remove Duplicates"))
                         {
                             ContentManager.I.Items = ContentManager.I.Items.Distinct().ToList();
+                            EditorUtility.SetDirty(ContentManager.I);
                         }
                         if (GUILayout.Button("Scan"))
                         {
@@ -58,6 +60,7 @@ class KemetContentEditor : EditorWindow
                                 item.CreateIcon();
                                 Repaint();
                             }
+                            EditorUtility.SetDirty(ContentManager.I);
                         }
                         break;
                 }
@@ -139,5 +142,6 @@ class KemetContentEditor : EditorWindow
                 }
             }
         }
+        EditorUtility.SetDirty(ContentManager.I);
     }
 }

@@ -58,7 +58,7 @@ namespace Client.UI.Interfaces
             LoadListFromJson(ref UnlockedUnderwearColors, "UnlockedUnderwearColors", o);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             Destroy(gameObject);
         }

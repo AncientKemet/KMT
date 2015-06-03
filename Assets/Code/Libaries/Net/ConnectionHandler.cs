@@ -48,9 +48,6 @@ namespace Libaries.Net
             for (int i = 0; i < MAX_PACKETS_PROCEED_AT_ONCE; i++)
             {
                 int available = socket.Available;
-#if DEBUG_NETWORK
-                Debug.Log("AWAILABLE BYTES: "+available);
-#endif
 
                 if (available > 0)
                 {

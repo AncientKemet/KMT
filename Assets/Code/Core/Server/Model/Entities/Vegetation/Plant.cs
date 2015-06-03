@@ -43,7 +43,7 @@ namespace Server.Model.Entities.Vegetation
             return ServerUnitPrioritization.Medium;
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             SeedsLeft = Random.Range(MinSeeds, MaxSeeds);
 

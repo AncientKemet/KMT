@@ -11,28 +11,33 @@ namespace Server.Model.Content.Spawns
 
         public int ModelID = 0;
 
-        [Range(-1f,100f)]
+        [Range(-1f, 100f)]
         public float WalkRange = -1f;
 
         public float MinSleepTime = 1;
         public float MaxSleepTime = 5;
+        public bool EnableWalking = true;
 
         public Vector3 StaticPosition { get; set; }
+        private NPC n;
 
-        void Awake ()
+        private void Awake()
         {
-            NPC n = gameObject.AddComponent<NPC>();
+            n = gameObject.AddComponent<NPC>();
+            n.Spawn = this;
+            
+            n.OnLastSetup += ApplySpawnExtensions;
+            
+            ServerSingleton.Instance.GetComponent<WorldServer>().World.AddEntity(n);
+        }
 
+        void ApplySpawnExtensions()
+        {
             n.Display.ModelID = ModelID;
-
-            if (n.CurrentWorld == null)
-                ServerSingleton.Instance.GetComponent<WorldServer>().World.AddEntity(n);
 
             n.Movement.Teleport(transform.position);
 
             StaticPosition = transform.position;
-
-            n.Spawn = this;
 
             foreach (var ext in GetComponents<NpcSpawnExtension>())
             {

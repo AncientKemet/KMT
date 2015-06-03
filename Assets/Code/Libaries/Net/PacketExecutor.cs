@@ -11,6 +11,7 @@ namespace Libaries.Net
         public Dictionary<Type, int> ExtecutedPackets = new Dictionary<Type, int>(); 
 
         protected abstract void aExecutePacket(BasePacket packet);
+        public BasePacket LastExecutedPacket;
 
         public Action<BasePacket> OnPacket;
  
@@ -27,8 +28,11 @@ namespace Libaries.Net
                     ExtecutedPackets.Add(packet.GetType(),1);
                 }
                 aExecutePacket(packet);
+                
                 if (OnPacket != null)
                     OnPacket(packet);
+                
+                LastExecutedPacket = packet;
             }
             catch(Exception e)
             {

@@ -1,4 +1,6 @@
+using System;
 using Server.Model.Content.Spawns;
+using Random = UnityEngine.Random;
 #if SERVER
 using UnityEngine;
 
@@ -10,12 +12,12 @@ namespace Server.Model.Entities.Human
         public NPCSpawn Spawn { get; set; }
 
         private float _sleepTime = 1f;
-
+        
         public override void Progress(float time)
         {
             base.Progress(time);
 
-            if(Spawn.WalkRange > 0)
+            if(Spawn.EnableWalking)
             if (!Movement.IsWalkingSomeWhere)
             {
                 _sleepTime -= Time.fixedDeltaTime;

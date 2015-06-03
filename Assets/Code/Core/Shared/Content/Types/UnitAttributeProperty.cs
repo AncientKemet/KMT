@@ -23,9 +23,6 @@ namespace Shared.Content.Types
         DamageToShield,
         DamageToAnimal,
         DamageToMineral,
-        StrenghtBonus,
-        WisdomBonus,
-        DexterityBonus,
         WeaponReach,
     }
 
@@ -33,7 +30,7 @@ namespace Shared.Content.Types
     public class UnitAttributePropertySerializable
     {
         public UnitAttributeProperty Property;
-        [Range(-1f, 2f)]
+        [Range(-5f, 5f)]
         public float Value;
 
         public static string GetLabeledString(UnitAttributePropertySerializable a)
@@ -63,5 +60,27 @@ namespace Shared.Content.Types
             return rtn;
         }
 
+        public static string GetLabeledString(UnitAttributeProperty property, float f)
+        {
+            float val = f;
+            string addition = "";
+            switch (property)
+            {
+
+                case UnitAttributeProperty.Health:
+                case UnitAttributeProperty.Energy:
+                    break;
+                case UnitAttributeProperty.HealthRegen:
+                case UnitAttributeProperty.EnergyRegen:
+                    addition = "/s";
+                    break;
+                default:
+                    val *= 100f;
+                    addition = "%";
+                    break;
+                    
+            }
+            return val + addition;
+        }
     }
 }

@@ -1,4 +1,8 @@
+
+using System.Collections;
 using Libaries.IO;
+using Libaries.Net.Packets.ForClient;
+using Server.Model.Entities.Human;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -6,37 +10,57 @@ using Shared.Content.Types;
 using Server.Model.Entities;
 using UnityEngine;
 
+
 namespace Server.Model.Extensions.UnitExts
 {
+    /// <summary>
+    /// This is kinda strange update 
+    /// </summary>
     public class UnitCombat : UnitUpdateExt
     {
-
+        private const int RegenUpdateTick = 20;
+        private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
+        private int RegenTick;
+        private bool _dead;
+        private UnitAttributes _unitAttributes;
         public ServerUnit Unit { get; private set; }
 
-        private UnitAttributes UnitAttributes
+        public new CapsuleCollider collider;
+
+        #region Current HP & EN
+
+        private bool _currentHpUpdate, _currentEnUpdate;
+        private float _currenHealth;
+        private float _currentEnergy;
+
+        public float CurrenHealth
         {
-            get
+            get { return _currenHealth; }
+            private set
             {
-                if (_unitAttributes == null && Unit != null)
-                {
-                    _unitAttributes = Unit.GetExt<UnitAttributes>();
-                }
-                return _unitAttributes;
+                _currenHealth = value;
+                _currentHpUpdate = true;
+                _wasUpdate = true;
             }
         }
 
-        public event Action<float> OnHit;
-        public event Action<Spell.DamageType, Spell.HitType, Spell.HitStrenght> OnHitT;
-        public event Action<Dictionary<ServerUnit, float>> OnDeath;
+        public float CurrentEnergy
+        {
+            get { return _currentEnergy; }
+            private set
+            {
+                _currentEnergy = value;
+                _currentEnUpdate = true;
+                _wasUpdate = true;
+            }
+        }
 
-        public float Health { get; private set; }
-        public float Energy { get; private set; }
-        public float EnergyRatio { get { return Energy / 100f; } }
+        #endregion
 
-        public bool Dead
+        private bool Dead
         {
             get { return _dead; }
-            private set
+            set
             {
                 if (_dead != value)
                 {
@@ -57,13 +81,9 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        private int RegenTick = 0;
-
-        private UnitAttributes _unitAttributes;
-        private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
-        private bool _dead;
-
-        const int RegenUpdateTick = 20;
+        public event Action<HitInformation> OnHitOther;
+        public event Action<HitInformation> OnHitMe;
+        public event Action<Dictionary<ServerUnit, float>> OnDeath;
 
         public override void Progress(float time)
         {
@@ -75,11 +95,10 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     RegenTick = 0;
 
-                    Energy += UnitAttributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
-                    Energy = Mathf.Clamp(Energy, 0, 100);
-                    Health += UnitAttributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
-                    Health = Mathf.Clamp(Health, 0, 100);
-                    _wasUpdate = true;
+                    CurrentEnergy += Unit.Attributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
+                    CurrentEnergy = Mathf.Clamp(CurrentEnergy, 0, 100);
+                    CurrenHealth += Unit.Attributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
+                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
                 }
         }
 
@@ -87,8 +106,8 @@ namespace Server.Model.Extensions.UnitExts
         {
             JSONObject combat = new JSONObject();
 
-            combat.AddField("hp", "" + Health);
-            combat.AddField("en", "" + Energy);
+            combat.AddField("hp", "" + CurrenHealth);
+            combat.AddField("en", "" + CurrentEnergy);
 
             j.AddField("combat", combat);
         }
@@ -98,9 +117,9 @@ namespace Server.Model.Extensions.UnitExts
             JSONObject combat = j.GetField("combat");
 
             if (combat.HasField("hp"))
-                Health = Mathf.Max(float.Parse(combat.GetField("hp").str), 1f);
+                CurrenHealth = Mathf.Max(float.Parse(combat.GetField("hp").str), 1f);
             if (combat.HasField("en"))
-                Energy = Mathf.Max(float.Parse(combat.GetField("en").str), 1f);
+                CurrentEnergy = Mathf.Max(float.Parse(combat.GetField("en").str), 1f);
         }
 
         protected override void OnExtensionWasAdded()
@@ -108,10 +127,45 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
 
             Unit = entity as ServerUnit;
-            Energy = 100;
-            Health = 100;
+            CurrentEnergy = 100;
+            CurrenHealth = 100;
 
-            _wasUpdate = true;
+            collider = gameObject.AddComponent<CapsuleCollider>();
+            collider.radius = 0.5f;
+            collider.center = new Vector3(0, 0.5f, 0);
+            collider.height = 2;
+
+            gameObject.layer = 30;
+
+            Player p = Unit as Player;
+            if (p != null)
+            {
+                //this unit is player let's listen to damage actions and send damage packets.
+                OnHitMe += (i) =>
+                {
+                    DamagePacket packet = new DamagePacket();
+
+                    packet.UnitId = i.targetID;
+                    packet.DamageType = i.DamageType;
+                    packet.HitType = i.HitType;
+                    packet.Strenght = i.Strenght;
+                    packet.Damage = i.Damage;
+
+                    p.Client.ConnectionHandler.SendPacket(packet);
+                };
+                OnHitOther += (i) =>
+                {
+                    DamagePacket packet = new DamagePacket();
+
+                    packet.UnitId = i.targetID;
+                    packet.DamageType = i.DamageType;
+                    packet.HitType = i.HitType;
+                    packet.Strenght = i.Strenght;
+                    packet.Damage = i.Damage;
+
+                    p.Client.ConnectionHandler.SendPacket(packet);
+                };
+            }
         }
 
         public override byte UpdateFlag()
@@ -119,32 +173,15 @@ namespace Server.Model.Extensions.UnitExts
             return 0x04;
         }
 
-        protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
-        {
-            packet.AddByte((int)Health);
-            packet.AddByte((int)UnitAttributes.MaxHealth);
-            packet.AddByte((int)Energy);
-            packet.AddByte((int)UnitAttributes.MaxEnergy);
-        }
-
-        protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
-        {
-            packet.AddByte((int)Health);
-            packet.AddByte((int)UnitAttributes.MaxHealth);
-            packet.AddByte((int)Energy);
-            packet.AddByte((int)UnitAttributes.MaxEnergy);
-        }
-
         internal void ReduceEnergy(float amount)
         {
-            Energy -= amount;
-            Energy = Mathf.Clamp(Energy, 0, 100);
-            _wasUpdate = true;
+            _currentEnergy -= amount;
+            _currentEnergy = Mathf.Clamp(CurrentEnergy, 0, Unit.Attributes[UnitAttributeProperty.Energy]);
         }
 
         internal void ReduceHealth(UnitCombat dealer, float amount)
         {
-            if (Health > 0)
+            if (CurrenHealth > 0)
             {
                 if (_damageRecieved.ContainsKey(dealer.Unit))
                 {
@@ -158,32 +195,23 @@ namespace Server.Model.Extensions.UnitExts
             ReduceHealth(amount);
         }
 
-        internal void ReduceHealth(float amount)
+        private void ReduceHealth(float amount)
         {
-            if (amount != null)
-            {
-                if (OnHit != null)
-                {
-                    OnHit(Health - amount);
-                }
-            }
-            Health -= amount;
+            CurrenHealth -= amount;
 
-            if (Health <= 0)
+            if (CurrenHealth <= 0)
             {
                 if (!Dead)
                 {
-                    Health = Mathf.Clamp(Health, 0, 100);
-                    _wasUpdate = true;
+                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
                     Dead = true;
-                    if(OnDeath != null)
+                    if (OnDeath != null)
                         OnDeath(_damageRecieved);
                     return;
                 }
             }
 
-            Health = Mathf.Clamp(Health, 0, 100);
-            _wasUpdate = true;
+            CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
         }
 
         internal void Revive(float _health)
@@ -191,47 +219,144 @@ namespace Server.Model.Extensions.UnitExts
             if (Dead)
             {
                 Dead = false;
-                Health = _health;
-                Health = Mathf.Clamp(Health, 0, 100);
-                _wasUpdate = true;
+                CurrenHealth = _health;
+                CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
             }
         }
+
+        #region Update packet serialization
+
+        protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
+        {
+            packet.AddFlag(new[] { true, true, true });
+
+            packet.AddByte((int)CurrenHealth);
+
+            packet.AddByte((int)CurrentEnergy);
+
+            packet.AddByte(Unit.Attributes.Attributes.Count);
+
+            foreach (KeyValuePair<UnitAttributeProperty, float> change in Unit.Attributes.Attributes)
+            {
+                packet.AddByte((int)change.Key);
+                packet.AddShort((int)(change.Value * 100f));
+            }
+        }
+
+        protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
+        {
+            packet.AddFlag(new[] { _currentHpUpdate, _currentEnUpdate, _attributeUpdate });
+
+            if (_currentHpUpdate)
+                packet.AddByte((int)CurrenHealth);
+
+            if (_currentEnUpdate)
+                packet.AddByte((int)CurrentEnergy);
+
+            if (_attributeUpdate)
+            {
+                packet.AddByte(_attrbuteChanges.Count);
+
+                foreach (KeyValuePair<UnitAttributeProperty, float> change in _attrbuteChanges)
+                {
+                    packet.AddByte((int)change.Key);
+                    packet.AddShort((int)(change.Value * 100f));
+                }
+
+                //Clean the shit out!
+                _attrbuteChanges = new Dictionary<UnitAttributeProperty, float>();
+            }
+
+            _currentHpUpdate = false;
+            _currentEnUpdate = false;
+            _attributeUpdate = false;
+        }
+
+        #endregion
+
+        #region Hiteffects
 
         private void MeleePhysicalHitEffects(Spell.HitStrenght strenght, UnitCombat dealer, float damage)
         {
             float distance = Vector3.Distance(Unit.Movement.Position, dealer.Unit.Movement.Position);
-            float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward, dealer.Unit.Movement.Position);
+            float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward,
+                                                         dealer.Unit.Movement.Position);
 
-            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), (float)strenght);
+            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), ((float)strenght) / 3f);
 
             if (Unit.Anim != null)
                 Unit.Anim.ActionAnimation = "Hit" + (distance < distanceFromForward ? "Back" : "Front");
         }
 
-        public void Hit(Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, UnitCombat dealer, float damage)
+        public void Hit(Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, UnitCombat dealer,
+            float damage)
         {
             if (dmgType == Spell.DamageType.Physical)
             {
-                
-                    MeleePhysicalHitEffects(strenght, dealer, damage);
-
-                float modifiedDamage = (damage * (1.0f + dealer.UnitAttributes[UnitAttributeProperty.PhysicalDamage])) *
-                                        (1.0f - Unit.Attributes[UnitAttributeProperty.Armor]);
-                ReduceHealth(dealer, modifiedDamage);
+                damage = (damage * (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage])) *
+                                       (1.0f - Unit.Attributes[UnitAttributeProperty.Armor]);
+                MeleePhysicalHitEffects(strenght, dealer, damage);
+                ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.Magical)
             {
-                ReduceHealth(dealer, (damage * (1.0f + dealer.UnitAttributes[UnitAttributeProperty.MagicalDamage])) *
-                                        (1.0f - Unit.Attributes[UnitAttributeProperty.MagicResist]));
+                damage = (damage * (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.MagicalDamage])) *
+                                       (1.0f - Unit.Attributes[UnitAttributeProperty.MagicResist]);
+                ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.True)
             {
                 ReduceHealth(dealer, damage);
             }
 
-            if (OnHitT != null)
-                OnHitT(dmgType, hitType, strenght);
+            var information = new HitInformation(dealer.Unit.ID, Unit.ID, dmgType, hitType, strenght, damage);
+
+            if (OnHitMe != null)
+                OnHitMe(information);
+            if(dealer.OnHitOther != null)
+                dealer.OnHitOther(information);
+        }
+
+        #endregion
+
+        #region Attribute update handling
+
+        private Dictionary<UnitAttributeProperty, float> _attrbuteChanges =
+            new Dictionary<UnitAttributeProperty, float>();
+
+        private bool _attributeUpdate;
+
+        public void AttributeHasChanged(UnitAttributeProperty property, float value)
+        {
+            _attributeUpdate = true;
+            _wasUpdate = true;
+            if (_attrbuteChanges.ContainsKey(property))
+                _attrbuteChanges[property] = value;
+            else
+                _attrbuteChanges.Add(property, value);
+        }
+
+        #endregion
+
+        public class HitInformation
+        {
+            public int dealerID, targetID;
+            public Spell.DamageType DamageType;
+            public Spell.HitType HitType;
+            public Spell.HitStrenght Strenght;
+            public float Damage;
+
+            public HitInformation(int id, int i, Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, float damage)
+            {
+                this.dealerID = id;
+                this.targetID = i;
+                this.DamageType = dmgType;
+                this.HitType = hitType;
+                this.Strenght = strenght;
+                this.Damage = damage;
+            }
         }
     }
 }
+
 #endif

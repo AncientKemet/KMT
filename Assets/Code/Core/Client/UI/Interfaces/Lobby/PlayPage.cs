@@ -45,12 +45,6 @@ namespace Client.UI.Interfaces.Lobby
             SelectedWorld = newButton;
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            //ButtonPrefab.gameObject.SetActive(false);
-        }
-
         public WorldSelectButton SelectedWorld { get; set; }
 
         private void EnterSelectedWorld()

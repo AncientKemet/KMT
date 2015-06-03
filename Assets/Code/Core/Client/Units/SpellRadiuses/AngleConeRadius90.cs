@@ -7,33 +7,29 @@ namespace Client.Units.SpellRadiuses
 
         [SerializeField] private Projector NormalRange, CriticalStart;
         private float _range;
-        private float _criticalChance;
+        private float _criticalArea;
 
-        protected override float Strengt { get; set; }
+        public override float Strenght { get; set; }
 
-        protected override float Range
+        public override float Range
         {
             get { return _range; }
             set
             {
                 _range = value;
                 NormalRange.orthographicSize = 2 + Range;
-                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalChance;
+                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalArea;
             }
         }
 
-        protected override float CriticalChance
+        public override float CriticalArea
         {
-            get { return _criticalChance; }
+            get { return _criticalArea; }
             set
             {
-                _criticalChance = value;
-                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalChance;
+                _criticalArea = value;
+                CriticalStart.orthographicSize = 2 + Range - 0.2f * CriticalArea;
             }
-        }
-
-        protected override void Update()
-        {
         }
     }
 }

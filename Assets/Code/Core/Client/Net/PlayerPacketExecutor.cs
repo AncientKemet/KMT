@@ -176,6 +176,10 @@ namespace Client.Net
                     else
                         unit.RemoveBuff(p.BuffInstance);
                 }
+            }else if (packet is DamagePacket)
+            {
+                var p = packet as DamagePacket;
+                Debug.Log(p.UnitId+" "+p.DamageType+" "+p.HitType+" "+p.Strenght+" "+p.Damage);
             }
             else
             {

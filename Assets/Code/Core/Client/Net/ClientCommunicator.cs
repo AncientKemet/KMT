@@ -131,7 +131,7 @@ namespace Client.Net
                         if (_lastDebug < Time.time - 1f)
                         {
                             _lastDebug = Time.time;
-                            string s = "";
+                            string s = "World server packets: \n";
                             foreach (var packet in WorldServerConnection.PacketExecutor.ExtecutedPackets)
                             {
                                 s += packet.Key.Name + " = " + packet.Value + "\n";
@@ -142,7 +142,7 @@ namespace Client.Net
                         if (_lastDebug < Time.time - 1f)
                         {
                             _lastDebug = Time.time;
-                            string s = "";
+                            string s = "Login server packets: \n";
                             foreach (var packet in LoginServerConnection.PacketExecutor.ExtecutedPackets)
                             {
                                 s += packet.Key.Name + " = " + packet.Value + "\n";

@@ -39,11 +39,6 @@ namespace Code.Core.Client.Units.Managed
             return playerUnit.Id != -1;
         }
 
-        public PlayerUnit GetUnit(int id)
-        {
-            return _playerUnits [id];
-        }
-
         private int FreeId
         {
             get

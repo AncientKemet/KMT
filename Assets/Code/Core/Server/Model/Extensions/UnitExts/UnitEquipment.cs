@@ -203,10 +203,12 @@ namespace Server.Model.Extensions.UnitExts
 
         #region Private Handling
         /// <summary>
-        /// Sets _wasUpdate to True;
+        /// 
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="unit"></param>
         /// <param name="_itemRef"></param>
+        /// <param name="unequip">Really unequip?</param>
+        /// <returns></returns>
         private bool _EquipItemSafe(DroppedItem unit, ref DroppedItem _itemRef, bool unequip = true)
         {
             EquipmentItem item = null;
@@ -218,35 +220,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_UnequipItem(ref _itemRef, unequip))
                 {
-                    _itemRef = unit;
-
-                    if (unit != null)
-                    {
-                        if (item.EquipType == EquipmentItem.Type.MainHand)
-                        {
-                            unit.Movement.Parent = Unit.Movement;
-                            unit.Movement.ParentPlaneID = 1;
-                        }
-                        else if (item.EquipType == EquipmentItem.Type.OffHand)
-                        {
-                            unit.Movement.Parent = Unit.Movement;
-                            unit.Movement.ParentPlaneID = 2;
-                        }
-                        else if (item.EquipType == EquipmentItem.Type.Helm)
-                        {
-                            unit.Movement.Parent = Unit.Movement;
-                            unit.Movement.ParentPlaneID = 0;
-                        }
-                        else
-                        {
-                            unit.Movement.Parent = Unit.Movement;
-                            unit.Display.Visible = false;
-                        }
-                    }
-
-                    if (item != null && item.Spells != null)
-                        if (item.EquipType == EquipmentItem.Type.OffHand || item.EquipType == EquipmentItem.Type.MainHand)
-                            Unit.Spells.EquipSpells(item.Spells);
+                    SetItem(unit, out _itemRef, item);
                     
                     _wasUpdate = true;
                     return true;
@@ -254,33 +228,53 @@ namespace Server.Model.Extensions.UnitExts
                 else
                 {
                     //todo couldnt unequip item
-                   Debug.Log("Couldnt unequip item.");
+                   Debug.LogError("Couldnt unequip item.");
                     return false;
                 }
             }
             else
             {
-                _itemRef = unit;
-
-                if (unit != null)
-                {
-                    unit.Movement.Parent = Unit.Movement;
-                    if (item.EquipType == EquipmentItem.Type.MainHand)
-                    {
-                        unit.Movement.ParentPlaneID = 1;
-                    } if (item.EquipType == EquipmentItem.Type.OffHand)
-                    {
-                        unit.Movement.ParentPlaneID = 2;
-                    }
-                }
-
-                if(item != null && item.Spells != null)
-                    Unit.Spells.EquipSpells(item.Spells);
+                SetItem(unit, out _itemRef, item);
 
                 _wasUpdate = true;
                 return true;
             }
-            return false;
+        }
+
+        private void SetItem(DroppedItem dropped, out DroppedItem _itemRef, EquipmentItem item)
+        {
+            _itemRef = dropped;
+
+            if (dropped != null)
+            {
+                if (item.EquipType == EquipmentItem.Type.MainHand)
+                {
+                    dropped.Movement.Parent = Unit.Movement;
+                    dropped.Movement.ParentPlaneID = 1;
+                }
+                else if (item.EquipType == EquipmentItem.Type.OffHand)
+                {
+                    dropped.Movement.Parent = Unit.Movement;
+                    dropped.Movement.ParentPlaneID = 2;
+                }
+                else if (item.EquipType == EquipmentItem.Type.Helm)
+                {
+                    dropped.Movement.Parent = Unit.Movement;
+                    dropped.Movement.ParentPlaneID = 0;
+                }
+                else
+                {
+                    dropped.Movement.Parent = Unit.Movement;
+                    dropped.Display.Visible = false;
+                }
+            }
+
+            if (item != null)
+            {
+                Unit.Attributes.AddStats(item);
+                if (item.Spells != null)
+                    Unit.Spells.EquipSpells(item.Spells);
+            }
         }
 
         private bool _UnequipItem(ref DroppedItem _itemRef, bool unequip)
@@ -289,6 +283,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (unequip)
                 {
+                        //If it can be stored in inventory put it in
                     if (_itemRef.Item.Item.EQ.CanBeStoredInInventory)
                     {
                         UnitInventory inventory = Unit.GetExt<UnitInventory>();
@@ -297,6 +292,7 @@ namespace Server.Model.Extensions.UnitExts
                             if (inventory.HasSpace(1))
                             {
                                 inventory.AddItem(_itemRef.Item);
+                                Unit.Attributes.RemoveStats(_itemRef.Item.Item.EQ);
                                 Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
                                 _itemRef.Display.Destroy = true;
                                 _itemRef = null;
@@ -305,8 +301,10 @@ namespace Server.Model.Extensions.UnitExts
                             }
                         }
                     }
+                        //Else just drop it on the ground
                     else
                     {
+                        Unit.Attributes.RemoveStats(_itemRef.Item.Item.EQ);
                         if (_itemRef.Item.Item.EQ.Spells != null)
                             Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
 
@@ -322,6 +320,7 @@ namespace Server.Model.Extensions.UnitExts
                 else
                 {
                     Unit.Spells.UnEquipSpells(_itemRef.Item.Item.EQ.Spells);
+                    Unit.Attributes.RemoveStats(_itemRef.Item.Item.EQ);
                     _itemRef = null;
                     _wasUpdate = true;
                     return true;
@@ -338,12 +337,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(ByteStream p)
         {
-            p.AddShort(_head == null ? -1 : _head.Item.Item.InContentManagerIndex);
-            p.AddShort(_body == null ? -1 : _body.Item.Item.InContentManagerIndex);
-            p.AddShort(_legs == null ? -1 : _legs.Item.Item.InContentManagerIndex);
-            p.AddShort(_boots == null ? -1 : _boots.Item.Item.InContentManagerIndex);
-            p.AddShort(_mainHand == null ? -1 : _mainHand.Item.Item.InContentManagerIndex);
-            p.AddShort(_offHand == null ? -1 : _offHand.Item.Item.InContentManagerIndex);
+            SerializeUpdate(p);
         }
 
         protected override void pSerializeUpdate(ByteStream p)
@@ -387,7 +381,7 @@ namespace Server.Model.Extensions.UnitExts
             var body = DeserializeInstance(equipment.GetField("Body").str);
             var legs = DeserializeInstance(equipment.GetField("Legs").str);
 
-            Unit.OnFinishDeserialization += () =>
+            Unit.OnLastSetup += () =>
             {
                 EquipItem(mainHand);
                 EquipItem(offHand);

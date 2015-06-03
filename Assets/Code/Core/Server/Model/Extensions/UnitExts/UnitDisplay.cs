@@ -75,6 +75,7 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     _wasUpdate = true;
                 }
+                
                 _size = value;
             }
         }
@@ -87,6 +88,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private int[] _characterCustomalizations = new int[10];
         private bool _visible = true;
+        private new CapsuleCollider collider;
 
         public int HairColor
         {
@@ -166,7 +168,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(ByteStream packet)
         {
-            packet.AddFlag(IsItem, false, Unit.IsStatic(), false, false, _modelId == 0 || _modelId == 1, _visible);
+            packet.AddFlag(IsItem, false, Unit.IsStatic(), false, _modelId == 0 || _modelId == 1, _visible);
             packet.AddByte(ModelID);
             packet.AddFloat4B(_size);
             if (_modelId == 0 || _modelId == 1)
@@ -223,6 +225,7 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
             Size = 1f;
             Unit = entity as ServerUnit;
+            
         }
 
         public override void Serialize(JSONObject j)

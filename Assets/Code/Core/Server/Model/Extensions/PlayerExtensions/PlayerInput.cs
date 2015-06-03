@@ -31,6 +31,12 @@ namespace Server.Model.Extensions.PlayerExtensions
                     Player.Movement.ContinueWalking();
                     continue;
                 }
+                if (input == PacketEnums.INPUT_TYPES.Jump)
+                {
+                    Player.Movement.Jump();
+                    continue;
+                }
+
                 //we have no idea how to react to this
                 Debug.LogError("Unknown input type: "+input);
             }

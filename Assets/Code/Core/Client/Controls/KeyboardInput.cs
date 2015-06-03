@@ -36,8 +36,9 @@ namespace Code.Core.Client.Controls
                 {
                     bool rotateLeft = Input.GetKey(KeyCode.A);
                     bool rotateRight = Input.GetKey(KeyCode.S);
-                    bool dontWalk = Input.GetKeyDown(KeyCode.Space);
-                    bool canWak = Input.GetKeyUp(KeyCode.Space);
+                    bool dontWalk = Input.GetKeyDown(KeyCode.LeftAlt);
+                    bool canWak = Input.GetKeyUp(KeyCode.LeftAlt);
+                    bool jump = Input.GetKey(KeyCode.Space);
 
                     if (rotateLeft)
                         CameraController.Instance.rotation += 1.5f*Time.deltaTime;
@@ -47,6 +48,9 @@ namespace Code.Core.Client.Controls
 
                     if (dontWalk)
                         ClientCommunicator.Instance.SendToServer(new InputEventPacket(PacketEnums.INPUT_TYPES.StopWalk));
+
+                    if (jump)
+                        ClientCommunicator.Instance.SendToServer(new InputEventPacket(PacketEnums.INPUT_TYPES.Jump));
 
                     if (canWak)
                         ClientCommunicator.Instance.SendToServer(

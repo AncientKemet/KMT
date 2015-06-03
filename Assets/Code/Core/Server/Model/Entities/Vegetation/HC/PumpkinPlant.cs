@@ -25,9 +25,9 @@ namespace Server.Model.Entities.Vegetation.HC
             get { return false; }
         }
 
-        private List<DroppedItem> _droppedItems = new List<DroppedItem>(); 
+        private List<DroppedItem> _droppedItems = new List<DroppedItem>();
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
             //AddExt(new CollisionExt());

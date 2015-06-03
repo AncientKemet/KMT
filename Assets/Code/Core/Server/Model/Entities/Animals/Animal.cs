@@ -202,12 +202,11 @@ namespace Server.Model.Entities.Animals
             Threat = Movement.Position;
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 
             Anim = AddExt<UnitAnim>();
-            Attributes = AddExt<UnitAttributes>();
             Combat = AddExt<UnitCombat>();
             AMovement = AddExt<AnimalMovement>();
 

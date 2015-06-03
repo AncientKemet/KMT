@@ -2,6 +2,7 @@
 using Code.Code.Libaries.Net;
 using Code.Core.Client.Units.Managed;
 using Shared.NET;
+using UnityEngine;
 
 namespace Libaries.Net.Packets.ForClient
 {
@@ -28,18 +29,44 @@ namespace Libaries.Net.Packets.ForClient
 
         public override int Size
         {
-            get { return 6; }
+            get { return 5; }
         }
-        
+
+        public Vector3 Difference { get; set; }
+
         public override void Deserialize(ByteStream b)
         {
-            int IdMask = b.GetUnsignedShort();
+            int IdMask = b.GetShort();
             Mask = b.GetIdMask2BMASK(IdMask);
             UnitID = b.GetIdMask2BID(IdMask);
-            YAngle = b.GetAngle1B();
-            XAngle = b.GetAngle1B();
-            Face = b.GetAngle1B();
-            Distance = b.GetUnsignedByte() / DistanceTo256Ratio;
+            if (!Mask[0])
+            {
+                // is not flying
+                YAngle = b.GetAngle1B();
+                Face = b.GetAngle1B();
+                Distance = b.GetUnsignedByte()/DistanceTo256Ratio;
+            }
+            else
+            {
+                //is flying
+                Difference = new Vector3(b.GetByte() / DistanceTo256Ratio, b.GetByte() / DistanceTo256Ratio, b.GetByte() / DistanceTo256Ratio);
+            }
+        }
+        public override void Serialize(ByteStream b)
+        {
+            b.AddIdMask2B(UnitID, Mask);
+            if (!Mask[0])
+            {//is not flying
+                b.AddAngle1B(YAngle);
+                b.AddAngle1B(Face);
+                b.AddByte((int) (Distance*DistanceTo256Ratio));
+            }
+            else
+            {//is
+                b.AddByte((int)(Difference.x * DistanceTo256Ratio));
+                b.AddByte((int)(Difference.y * DistanceTo256Ratio));
+                b.AddByte((int)(Difference.z * DistanceTo256Ratio));
+            }
         }
 
         public override void Execute()
@@ -50,13 +77,6 @@ namespace Libaries.Net.Packets.ForClient
             }
         }
 
-        public override void Serialize(ByteStream b)
-        {
-            b.AddIdMask2B(UnitID, Mask);
-            b.AddAngle1B(YAngle);
-            b.AddAngle1B(XAngle);
-            b.AddAngle1B(Face);
-            b.AddByte((int) (Distance * DistanceTo256Ratio));
-        }
+        
     }
 }
