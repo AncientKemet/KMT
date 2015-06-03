@@ -36,6 +36,7 @@ namespace Server.Model.Content.Spawns
             n.Display.ModelID = ModelID;
 
             n.Movement.Teleport(transform.position);
+            n.Movement.Rotation = transform.eulerAngles.y;
 
             StaticPosition = transform.position;
 
