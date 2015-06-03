@@ -41,7 +41,7 @@ namespace Code.Core.Client.Units.Managed
         {
             Face p = ((GameObject)Instantiate(_facePrefab.gameObject)).GetComponent<Face>();
             p.transform.parent = display.NeckBone;
-            p.transform.localPosition = new Vector3(0.3421002f, 7.594749e-05f, -0.020727f);
+            p.transform.localPosition = new Vector3(0.3421002f, 7.594749e-05f, -0.015f);
             p.transform.localEulerAngles = new Vector3(3.201651e-06f, 356.2337f, 90.00001f);
             p.transform.localScale = Vector3.one;
             return p;
