@@ -183,6 +183,7 @@
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Alpha-Bumped.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\AlphaTest-Bumped.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesRendertex.shader" />
+     <None Include="Assets\ReferencedData\Client\UI\Fonts\runescape2.fnt" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeaves.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResources\Camera-DepthNormalTexture.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResources\Internal-GUITexture.shader" />

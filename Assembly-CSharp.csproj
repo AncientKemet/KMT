@@ -49,6 +49,7 @@
      <Compile Include="Assets\Code\Core\Client\Controls\Camera\CameraController.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\Camera\cameracontrolxz.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\Camera\cameracontroly.cs" />
+     <Compile Include="Assets\Code\Core\Client\Controls\ClientControlSettings.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\KeyboardInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\MouseInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\KemetMap.cs" />
@@ -133,12 +134,14 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\UpperLeft\UnitSelectionInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\chat\ChatInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\chat\ChatPanel.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Scripts\HitSplat.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\Icon.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\KeepRelativePosition.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\MyCameraAnchor.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\ScreenScene.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\UIInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Unit2D.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\UnscaledCamera.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\ASpellRadius.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Face.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Managed\UnitFactory.cs" />
@@ -197,6 +200,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\CollisionExt.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\Frames.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerInput.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerLevels.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerUDP.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\ServerClient.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\ClientUI.cs" />
@@ -252,6 +256,7 @@
      <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\Damage.cs" />
      <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\Heal.cs" />
      <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\HealthChange.cs" />
+     <Compile Include="Assets\Code\Core\Shared\StructClasses\Level.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\AIPath.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\NavmeshController.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\RichAI.cs" />
@@ -490,6 +495,7 @@
      <Compile Include="Assets\Development\Libary\Spells\Codes\OffHandCharge.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\RangeSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\RestSpell.cs" />
+     <Compile Include="Assets\Development\Libary\Spells\Codes\SpearHurlSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\SwapSpell.cs" />
      <Compile Include="Assets\Elementals\Scripts\OrbitCamera.cs" />
      <Compile Include="Assets\Elementals\Scripts\TestParticles.cs" />
@@ -628,6 +634,7 @@
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Alpha-Bumped.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\AlphaTest-Bumped.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesRendertex.shader" />
+     <None Include="Assets\ReferencedData\Client\UI\Fonts\runescape2.fnt" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeaves.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResources\Camera-DepthNormalTexture.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResources\Internal-GUITexture.shader" />

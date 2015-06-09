@@ -34,7 +34,7 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost);
                 }
-                _currentSpellTime += time;
+                _currentSpellTime += time * (1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
                 CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
 
                 //If the unit is player we'll send them direct Spell strenght Update packet.

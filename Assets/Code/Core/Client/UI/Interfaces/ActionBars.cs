@@ -107,7 +107,8 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != Q.spell)
                     {
                         currentCastingSpell = Q.spell;
-                        Q.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                        if (Q.spell.ClientOnStartedCasting != null)
+                            Q.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
                 }
                 else if (p.Index == 1)
@@ -115,7 +116,8 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != W.spell)
                     {
                         currentCastingSpell = W.spell;
-                        W.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                        if (W.spell.ClientOnStartedCasting != null)
+                            W.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
                 }
                 else if (p.Index == 2)
@@ -123,7 +125,8 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != E.spell)
                     {
                         currentCastingSpell = E.spell;
-                        E.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                        if (E.spell.ClientOnStartedCasting != null)
+                            E.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
                 }
                 else if (p.Index == 3)
@@ -131,7 +134,8 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != R.spell)
                     {
                         currentCastingSpell = R.spell;
-                        R.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
+                        if (R.spell.ClientOnStartedCasting != null)
+                            R.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
                 }
             }
@@ -139,19 +143,23 @@ namespace Code.Core.Client.UI.Interfaces
             {
                 if (p.Index == 0)
                 {
-                    Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                    if (Q.spell.ClientOnFinishedCasting != null)
+                        Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 1)
                 {
-                    W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                    if (W.spell.ClientOnFinishedCasting != null)
+                        W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 2)
                 {
-                    E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                    if (E.spell.ClientOnFinishedCasting != null)
+                        E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 3)
                 {
-                    R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
+                    if (R.spell.ClientOnFinishedCasting != null)
+                        R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 currentCastingSpell = null;
             }

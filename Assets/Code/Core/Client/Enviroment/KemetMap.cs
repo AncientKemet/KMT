@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Client.Controls;
 using Client.Net;
 using Client.UI.Interfaces;
 using Client.Units;
@@ -66,30 +67,51 @@ namespace Client.Enviroment
         {
             if(!CreateCharacterInterface.IsNull)
                 return;
-            
+
+
+
             if (isHolding)
-            if (Input.GetMouseButton(1))
             {
-                if (PlayerUnit.MyPlayerUnit != null)
+                if (Input.GetMouseButton(1))
                 {
-                    RaycastHit hit;
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    float distance = 1000;
-                    int layerMask = 1 << 8;
-                    //layerMask = ~layerMask;
-                    if (Physics.Raycast(ray, out hit, distance, layerMask))
+                    if (PlayerUnit.MyPlayerUnit != null)
                     {
-                        SendPacket(hit, true);
-                        _wasMovingLastFrame = true;
+                        RaycastHit hit;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        float distance = 100;
+                        const int layerMask = 1 << 8;
+                        if (Physics.Raycast(ray, out hit, distance, layerMask))
+                        {
+                            SendPacket(hit, true);
+                            _wasMovingLastFrame = true;
+                        }
                     }
                 }
+                else if (_wasMovingLastFrame)
+                {
+                    //This will make the player stop, once he's not holding right mouse anymore
+                    RaycastHit hit = new RaycastHit();
+                    StartCoroutine(StopAndResumeWalk());
+                    _wasMovingLastFrame = false;
+                }
             }
-            else if(_wasMovingLastFrame)
+            else
             {
-                //This will make the player stop, once he's not holding right mouse anymore
-                RaycastHit hit = new RaycastHit();
-                StartCoroutine(StopAndResumeWalk());
-                _wasMovingLastFrame = false;
+                //If iam holding my spell keys i shall rotate towards my mouse point anyway
+                if (ClientCommunicator.Instance.WorldServerConnection != null)
+                    if (Input.GetKey(ClientControlSettings.Spell0) || Input.GetKey(ClientControlSettings.Spell1) ||
+                        Input.GetKey(ClientControlSettings.Spell2) || Input.GetKey(ClientControlSettings.Spell3))
+                    {
+                        RaycastHit hit;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        float distance = 100;
+                        const int layerMask = 1 << 8;
+                        if (Physics.Raycast(ray, out hit, distance, layerMask))
+                        {
+                            SendPacket(hit, false);
+                            _wasMovingLastFrame = true;
+                        }
+                    }
             }
         }
 
@@ -135,18 +157,22 @@ namespace Client.Enviroment
             SendPacket(hit, false, false);
         }
 
-        private void SendPacket(RaycastHit hit, bool hold)
+        private void SendPacket(RaycastHit hit, bool Walk)
         {
-            SendPacket(hit, hold, false);
+            SendPacket(hit, Walk, false);
         }
 
-        private void SendPacket(RaycastHit hit, bool hold, bool invert)
+        private void SendPacket(RaycastHit hit, bool Walk, bool invert)
         {
-            WalkRequestPacket update = new WalkRequestPacket();
-
-            if (hold)
+            
+            Vector3 myPos = PlayerUnit.MyPlayerUnit.MovementTargetPosition;
+            var update = new WalkRequestPacket();
+            
+            update.Mask = new BitArray(new[] {Walk});
+            
+            if (Walk)
             {
-                Vector3 myPos = PlayerUnit.MyPlayerUnit.MovementTargetPosition;
+                
 
                 if (invert)
                 {
@@ -171,7 +197,7 @@ namespace Client.Enviroment
             }
             else
             {
-                update.DirecionVector = hit.point;
+                update.DirecionVector = hit.point - myPos;
             }
 
             ClientCommunicator.Instance.WorldServerConnection.SendPacket(update);

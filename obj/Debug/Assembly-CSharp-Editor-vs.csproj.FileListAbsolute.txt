@@ -1,1 +1,2 @@
 D:\UnityProject\obj\Debug\Assembly-CSharp-Editor-vs.csprojResolveAssemblyReference.cache
+D:\KMT\obj\Debug\Assembly-CSharp-Editor-vs.csprojResolveAssemblyReference.cache

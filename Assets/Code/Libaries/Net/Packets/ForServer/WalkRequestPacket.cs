@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections;
 using Code.Code.Libaries.Net;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace Code.Libaries.Net.Packets.ForServer
     public class WalkRequestPacket : BasePacket
     {
         public Vector3 DirecionVector;
+        public BitArray Mask;
 
         #region implemented abstract members of BasePacket
 
@@ -27,11 +29,13 @@ namespace Code.Libaries.Net.Packets.ForServer
         protected override void enSerialize(ByteStream bytestream)
         {
             bytestream.AddPosition6B(DirecionVector);
+            bytestream.AddBitArray(Mask);
         }
 
         protected override void deSerialize(ByteStream bytestream)
         {
             DirecionVector = bytestream.GetPosition6B();
+            Mask = bytestream.GetBitArray();
         }
 
         #endregion

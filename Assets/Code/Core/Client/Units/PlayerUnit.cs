@@ -239,6 +239,18 @@ namespace Client.Units
         protected virtual void Update()
         {
 
+            {// Process rotation
+                if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
+                {
+                    var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
+                    calculatedRotation.x = 0;
+                    calculatedRotation.z = 0;
+
+                    calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, 0.25f);
+                    transform.localRotation = calculatedRotation;
+                }
+            }
+
             if (_parentId != -1)
                 return;
 
@@ -258,17 +270,7 @@ namespace Client.Units
                 transform.localPosition = calculatedPosition;
             }
 
-            {// Process rotation
-                if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
-                {
-                    var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
-                    calculatedRotation.x = 0;
-                    calculatedRotation.z = 0;
 
-                    calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, 0.25f);
-                    transform.localRotation = calculatedRotation;
-                }
-            }
         }
 
         protected virtual void OnFixedUpdate()
@@ -361,11 +363,13 @@ namespace Client.Units
                 {
                     if (item != null)
                         Destroy(item.gameObject);
+                    else
+                        transform.localPosition += Vector3.up;
 
                     item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
-                    transform.localPosition += Vector3.up;
                     item.transform.parent = transform;
                     item.transform.localPosition = Vector3.zero;
+                    item.transform.localRotation = Quaternion.identity;
 
                     if (_parentId == -1)
                     {
@@ -545,17 +549,19 @@ namespace Client.Units
             StartCoroutine(Ease.Join(
                 transform,
                 plane,
-                () => { StartCoroutine(Ease.Join(
-                              transform,
-                              plane,
-                              () =>
-                              {
-                                  transform.parent = plane;
-                                  transform.localPosition = Vector3.zero;
-                                  transform.localRotation = Quaternion.identity;
-                                  transform.localScale = Vector3.one;
-                              },
-                              0.3f));
+                () =>
+                {
+                    StartCoroutine(Ease.Join(
+                          transform,
+                          plane,
+                          () =>
+                          {
+                              transform.parent = plane;
+                              transform.localPosition = Vector3.zero;
+                              transform.localRotation = Quaternion.identity;
+                              transform.localScale = Vector3.one;
+                          },
+                          0.3f));
                 },
                 0.3f));
 

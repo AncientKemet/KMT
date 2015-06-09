@@ -15,6 +15,8 @@ namespace Code.Libaries.Generic.Managers
         public List<SpellColor> SpellColors;
         public List<BuffColor> BuffColors;
         public List<AttributeColor> AttributeColors;
+        public List<DamageColor> DamageColors;
+        public List<HitColor> HitColors;
 
         [Serializable]
         public class AttributeColor
@@ -37,6 +39,20 @@ namespace Code.Libaries.Generic.Managers
             public Color Color = Color.white;
         }
 
+        [Serializable]
+        public class DamageColor
+        {
+            public Spell.DamageType Type;
+            public Color Color = Color.white;
+        }
+
+        [Serializable]
+        public class HitColor
+        {
+            public Spell.HitType Type;
+            public Color Color = Color.white;
+        }
+
 #if UNITY_EDITOR
         [MenuItem("Kemet/Open/UIContentManager")]
         private static void SelectAsset()
@@ -44,6 +60,8 @@ namespace Code.Libaries.Generic.Managers
             Selection.activeObject = I;
         }
 #endif
+
+        
     }
 }
 

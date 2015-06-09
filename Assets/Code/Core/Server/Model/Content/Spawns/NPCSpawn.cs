@@ -17,12 +17,14 @@ namespace Server.Model.Content.Spawns
         public float MinSleepTime = 1;
         public float MaxSleepTime = 5;
         public bool EnableWalking = true;
+        public bool EnableFocusing = true;
 
         public Vector3 StaticPosition { get; set; }
         private NPC n;
 
         private void Awake()
         {
+            name = name.Replace("(Clone)", "");
             n = gameObject.AddComponent<NPC>();
             n.Spawn = this;
             

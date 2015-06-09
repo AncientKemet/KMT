@@ -39,3 +39,4 @@ D:\UnityProject\Temp\bin\Debug\nunit.framework.dll
 D:\UnityProject\Temp\bin\Debug\Unity.DataContract.dll
 D:\UnityProject\Temp\bin\Debug\ICSharpCode.NRefactory.dll
 D:\UnityProject\obj\Debug\Assembly-CSharp-vs.csprojResolveAssemblyReference.cache
+D:\KMT\obj\Debug\Assembly-CSharp-vs.csprojResolveAssemblyReference.cache

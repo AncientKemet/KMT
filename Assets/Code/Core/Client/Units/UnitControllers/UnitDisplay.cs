@@ -502,7 +502,7 @@ namespace Client.Units.UnitControllers
                 _animation[animationName].layer = 1;
                 _animation[animationName].AddMixingTransform(BodyBone);
                 if(IsPowerAnim(animationName))
-                _animation[animationName].wrapMode = WrapMode.ClampForever; 
+                    _animation[animationName].wrapMode = WrapMode.ClampForever; 
                 _animation.Blend(animationName, 1, FadeOutTime / (animationName.Contains("Power") ? 0.5f : 3f));
             }
         }

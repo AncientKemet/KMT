@@ -75,10 +75,10 @@ namespace Server.Model.Extensions.UnitExts
 
             Add(UnitAttributeProperty.Health, 100);
             Add(UnitAttributeProperty.Energy, 100);
-            Add(UnitAttributeProperty.HealthRegen, 0.5f);
-            Add(UnitAttributeProperty.EnergyRegen, 1.0f);
-            Add(UnitAttributeProperty.CriticalArea, 0.10f);
-            Add(UnitAttributeProperty.CriticalDamage, 1.5f);
+            Add(UnitAttributeProperty.HealthRegen, 0.2f);
+            Add(UnitAttributeProperty.EnergyRegen, 0.5f);
+            Add(UnitAttributeProperty.CriticalArea, 0.33f);
+            Add(UnitAttributeProperty.CriticalDamage, 1.33f);
             Add(UnitAttributeProperty.Armor, 0.1f);
             Add(UnitAttributeProperty.MagicResist, 0.1f);
             Add(UnitAttributeProperty.MovementSpeed, 0);
@@ -104,6 +104,7 @@ namespace Server.Model.Extensions.UnitExts
                     if(listener == null || !(listener is Player) && listener == Unit)
                         continue;
                     Player p = listener as Player;
+                    if(p != null)
                     p.Client.ConnectionHandler.SendPacket(pa);
                 }
             };

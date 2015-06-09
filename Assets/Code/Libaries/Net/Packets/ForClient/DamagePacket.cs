@@ -33,7 +33,7 @@ namespace Libaries.Net.Packets.ForClient
         public int UnitId { get; set; }
         public Spell.DamageType DamageType { get; set; }
         public Spell.HitType HitType { get; set; }
-        public float Damage { get; set; }
+        public int Damage { get; set; }
         public Spell.HitStrenght Strenght { get; set; }
     }
 }

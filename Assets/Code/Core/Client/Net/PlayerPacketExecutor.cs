@@ -179,7 +179,7 @@ namespace Client.Net
             }else if (packet is DamagePacket)
             {
                 var p = packet as DamagePacket;
-                Debug.Log(p.UnitId+" "+p.DamageType+" "+p.HitType+" "+p.Strenght+" "+p.Damage);
+                HitSplat.Show(p);
             }
             else
             {

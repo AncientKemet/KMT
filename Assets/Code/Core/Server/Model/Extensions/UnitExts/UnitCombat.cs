@@ -57,7 +57,7 @@ namespace Server.Model.Extensions.UnitExts
 
         #endregion
 
-        private bool Dead
+        public bool Dead
         {
             get { return _dead; }
             set
@@ -69,7 +69,12 @@ namespace Server.Model.Extensions.UnitExts
                         if (Unit.Anim != null)
                         {
                             Unit.Anim.SetDefaults();
-                            Unit.Anim.StandAnimation = "Death";
+                            Unit.Anim.StandAnimation = "Dead";
+                            Unit.Anim.ActionAnimation = "Death";
+                        }
+                        if (Unit.Focus != null)
+                        {
+                            Unit.Focus.FocusedUnit = null;
                         }
                     }
                     else
@@ -149,7 +154,7 @@ namespace Server.Model.Extensions.UnitExts
                     packet.DamageType = i.DamageType;
                     packet.HitType = i.HitType;
                     packet.Strenght = i.Strenght;
-                    packet.Damage = i.Damage;
+                    packet.Damage = (int) i.Damage;
 
                     p.Client.ConnectionHandler.SendPacket(packet);
                 };
@@ -161,7 +166,7 @@ namespace Server.Model.Extensions.UnitExts
                     packet.DamageType = i.DamageType;
                     packet.HitType = i.HitType;
                     packet.Strenght = i.Strenght;
-                    packet.Damage = i.Damage;
+                    packet.Damage = (int) i.Damage;
 
                     p.Client.ConnectionHandler.SendPacket(packet);
                 };

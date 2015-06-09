@@ -38,11 +38,12 @@ namespace Server.Model.Extensions.UnitExts
                     }
                 }
 
-                _focusedUnit = value;
 
-                if (value != null)
+
+                if (value != _focusedUnit)
                 {
                     //Injet new units
+                    if(value != null)
                     if (value.Focus != null)
                     {
                         value.Focus.AddListener(entity);
@@ -54,6 +55,8 @@ namespace Server.Model.Extensions.UnitExts
                         (entity as Human).Anim.LookingAt = value;
                     }
                 }
+                
+                _focusedUnit = value;
             }
         }
 

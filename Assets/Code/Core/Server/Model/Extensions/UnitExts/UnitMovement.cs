@@ -51,7 +51,8 @@ namespace Server.Model.Extensions.UnitExts
             get { return _parent; }
             set
             {
-                Position = value.Position;
+                if (value == null && _parent != null) Position = _parent.Position;
+                else if (value != null) Position = value.Position;
                 _parent = value;
                 _parentUpdate = true;
                 _wasUpdate = true;
@@ -97,33 +98,38 @@ namespace Server.Model.Extensions.UnitExts
 
                 transform.position = value;
 
-                bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
-                if (_correction)
-                    _wasUpdate = true;
+                RecreateUpdatePrecesion();
+            }
+        }
+
+        private void RecreateUpdatePrecesion()
+        {
+            bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
+            if (_correction)
+                _wasUpdate = true;
+            else
+            {
+                float distance = Vector3.Distance(_lastPositionSent, _position);
+                Vector3 difference = _position - _lastPositionSent;
+                if (!IsFlying)
+                {
+                    UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                    UnprecieseMovementPacket.Mask = new BitArray(new[] {_isFlying});
+
+                    UnprecieseMovementPacket.YAngle = Mathf.Atan2(difference.z, difference.x)*180/Mathf.PI;
+                    UnprecieseMovementPacket.Face = Rotation;
+                    UnprecieseMovementPacket.Distance = distance;
+                    UnprecieseMovementPacket.UnitID = Unit.ID;
+                }
                 else
                 {
-                    float distance = Vector3.Distance(_lastPositionSent, _position);
-                    Vector3 difference = _position - _lastPositionSent;
-                    if (!IsFlying)
-                    {
-                        UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                        UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
+                    UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                    UnprecieseMovementPacket.Mask = new BitArray(new[] {_isFlying});
 
-                        UnprecieseMovementPacket.YAngle = Mathf.Atan2(difference.z, difference.x) * 180 / Mathf.PI;
-                        UnprecieseMovementPacket.Face = Rotation;
-                        UnprecieseMovementPacket.Distance = distance;
-                        UnprecieseMovementPacket.UnitID = Unit.ID;
-                    }
-                    else
-                    {
-                        UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                        UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
-
-                        UnprecieseMovementPacket.Difference = difference;
-                        UnprecieseMovementPacket.UnitID = Unit.ID;
-                    }
-                    _lastPositionSent = _position;
+                    UnprecieseMovementPacket.Difference = difference;
+                    UnprecieseMovementPacket.UnitID = Unit.ID;
                 }
+                _lastPositionSent = _position;
             }
         }
 
@@ -140,6 +146,7 @@ namespace Server.Model.Extensions.UnitExts
             set
             {
                 _rotation = value;
+                RecreateUpdatePrecesion();
             }
         }
 
@@ -358,6 +365,13 @@ namespace Server.Model.Extensions.UnitExts
             WalkTo(_position + direction * (Unit.Display.Size + 0.5f));
         }
 
+
+        public void RotateWay(Vector3 direcionVector)
+        {
+            if(direcionVector != Vector3.zero)
+            RotateTo(Quaternion.LookRotation(direcionVector).eulerAngles.y);
+        }
+
         private void RotateTo(float newRotation)
         {
             if (CanRotate)
@@ -519,6 +533,7 @@ namespace Server.Model.Extensions.UnitExts
                 Fly(Vector3.up * 0.3f + Forward * 0.1f);
             }
         }
+
     }
 }
 #endif

@@ -1,4 +1,5 @@
-﻿using Client.Units;
+﻿using System.Collections.Generic;
+using Client.Units;
 using Client.Units.SpellRadiuses;
 #if SERVER
 using Server.Model.Entities;
@@ -74,6 +75,23 @@ namespace Development.Libary.Spells.Codes
             };
         }
 #endif
+
+        public override string Description
+        {
+            get
+            {
+                PlayerUnitAttributes a = PlayerUnit.MyPlayerUnit.PlayerUnitAttributes;
+                return base.Description
+                    .Replace("$BaseDamage", "[" + (BaseDamage 
+                    * (1+a.GetAttribute(UnitAttributeProperty.PhysicalDamage))
+                    )+"]")
+                    .Replace("$CriticalDamage", "[" + (BaseDamage 
+                    * (1+a.GetAttribute(UnitAttributeProperty.PhysicalDamage)) 
+                    * a.GetAttribute(UnitAttributeProperty.CriticalDamage)) 
+                    + "]");
+            }
+        }
+
 #if SERVER
 
         public override void OnFinishCasting(ServerUnit unit, float strenght)
@@ -109,17 +127,49 @@ namespace Development.Libary.Spells.Codes
                 }
             else // for line radius we use unity physics
             {
+                float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
+                float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
+                float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
+                const int layer = 1 << 30;
                 Vector3 origin = unit.Movement.Position;
                 Vector3 direction = unit.Movement.Forward;
-                int layer = 1 << 30;
-                foreach (var hit in Physics.SphereCastAll(origin + direction* LineWidth/2f, LineWidth, direction, unit.Attributes.Get(UnitAttributeProperty.WeaponReach) - LineWidth/2f, layer))
+
+                List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
+                //critical
                 {
-                    var combat = hit.collider.GetComponent<UnitCombat>();
-                    if (combat != null && combat != unit.Combat)
+                    foreach (
+                        var hit in
+                            Physics.SphereCastAll((origin + Vector3.up * 0.5f) + (direction * LineWidth / 2f) + (direction * (reach - (reach * critArea) - (LineWidth / 2f))), LineWidth,
+                                                  direction,
+                                                  reach - (reach * (1f - critArea)) - LineWidth / 2f,
+                                                  layer))
                     {
-                        combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * strenght);
+                        var combat = hit.collider.GetComponent<UnitCombat>();
+                        if (combat != null && combat != unit.Combat)
+                        {
+                            combat.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat, BaseDamage * GetStrenghtDamageRatio(strenght) * critDmg);
+                            AlreadyHitUnits.Add(combat);
+                        }
                     }
                 }
+                //Normal hit
+                {
+                    foreach (
+                        var hit in
+                            Physics.SphereCastAll((origin + Vector3.up * 0.5f) + (direction * LineWidth / 2f), LineWidth,
+                                                  direction,
+                                                  reach - LineWidth / 2f,
+                                                  layer))
+                    {
+                        var combat = hit.collider.GetComponent<UnitCombat>();
+                        if (combat != null && combat != unit.Combat)
+                        {
+                            if (!AlreadyHitUnits.Contains(combat))
+                                combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * GetStrenghtDamageRatio(strenght));
+                        }
+                    }
+                }
+
             }
         }
 

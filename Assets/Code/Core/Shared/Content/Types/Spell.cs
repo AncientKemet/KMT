@@ -43,7 +43,8 @@ namespace Shared.Content.Types
         public float ActivableDuration = 0.5f;
 
         [Multiline(5)]
-        public string Description = "";
+        [SerializeField]
+        private string _description = "";
 
         public string Subtitle;
         
@@ -65,6 +66,8 @@ namespace Shared.Content.Types
         public Action<PlayerUnit,float> ClientOnStrenghtChanged;
         [Obsolete]
         public Action<PlayerUnit> ClientOnFinishedCasting;
+
+        public virtual string Description { get { return _description; } }
 
 #if SERVER
         [System.Obsolete("Use Unit.Spells.StartSpell")]
@@ -147,6 +150,11 @@ namespace Shared.Content.Types
             Physical,
             Magical,
             True
+        }
+
+        public static float GetStrenghtDamageRatio(float strenght)
+        {
+            return Mathf.Log(1.001f + strenght * 9f);
         }
     }
 }

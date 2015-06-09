@@ -175,7 +175,10 @@ namespace Server.Net
                     UnitMovement mov = client.Player.GetExt<UnitMovement>();
                     if (mov != null)
                     {
-                        mov.WalkWay(update.DirecionVector);
+                        if (update.Mask[0]) //should walk
+                            mov.WalkWay(update.DirecionVector);
+                        else // just rotate
+                            mov.RotateWay(update.DirecionVector);
                     }
                     return;
                 }
