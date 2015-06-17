@@ -269,12 +269,6 @@ namespace Client.Units
                     FixYOnTerrain(ref calculatedPosition);
                 transform.localPosition = calculatedPosition;
             }
-
-
-        }
-
-        protected virtual void OnFixedUpdate()
-        {
         }
 
         public void DecodeUnitUpdate(UnitUpdatePacket p)

@@ -125,6 +125,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\MainTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\ProfileInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\ProfileTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\SkillButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\TradeTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\VendorTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\RightClickMenu.cs" />
@@ -132,6 +133,9 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\StatsBar\BuffControl.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\StatsBar\StatsBarInterfaces.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\UpperLeft\UnitSelectionInterface.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\UpperRight\Minimap.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\UpperRight\MinimapEventButton.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\UpperRight\MinimapEventFilter.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\chat\ChatInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\chat\ChatPanel.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Scripts\HitSplat.cs" />
@@ -151,7 +155,6 @@
      <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\AngleConeRadius90.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\MeleeLineRadius.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\UnitControllers\UnitDisplay.cs" />
-     <Compile Include="Assets\Code\Core\GV.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\Encryption\AES.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\File\FileDataProvider.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\File\MySQLDataProvider.cs" />
@@ -173,7 +176,6 @@
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\Player\PlayerFeed.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\ServerSpawnManager.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\UserAccount.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\WorldVegeationManager.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Animal.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Birds\Bird.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Birds\Chicken.cs" />
@@ -188,13 +190,9 @@
      <Compile Include="Assets\Code\Core\Server\Model\Entities\SEase.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\ServerUnit.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\ServerUnitPrioritization.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\Flax.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\HighGrassJungle.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\Palm.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\PumpkinPlant.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\Scrub.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\HC\Wheat.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Vegetation\Plant.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\StaticObjects\Mineral.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\StaticObjects\Plant.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\StaticObjects\Tree.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\EntityExtension.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\AnimalExtensions\AnimalMovement.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\CollisionExt.cs" />
@@ -253,10 +251,11 @@
      <Compile Include="Assets\Code\Core\Shared\Content\UnitAccess.cs" />
      <Compile Include="Assets\Code\Core\Shared\NET\NetworkConfig.cs" />
      <Compile Include="Assets\Code\Core\Shared\NET\PacketEnums.cs" />
-     <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\Damage.cs" />
-     <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\Heal.cs" />
-     <Compile Include="Assets\Code\Core\Shared\StructClasses\Combat\HealthChange.cs" />
-     <Compile Include="Assets\Code\Core\Shared\StructClasses\Level.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Damage.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Heal.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\HealthChange.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\Level.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\MinimapEvent.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\AIPath.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\NavmeshController.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\RichAI.cs" />
@@ -397,6 +396,7 @@
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\DamagePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\EnterWorldPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\LoginResponsePacket.cs" />
+     <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\MinimapEventPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\ProfileInterfaceUpdatePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\ShopUpdatePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\SpellUpdatePacket.cs" />
@@ -490,6 +490,7 @@
      <Compile Include="Assets\Code\Scripts\PlayAnimScript.cs" />
      <Compile Include="Assets\Development\Libary\Buffs\Codes\RestBuff.cs" />
      <Compile Include="Assets\Development\Libary\Spawns\PrefabInstance.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\StaticObjectInstance.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\BlockSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\MeleeSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\OffHandCharge.cs" />

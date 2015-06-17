@@ -3,6 +3,7 @@ using Client.UI.Scripts;
 using Client.Units;
 using Code.Code.Libaries.Net.Packets;
 using Code.Core.Client.Units.Managed;
+using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 using UnityEngine;
 
@@ -103,7 +104,20 @@ namespace Client.UI.Interfaces.Profile
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
                 CurrentTab = _inventoryTab;
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
+            {
+                JSONObject levels = p.JsonObject.GetField("Levels");
+                
+                if (levels != null)
+                {
+                    foreach (var i in _levelTab.Buttons)
+                    {
+                        
+                        i.Level = int.Parse(levels.GetField(i.type.ToString()).str);
+                        i.RemainingExp = int.Parse(levels.GetField("xp" + i.type).str);
+                    }
+                }
                 CurrentTab = _levelTab;
+            }
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Main)
                 CurrentTab = _mainTab;
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Trade)

@@ -60,12 +60,7 @@ namespace Server.Model.Entities
         {
             _updateExtensions = new List<UnitUpdateExt>();
 
-            Attributes = AddExt<UnitAttributes>();
             Movement = AddExt<UnitMovement>();
-            Display = AddExt<UnitDisplay>();
-            Access = AddExt<UnitAccessOwnership>();
-            Spells = AddExt<UnitSpells>();
-            Focus = AddExt<UnitFocus>();
             Details = AddExt<UnitDetails>();
 
             //in the end find all updatable extensions

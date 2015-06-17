@@ -16,7 +16,6 @@ namespace Server.Model
     {
         public WorldServer WorldServer { get; set; }
         public KemetMap Map { get; private set; }
-        public bool EnableVegetation = false;
         public long LAST_TICK = 0;
         public List<WorldEntity> _entities = new List<WorldEntity>();
         public List<ServerUnit> Units;
@@ -28,13 +27,17 @@ namespace Server.Model
 
         public QuadTree Tree;
 
-        public void AddEntity(WorldEntity entity)
+        public void AddEntity(WorldEntity entity, int _forcedId = -1)
         {
             EnsureInitialization();
 
             bool _foundNullIndex = false;
             int _nullIndex = -1;
-
+            if (_forcedId != -1)
+            {
+                _foundNullIndex = true;
+                _nullIndex = _forcedId;
+            }
             if (_freeIds.Count > 0)
             {
                 _nullIndex = _freeIds[0];
@@ -68,8 +71,6 @@ namespace Server.Model
                 Players.Add(player);
                 player.OnEnteredWorld(this);
             }
-
-            entity.transform.parent = transform;
         }
 
         public void RemoveEntity(WorldEntity entity)
@@ -124,8 +125,6 @@ namespace Server.Model
 
             Map = KemetMap.GetMap("1");
             Map.transform.parent = transform;
-            if (EnableVegetation)
-                WorldVegeationManager.Instance(this);
         }
 
         #endregion

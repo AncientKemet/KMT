@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Code.Code.Libaries.Net;
+using Libaries.IO;
 using Shared.Content;
 
 namespace Libaries.Net.Packets.ForClient
@@ -26,6 +27,8 @@ namespace Libaries.Net.Packets.ForClient
         
         public UnitAccess Access { get; set; }
 
+        public JSONObject JsonObject = new JSONObject();
+
         protected override int GetOpCode()
         {
             return 53;
@@ -40,6 +43,8 @@ namespace Libaries.Net.Packets.ForClient
 
             if(HasAccessTab)
                 Access.Serialize(b);
+
+            b.AddString(JsonObject.ToString());
         }
 
         protected override void deSerialize(ByteStream b)
@@ -63,6 +68,8 @@ namespace Libaries.Net.Packets.ForClient
                 Access = new UnitAccess();
                 Access.Deserialize(b);
             }
+
+            JsonObject = new JSONObject(b.GetString());
         }
     }
 }

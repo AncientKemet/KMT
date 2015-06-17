@@ -16,6 +16,7 @@
         ProfileInterface,
         LobbyInterface,
         CreateCharacterInterface,
-        Description
+        Description,
+        Minimap
     }
 }

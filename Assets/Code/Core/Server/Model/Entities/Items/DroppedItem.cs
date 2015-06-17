@@ -79,6 +79,13 @@ namespace Server.Model.Entities.Items
             }
         }
 
+        protected override void Awake()
+        {
+            Display = AddExt<UnitDisplay>();
+            Access = AddExt<UnitAccessOwnership>();
+            base.Awake();
+        }
+
         public override void Progress(float time)
         {
             base.Progress(time);

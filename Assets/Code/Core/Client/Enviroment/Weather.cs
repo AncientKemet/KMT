@@ -31,11 +31,13 @@ namespace Client.Enviroment
                 {
                     _time = Time;
 
-                    float dayNightRatio = Mathf.Abs((_time - 12f) / 24f) * 2f;
+                    float dayNightRatio = Mathf.Abs((_time - 24f) / 24f);
                     ratio = dayNightRatio;
 
                     Vector3 angle = _topLight.transform.eulerAngles;
-                    angle.x = (150 * dayNightRatio + (30 * (1f - dayNightRatio))) / 2;
+                    angle.x = 180 * dayNightRatio;
+                    angle.y = 0;
+                    angle.z = 0;
                     _topLight.transform.eulerAngles = angle;
 
                     _topLight.color = Gradient.Evaluate(dayNightRatio);
@@ -44,6 +46,7 @@ namespace Client.Enviroment
                     RenderSettings.fogColor = Gradient.Evaluate(dayNightRatio) * 1.25f;
                     RenderSettings.ambientLight = Gradient.Evaluate(dayNightRatio) * 0.75f;
                     RenderSettings.fogEndDistance = 30 + dayNightRatio * 100;
+                    RenderSettings.ambientIntensity = dayNightRatio /2f + 0.5f;
                 }
         }
     }

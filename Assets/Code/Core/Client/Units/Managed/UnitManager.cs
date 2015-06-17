@@ -2,7 +2,6 @@
 using Client.Units;
 using Code.Core.Client.Settings;
 using Code.Libaries.Generic;
-using UnityEngine;
 
 namespace Code.Core.Client.Units.Managed
 {
@@ -14,44 +13,6 @@ namespace Code.Core.Client.Units.Managed
         void Awake()
         {
             _playerUnits = new PlayerUnit[GlobalConstants.Instance.MAX_UNIT_AMOUNT];
-        }
-
-        public void RegisterUnit(PlayerUnit PlayerUnit)
-        {
-            int id = FreeId;
-            PlayerUnit.Id = id;
-            _playerUnits [id] = PlayerUnit;
-        }
-    
-        public void DeRegisterUnit(PlayerUnit playerUnit)
-        {
-            if (_playerUnits [playerUnit.Id] == playerUnit)
-            {
-                _playerUnits [playerUnit.Id] = null;
-            } else
-            {
-                Debug.LogError("Broken PlayerUnit array.");
-            }
-        }
-
-        public bool WasUnitRegistered(PlayerUnit playerUnit)
-        {
-            return playerUnit.Id != -1;
-        }
-
-        private int FreeId
-        {
-            get
-            {
-                for (int i = 0; i < _playerUnits.Length; i++)
-                {
-                    if (_playerUnits [i] == null)
-                    {
-                        return i;
-                    }
-                }
-                return -1;
-            }
         }
 
         public PlayerUnit this[int key]

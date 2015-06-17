@@ -73,10 +73,10 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
             Unit = entity as ServerUnit;
 
-            Add(UnitAttributeProperty.Health, 100);
+            Add(UnitAttributeProperty.Health, 10);
             Add(UnitAttributeProperty.Energy, 100);
-            Add(UnitAttributeProperty.HealthRegen, 0.2f);
-            Add(UnitAttributeProperty.EnergyRegen, 0.5f);
+            Add(UnitAttributeProperty.HealthRegen, 0.1f);
+            Add(UnitAttributeProperty.EnergyRegen, 0.3f);
             Add(UnitAttributeProperty.CriticalArea, 0.33f);
             Add(UnitAttributeProperty.CriticalDamage, 1.33f);
             Add(UnitAttributeProperty.Armor, 0.1f);

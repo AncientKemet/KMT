@@ -1,4 +1,4 @@
-using System;
+using Libaries.IO;
 using Server.Model.Content.Spawns.NpcSpawns;
 using Server.Model.Extensions.UnitExts;
 #if SERVER
@@ -49,11 +49,28 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             }
             else if (value == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
             {
-                player.ClientUi.Inventories.ShowInventory(Unit.GetExt<UnitInventory>());
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Levels)
+            {
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Equipment)
+            {
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Access)
+            {
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Dialogue)
+            {
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Main)
+            {
+            }
+            else if (value == ProfileInterfaceUpdatePacket.PacketTab.Trade)
+            {
             }
             else
             {
-                throw  new Exception("Unhandle profile tab opening: "+value);
+                UnityEngine.Debug.LogError("Unhandle profile tab opening: " + value);
             }
         }
 
@@ -64,17 +81,31 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             //else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
                 //player.ClientUi.Shop.CloseInventory(Unit.GetExt<UnitInventory>());
 
+
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
+            {
+            }
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
+            {
+            }
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Equipment)
+            {
+            }
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Access)
+            {
+            }
+            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Dialogue)
+            {
+            }
             else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Main)
             {
-                //nothing
             }
             else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Trade)
             {
-                //close trade
             }
             else
             {
-                throw new Exception("Unhandled profile tab closing: "+_tab);
+                UnityEngine.Debug.LogError("Unhandled profile tab closing: " + _tab);
             }
         }
 
@@ -92,7 +123,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
         public void Open(ServerUnit __otherUnit, ProfileInterfaceUpdatePacket.PacketTab tab)
         {
-            _tab = tab;
+            Tab = tab;
             Opened = true;
             Unit = __otherUnit;
             SendPacket();
@@ -122,27 +153,23 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             packet.Tab = _tab;
             packet.UnitID = Unit.ID;
 
+            if (packet.Tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
+            {
+                packet.JsonObject = new JSONObject();
+                packet.JsonObject.AddField("Levels", _unit.GetExt<PlayerLevels>().ToJsonObject());
+            }
+
             if (_unit.Access != null) packet.Access = _unit.Access.GetAccessFor(player);
 
             player.Client.ConnectionHandler.SendPacket(packet);
         }
         
-        public override void OnOpen()
-        {
-            base.OnOpen();
-        }
-
-        public override void OnClose()
-        {
-            base.OnClose();
-        }
-
         public override void OnEvent(string action, int controlId)
         {
             base.OnEvent(action, controlId);
 
             if (controlId >= 0 && controlId <= 7)
-                Tab = (ProfileInterfaceUpdatePacket.PacketTab) controlId;
+                Open(_unit, (ProfileInterfaceUpdatePacket.PacketTab)controlId);
 
             if (Unit == player)
                 if (action == "Unequip")

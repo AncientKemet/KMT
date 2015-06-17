@@ -1,9 +1,8 @@
+using Server.Model.Entities.Vegetation;
 using Random = UnityEngine.Random;
 #if SERVER
 using System;
 using System.Collections.Generic;
-using Code.Libaries.Generic.Trees;
-using Server.Model.Entities.Vegetation.HC;
 using Server.Model.Extensions;
 using Server.Model.Extensions.AnimalExtensions;
 using Server.Model.Extensions.UnitExts;
@@ -127,16 +126,6 @@ namespace Server.Model.Entities.Animals
             return false;
         }
 
-        public override void ObjectBecameVisible(IQuadTreeObject o)
-        {
-            base.ObjectBecameVisible(o);
-            /*if (Vector2.Distance(o.GetPosition(), GetPosition()) < VisionRadius)
-            {
-                if (EncounterUnit != null)
-                    EncounterUnit(o as ServerUnit);
-            }*/
-        }
-
         public override void Progress(float time)
         {
             base.Progress(time);
@@ -231,7 +220,7 @@ namespace Server.Model.Entities.Animals
                 List<ServerUnit> foodAround = new List<ServerUnit>(2);
                 foreach (var o in CurrentBranch.StaticObjectsVisible)
                 {
-                    HighGrassJungle p = o as HighGrassJungle;
+                    Plant p = o as Plant;
                     if (p != null)
                     {
                         foodAround.Add(p);

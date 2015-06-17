@@ -34,6 +34,7 @@ namespace Server.Model.Entities.Human
         public ClientUI ClientUi { get { return Client.UI; }}
         public PlayerParty Party { get; set; }
         public PlayerUDP PlayerUdp { get; private set; }
+        public PlayerLevels Levels { get; private set; }
 
         /// <summary>
         /// Password that the client used to connect.
@@ -44,6 +45,7 @@ namespace Server.Model.Entities.Human
         {
             PlayerInput = AddExt<PlayerInput>();
             PlayerUdp = AddExt<PlayerUDP>();
+            Levels = AddExt<PlayerLevels>();
             base.Awake();
         }
         
@@ -67,6 +69,7 @@ namespace Server.Model.Entities.Human
             ClientUi.Open(InterfaceType.StatsBars);
             ClientUi.Open(InterfaceType.LowerLeftMenu);
             ClientUi.Open(InterfaceType.UnitSelectionInterface);
+            ClientUi.Open(InterfaceType.Minimap);
 
             GetExt<UnitInventory>().ListeningPlayers.Add(this);
             GetExt<UnitInventory>().RefreshFull();

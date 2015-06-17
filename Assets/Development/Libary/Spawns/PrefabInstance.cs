@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Client.Enviroment;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -12,6 +13,7 @@ public class PrefabInstance : MonoBehaviour
     private GameObject prefab;
 
     [SerializeField] private bool _rebuild = true;
+    public int UnitId = -1;
 
 #if UNITY_EDITOR
     // Struct of all components. Used for edit-time visualization and gizmo drawing
@@ -52,6 +54,7 @@ public class PrefabInstance : MonoBehaviour
 
     void Rebuild(GameObject source, Matrix4x4 inMatrix)
     {
+        CheckInstanceId();
         _rebuild = false;
         if (!source)
             return;
@@ -74,6 +77,39 @@ public class PrefabInstance : MonoBehaviour
         {
             if (pi.enabled && pi.gameObject.activeSelf)
                 Rebuild(pi.prefab, baseMat * pi.transform.localToWorldMatrix);
+        }
+    }
+
+    private void CheckInstanceId()
+    {
+        if (UnitId == -1)
+        {
+            var parent = transform.parent;
+            while (parent != null && UnitId == -1)
+            {
+                KemetMap map = parent.GetComponent<KemetMap>();
+                if (map != null)
+                {
+                    for (int i = 0; i < map.PrefabInstances.Count; i++)
+                    {
+                        if (map.PrefabInstances[i] == null)
+                        {
+                            map.PrefabInstances[i] = this;
+                            UnitId = i;
+                        }
+                    }
+                    if (UnitId == -1)
+                    {
+                        UnitId = map.PrefabInstances.Count;
+                        map.PrefabInstances.Add(this);
+                    }
+                    break;
+                }
+                else
+                {
+                    parent = parent.parent;
+                }
+            }
         }
     }
 
@@ -121,6 +157,7 @@ public class PrefabInstance : MonoBehaviour
             return;
         pi.enabled = false;
         GameObject go = PrefabUtility.InstantiatePrefab(pi.prefab) as GameObject;
+        go.SendMessage("OnBake", pi.UnitId);
         Quaternion rot = go.transform.localRotation;
         Vector3 scale = go.transform.localScale;
         go.transform.parent = pi.transform;

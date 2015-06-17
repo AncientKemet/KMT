@@ -38,6 +38,8 @@ namespace Client.Enviroment
 
         private bool _wasMovingLastFrame = false;
 
+        public List<PrefabInstance> PrefabInstances; 
+
         public TerrainCollider TerrainCollider
         {
             get

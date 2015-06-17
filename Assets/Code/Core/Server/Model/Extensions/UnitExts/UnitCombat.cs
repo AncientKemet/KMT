@@ -3,6 +3,7 @@ using System.Collections;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 using Server.Model.Entities.Human;
+using Shared.StructClasses;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -132,8 +133,8 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
 
             Unit = entity as ServerUnit;
-            CurrentEnergy = 100;
-            CurrenHealth = 100;
+            CurrentEnergy = 1;
+            CurrenHealth = 1;
 
             collider = gameObject.AddComponent<CapsuleCollider>();
             collider.radius = 0.5f;
@@ -158,6 +159,7 @@ namespace Server.Model.Extensions.UnitExts
 
                     p.Client.ConnectionHandler.SendPacket(packet);
                 };
+
                 OnHitOther += (i) =>
                 {
                     DamagePacket packet = new DamagePacket();
@@ -166,10 +168,12 @@ namespace Server.Model.Extensions.UnitExts
                     packet.DamageType = i.DamageType;
                     packet.HitType = i.HitType;
                     packet.Strenght = i.Strenght;
-                    packet.Damage = (int) i.Damage;
+                    packet.Damage = (int)i.Damage;
 
                     p.Client.ConnectionHandler.SendPacket(packet);
                 };
+
+                OnHitOther += (i) => p.Levels.AddExperience(Levels.Skills.Attack, (int) (i.Damage * Levels.DamageXpRatio));
             }
         }
 
@@ -208,7 +212,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (!Dead)
                 {
-                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
+                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
                     Dead = true;
                     if (OnDeath != null)
                         OnDeath(_damageRecieved);
@@ -216,7 +220,7 @@ namespace Server.Model.Extensions.UnitExts
                 }
             }
 
-            CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
+            CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
         }
 
         internal void Revive(float _health)
@@ -296,6 +300,9 @@ namespace Server.Model.Extensions.UnitExts
         public void Hit(Spell.DamageType dmgType, Spell.HitType hitType, Spell.HitStrenght strenght, UnitCombat dealer,
             float damage)
         {
+            if(Dead)
+                return;
+            
             if (dmgType == Spell.DamageType.Physical)
             {
                 damage = (damage * (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage])) *

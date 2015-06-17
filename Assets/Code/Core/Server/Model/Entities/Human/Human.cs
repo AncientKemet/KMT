@@ -30,6 +30,11 @@ namespace Server.Model.Entities.Human
             Combat = AddExt<UnitCombat>();
             Inventory = AddExt<UnitInventory>();
             Equipment = AddExt<UnitEquipment>();
+            Attributes = AddExt<UnitAttributes>();
+            Display = AddExt<UnitDisplay>();
+            Access = AddExt<UnitAccessOwnership>();
+            Spells = AddExt<UnitSpells>();
+            Focus = AddExt<UnitFocus>();
 
             AddExt<CollisionExt>();
 

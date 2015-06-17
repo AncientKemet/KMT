@@ -33,6 +33,7 @@ namespace Client.Units
 
         public float CurrentHealth { get; set; }
         public float CurrentEnergy { get; set; }
+        public string Combatlevel { get; set; }
 
         public IEnumerator GetEnumerator()
         {
