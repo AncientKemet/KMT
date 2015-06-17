@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/ReferencedData/Client/Meshes-2015/Character/Eyes/eye-5/eye-5A.png.meta
 guid: ea060cff7e6d3c84a86316af61042ddf
 timeCreated: 1433849384
+=======
+guid: ead583c823c3b2345b568ebc399fb8b8
+timeCreated: 1434098629
+>>>>>>> 40581bab240fac5552807cdb4a13647990c67392:Assets/ReferencedData/Client/Meshes-2015/Character/Eyes/eye-5/eye-5A.png.meta
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
