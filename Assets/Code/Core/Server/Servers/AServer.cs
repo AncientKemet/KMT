@@ -57,7 +57,7 @@ namespace Server.Servers
             }
         }
 
-        private void OnEnable()
+        private void Start()
         {
             StartServer();
         }

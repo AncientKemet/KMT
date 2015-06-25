@@ -72,8 +72,6 @@ namespace Server.Model.Extensions.PlayerExtensions
                     _currentLevels[i.Key] = int.Parse(levels.GetField(i.Key.ToString()).str);
                 }
             }
-
-            RecalculateCombatLevel();
             RecalculateTotalLevel();
         }
 
@@ -84,25 +82,6 @@ namespace Server.Model.Extensions.PlayerExtensions
             {
                 TotalLevel += i.Value;
             }
-        }
-
-        private void RecalculateCombatLevel()
-        {
-            CombatLevel
-                = (int) (
-
-                    0.2525252525252525
-                    
-                    *
-
-                    (
-                    + _currentLevels[Levels.Skills.Attack]
-                    + _currentLevels[Levels.Skills.Strenght]
-                    + _currentLevels[Levels.Skills.Ranged]
-                    + _currentLevels[Levels.Skills.Wisdom]
-                    )
-                    );
-
         }
 
         public JSONObject ToJsonObject()

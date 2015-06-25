@@ -10,7 +10,6 @@ namespace Server.Model.Entities.Human.Mythical
         {
             base.Awake();
             Display.ModelID = 50;
-            Movement._rotationSpeed /= 3f;
             Spells.EquipSpell(ContentManager.I.Spells[3], 0);
         }
 

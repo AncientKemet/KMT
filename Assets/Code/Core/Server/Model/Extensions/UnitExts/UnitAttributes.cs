@@ -1,4 +1,5 @@
 using Code.Core.Shared.Content.Types.ItemExtensions;
+using Shared.Content.Types.ItemExtensions;
 #if SERVER
 using System;
 using Libaries.Net.Packets.ForClient;
@@ -75,12 +76,12 @@ namespace Server.Model.Extensions.UnitExts
 
             Add(UnitAttributeProperty.Health, 10);
             Add(UnitAttributeProperty.Energy, 100);
-            Add(UnitAttributeProperty.HealthRegen, 0.1f);
-            Add(UnitAttributeProperty.EnergyRegen, 0.3f);
+            Add(UnitAttributeProperty.HealthRegen, 0);
+            Add(UnitAttributeProperty.EnergyRegen, 0);
             Add(UnitAttributeProperty.CriticalArea, 0.33f);
             Add(UnitAttributeProperty.CriticalDamage, 1.33f);
-            Add(UnitAttributeProperty.Armor, 0.1f);
-            Add(UnitAttributeProperty.MagicResist, 0.1f);
+            Add(UnitAttributeProperty.Armor, 0);
+            Add(UnitAttributeProperty.MagicResist, 0);
             Add(UnitAttributeProperty.MovementSpeed, 0);
             Add(UnitAttributeProperty.WeaponReach, 1f);
             Add(UnitAttributeProperty.PhysicalDamage, 0f);
@@ -178,6 +179,14 @@ namespace Server.Model.Extensions.UnitExts
             {
                 Add(attribute.Property, attribute.Value);
             }
+            if (item is Weapon)
+            {
+                Weapon w = item as Weapon;
+                foreach (var attribute in w.Secondary)
+                {
+                    Add(attribute.Property, attribute.Value);
+                }
+            }
         }
 
         public void RemoveStats(EquipmentItem item)
@@ -185,6 +194,14 @@ namespace Server.Model.Extensions.UnitExts
             foreach (var attribute in item.Attributes)
             {
                 Remove(attribute.Property, attribute.Value);
+            }
+            if (item is Weapon)
+            {
+                Weapon w = item as Weapon;
+                foreach (var attribute in w.Secondary)
+                {
+                    Remove(attribute.Property, attribute.Value);
+                }
             }
         }
     }

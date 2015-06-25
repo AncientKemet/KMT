@@ -351,6 +351,12 @@ namespace Server.Model.Extensions.UnitExts
             }
 
         }
+
+        public void Clear()
+        {
+            RecreateInventory();
+            RefreshFull();
+        }
     }
 }
 #endif

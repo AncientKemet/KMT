@@ -9,21 +9,11 @@ namespace Shared.StructClasses
     {
         public enum Skills
         {
-            Attack=0,
-            Strenght=1,
-            Ranged=2,
-            Wisdom=3,
             Combat=9,
-            Woodcutting=10,
-            Mining=11,
-            Blacksmithing=12,
-            Tailoring=13,
-            Jewelery=14,
+            Gathering = 10,
+            Crafting = 12,  
             Cooking=15,
             Hunting=16,
-            Pottering=17,
-            Farming = 18,
-            Crafting = 19,
         }
 
         public static int GetExperience(int level)
@@ -246,10 +236,10 @@ namespace Shared.StructClasses
         {
             string s = "{";
             int xp = 0;
-            for (int lvl = 1; lvl < 100; lvl++)
+            for (int lvl = 1; lvl < 50; lvl++)
             {
                 if (lvl >= 2)
-                    xp += (int)(lvl + 67 * Mathf.Pow(2, (float)lvl / 7));
+                    xp += (int)(lvl + 50 * Mathf.Pow(4, (float)lvl / 5));
                 s += xp + ",//" + lvl + "\n";
             }
             Debug.Log(s + "};");
@@ -259,10 +249,10 @@ namespace Shared.StructClasses
         {
             string s = "{";
             int xp = 0;
-            for (int lvl = 1; lvl < 100; lvl++)
+            for (int lvl = 1; lvl < 50; lvl++)
             {
                 if (lvl >= 2)
-                    xp = (int)(lvl + 67 * Mathf.Pow(2, (float)lvl / 7));
+                    xp = (int)(lvl + 50 * Mathf.Pow(4, (float)lvl / 5));
                 s += xp + ",//" + lvl + "\n";
             }
             Debug.Log(s + "};");

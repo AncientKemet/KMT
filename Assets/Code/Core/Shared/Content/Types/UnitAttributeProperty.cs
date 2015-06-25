@@ -24,13 +24,14 @@ namespace Shared.Content.Types
         DamageToAnimal,
         DamageToMineral,
         WeaponReach,
+        ArmorPenetration,
+        MagicResistPenetration
     }
 
     [Serializable]
     public class UnitAttributePropertySerializable
     {
         public UnitAttributeProperty Property;
-        [Range(-5f, 5f)]
         public float Value;
 
         public static string GetLabeledString(UnitAttributePropertySerializable a)

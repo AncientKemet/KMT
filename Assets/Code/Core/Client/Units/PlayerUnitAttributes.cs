@@ -7,6 +7,9 @@ namespace Client.Units
 {
     public class PlayerUnitAttributes 
     {
+        
+        private float _currentHealth = -1;
+
         public Action<UnitAttributeProperty, float> OnChange;
 
         public float GetAttribute(UnitAttributeProperty t)
@@ -30,8 +33,14 @@ namespace Client.Units
         }
 
         private Dictionary<UnitAttributeProperty, float> Attributes = new Dictionary<UnitAttributeProperty, float>();
+        
 
-        public float CurrentHealth { get; set; }
+        public float CurrentHealth
+        {
+            get { return _currentHealth; }
+            set { _currentHealth = value; }
+        }
+
         public float CurrentEnergy { get; set; }
         public string Combatlevel { get; set; }
 

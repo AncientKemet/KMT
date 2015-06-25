@@ -7,7 +7,7 @@ namespace Code.Libaries.Net.Packets.ForClient
 
         public ByteStream SubPacketData = new ByteStream();
 
-        public int UnitID { get; set; }
+        public ushort UnitID { get; set; }
 
         #region implemented abstract members of BasePacket
 

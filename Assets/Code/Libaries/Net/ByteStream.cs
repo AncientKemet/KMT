@@ -54,11 +54,11 @@ namespace Code.Code.Libaries.Net
             }
         }
 
-        public int GetByte()
+        public sbyte GetByte()
         {
             if (stream.Count > _offset)
             {
-                return (int) stream[_offset++];
+                return (sbyte) stream[_offset++];
             }
             else
             {
@@ -117,18 +117,14 @@ namespace Code.Code.Libaries.Net
         }
 
 
-        public int GetUnsignedByte()
+        public byte GetUnsignedByte()
         {
-            return GetByte() & 0xFF;
+            return (byte) (GetByte() & 0xFF);
         }
 
-        public int GetShort()
+        public short GetShort()
         {
-            int i = (GetUnsignedByte() << 8) + GetUnsignedByte();
-            if (i > 32767)
-            {
-                i -= 65536;
-            }
+            short i = (short) ((GetUnsignedByte() << 8) + GetUnsignedByte());
             return i;
         }
 
@@ -142,9 +138,9 @@ namespace Code.Code.Libaries.Net
             return i;
         }
 
-        public int GetUnsignedShort()
+        public ushort GetUnsignedShort()
         {
-            return (GetUnsignedByte() << 8) + GetUnsignedByte();
+            return (ushort) ((GetUnsignedByte() << 8) + GetUnsignedByte());
         }
 
         public int GetUnsignedShortBe()
@@ -333,7 +329,7 @@ namespace Code.Code.Libaries.Net
 
         public BitArray GetBitArray()
         {
-            return new BitArray(new[] {GetByte()});
+            return new BitArray(new[] {(int)GetByte()});
         }
 
         public int GetSize()

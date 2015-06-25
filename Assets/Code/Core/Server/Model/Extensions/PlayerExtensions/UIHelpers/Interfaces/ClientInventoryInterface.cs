@@ -17,7 +17,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
         public Player Player { get; private set; }
 
-        public Item.ItemInstance this[int id, int x, int y]
+        public Item.ItemInstance this[ushort id, int x, int y]
         {
             set
             {
@@ -64,8 +64,6 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             }
 
             var packet = new UIInventoryInterfacePacket();
-
-            Player.ClientUi.ProfileInterface.Open(inventory.Unit, ProfileInterfaceUpdatePacket.PacketTab.Inventory);
 
             packet.type = UIInventoryInterfacePacket.PacketType.SHOW;
             packet.UnitID = inventory.Unit.ID;

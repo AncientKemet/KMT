@@ -79,6 +79,19 @@ namespace Server.Model.Extensions.UnitExts
         {
         }
 
+        public void ClearAccesses()
+        {
+            _unitAccesses.Clear();
+        }
+
+        public void SetAccess(Player player, UnitAccess unitAccess)
+        {
+            unitAccess.DatabaseID = player.Client.UserAccount.DatabaseID;
+            var alreadyIn = _unitAccesses.Find(access => access.DatabaseID == player.Client.UserAccount.DatabaseID);
+            if(alreadyIn != null)
+                _unitAccesses.Remove(alreadyIn);
+            _unitAccesses.Add(unitAccess);
+        }
     }
 }
 #endif

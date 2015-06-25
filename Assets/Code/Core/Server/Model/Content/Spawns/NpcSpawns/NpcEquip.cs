@@ -8,7 +8,8 @@ namespace Server.Model.Content.Spawns.NpcSpawns
 {
     public class NpcEquip : NpcSpawnExtension
     {
-    
+
+        public List<UnitAttributePropertySerializable> AttributePropertySerializables; 
         public List<EquipmentItem> Items; 
 
         public override void Apply(NPC n)
@@ -24,7 +25,10 @@ namespace Server.Model.Content.Spawns.NpcSpawns
             
                 n.Equipment.EquipItem(droppedItem);
             }
-
+            foreach (var a in AttributePropertySerializables)
+            {
+                n.Attributes.Add(a.Property,a.Value);
+            }
         
         }
     }

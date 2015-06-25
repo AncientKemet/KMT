@@ -5,7 +5,7 @@ namespace Libaries.Net.Packets.ForClient
 {
     public class BuffUpdatePacket : BasePacket
     {
-        public int UnitId { get; set; }
+        public ushort UnitId { get; set; }
         public bool AddOrRemove { get; set; }
         public BuffInstance BuffInstance { get; set; }
 

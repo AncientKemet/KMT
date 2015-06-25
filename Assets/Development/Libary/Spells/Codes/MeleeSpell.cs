@@ -59,6 +59,18 @@ namespace Development.Libary.Spells.Codes
                         CurrentRadius.transform.localRotation = Quaternion.identity;
 
                         break;
+                    case RadiusType._90Degrees:
+
+                        CurrentRadius = Instantiate(ContentManager.I.SpellRadiuses[1].gameObject).GetComponent<ASpellRadius>();
+
+                        CurrentRadius.CriticalArea = unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.CriticalArea);
+                        CurrentRadius.Range = unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.WeaponReach);
+
+                        CurrentRadius.transform.transform.parent = unit.transform;
+                        CurrentRadius.transform.localPosition = Vector3.up;
+                        CurrentRadius.transform.localRotation = Quaternion.identity;
+
+                        break;
                 }
             };
 
@@ -102,10 +114,19 @@ namespace Development.Libary.Spells.Codes
             unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "") + (strenght < 0.33 ? "Weak" : "");
 
             if (strenght > 0.66f)
-                unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 0.5f);
+                unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 1f);
 
             if (_radiusType != RadiusType.Line)
-                foreach (var o in unit.CurrentBranch.ActiveObjectsVisible)
+            {
+                float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
+                float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
+                float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
+                Vector3 origin = unit.Movement.Position;
+                Vector3 direction = unit.Movement.Forward;
+                List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
+
+                //critical
+                foreach (var o in unit.CurrentBranch.ObjectsVisible)
                 {
                     ServerUnit u = o as ServerUnit;
 
@@ -119,12 +140,41 @@ namespace Development.Libary.Spells.Codes
 
                     if (com != null)
                     {
-                        if (!DoNormalHitBoxTestAngle(unit, u.Movement.Position, u.Display.Size / 2f))
+                        if (!DoCritHitBoxTestAngle(unit, u.Movement.Position, reach, critArea))
                             continue;
 
-                        com.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * strenght);
+                        com.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
+                                       BaseDamage * GetStrenghtDamageRatio(strenght) * critDmg);
+                        AlreadyHitUnits.Add(com);
                     }
                 }
+
+                //normal
+                foreach (var o in unit.CurrentBranch.ObjectsVisible)
+                {
+                    ServerUnit u = o as ServerUnit;
+
+                    if (u == null)
+                        continue;
+
+                    if (u == unit)
+                        continue;
+
+                    UnitCombat com = u.Combat;
+                    
+                    if (com != null)
+                    {
+                        if(AlreadyHitUnits.Contains(com))
+                            continue;
+
+                        if (!DoNormalHitBoxTestAngle(unit, u.Movement.Position, reach))
+                            continue;
+
+                        com.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
+                                           BaseDamage * GetStrenghtDamageRatio(strenght));
+                    }
+                }
+            }
             else // for line radius we use unity physics
             {
                 float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
@@ -139,15 +189,18 @@ namespace Development.Libary.Spells.Codes
                 {
                     foreach (
                         var hit in
-                            Physics.SphereCastAll((origin + Vector3.up * 0.5f) + (direction * LineWidth / 2f) + (direction * (reach - (reach * critArea) - (LineWidth / 2f))), LineWidth,
-                                                  direction,
-                                                  reach - (reach * (1f - critArea)) - LineWidth / 2f,
-                                                  layer))
+                            Physics.SphereCastAll(
+                                (origin + Vector3.up*0.5f) + (direction*LineWidth/2f) +
+                                (direction*(reach - (reach*critArea) - (LineWidth/2f))), LineWidth,
+                                direction,
+                                reach - (reach*(1f - critArea)) - LineWidth/2f,
+                                layer))
                     {
                         var combat = hit.collider.GetComponent<UnitCombat>();
                         if (combat != null && combat != unit.Combat)
                         {
-                            combat.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat, BaseDamage * GetStrenghtDamageRatio(strenght) * critDmg);
+                            combat.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
+                                       BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
                             AlreadyHitUnits.Add(combat);
                         }
                     }
@@ -156,16 +209,17 @@ namespace Development.Libary.Spells.Codes
                 {
                     foreach (
                         var hit in
-                            Physics.SphereCastAll((origin + Vector3.up * 0.5f) + (direction * LineWidth / 2f), LineWidth,
+                            Physics.SphereCastAll((origin + Vector3.up*0.5f) + (direction*LineWidth/2f), LineWidth,
                                                   direction,
-                                                  reach - LineWidth / 2f,
+                                                  reach - LineWidth/2f,
                                                   layer))
                     {
                         var combat = hit.collider.GetComponent<UnitCombat>();
                         if (combat != null && combat != unit.Combat)
                         {
                             if (!AlreadyHitUnits.Contains(combat))
-                                combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat, BaseDamage * GetStrenghtDamageRatio(strenght));
+                                combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
+                                           BaseDamage*GetStrenghtDamageRatio(strenght));
                         }
                     }
                 }
@@ -183,17 +237,17 @@ namespace Development.Libary.Spells.Codes
 
         }
 
+        [Obsolete("Use Unit.Spells.CancelSpell")]
         public override void CancelCasting(ServerUnit unit)
         {
             unit.Anim.ActionAnimation = "CancelAction";
         }
 
-        private bool DoNormalHitBoxTestAngle(ServerUnit unit, Vector3 target, float targetRadius)
+        private bool DoNormalHitBoxTestAngle(ServerUnit unit, Vector3 target, float reach)
         {
             float distance = Vector3.Distance(unit.Movement.Position, target);
-            float weaponReach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
             //Angle stuff
-            if (distance < unit.Display.Size + weaponReach + targetRadius)
+            if (distance < reach)
             {
                 Vector3 referenceForward = unit.Movement.Forward;
                 Vector3 referenceRight = Vector3.Cross(Vector3.up, referenceForward);
@@ -204,8 +258,38 @@ namespace Development.Libary.Spells.Codes
 
                 if (_radiusType == RadiusType._90Degrees)
                 {
-                    float f = (float)(targetRadius / (Math.PI * distance * 180));
-                    if (angle > Mathf.Min(0, -45 + f) && angle < Mathf.Max(0, 45 - f))
+                    if (angle > -45 && angle < 45)
+                        return true;
+                }
+                else if (_radiusType == RadiusType._180Degrees)
+                {
+                    if (angle > -90 && angle < 90)
+                        return true;
+                }
+                else if (_radiusType == RadiusType._360Degrees)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool DoCritHitBoxTestAngle(ServerUnit unit, Vector3 target, float reach, float critarea)
+        {
+            float distance = Vector3.Distance(unit.Movement.Position, target);
+            //Angle stuff
+            if (distance < reach && distance > reach*(1f-critarea))
+            {
+                Vector3 referenceForward = unit.Movement.Forward;
+                Vector3 referenceRight = Vector3.Cross(Vector3.up, referenceForward);
+                Vector3 newDirection = target - unit.Movement.Position;
+                float angle = Vector3.Angle(newDirection, referenceForward);
+                float sign = Mathf.Sign(Vector3.Dot(newDirection, referenceRight));
+                float finalAngle = sign * angle;
+
+                if (_radiusType == RadiusType._90Degrees)
+                {
+                    if (angle > -45 && angle < 45)
                         return true;
                 }
                 else if (_radiusType == RadiusType._180Degrees)

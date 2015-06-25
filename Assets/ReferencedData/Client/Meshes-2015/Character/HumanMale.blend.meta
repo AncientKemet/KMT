@@ -144,6 +144,10 @@ ModelImporter:
     7400084: WalkGuard
     7400086: OneHandSlashAttackStrong0
     7400088: Dead
+    7400090: OneHandHackPower
+    7400092: OneHandHackAttackWeak
+    7400094: OneHandHackAttack
+    7400096: OneHandHackAttackStrong
     9500000: //RootNode
     11100000: //RootNode
     13700000: BodyMesh
@@ -5282,6 +5286,470 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Base
+        weight: 1
+      - path: Armature/Base/Body
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger/Finger_005
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001/Finger_006
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002/Finger_007
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_003
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004/Finger_008
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/OffHand
+        weight: 1
+      - path: Armature/Base/Body/Neck
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/MainHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers/Right_fingers_005
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001/Right_fingers_006
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002/Right_fingers_007
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003/Right_fingers_008
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_004
+        weight: 1
+      - path: Armature/Base/LeftLeg
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet/LeftFeet_001
+        weight: 1
+      - path: Armature/Base/RightLeg
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet/RightFeet_001
+        weight: 1
+      - path: BodyMesh
+        weight: 1
+      - path: Boots
+        weight: 1
+      - path: ExampleShield
+        weight: 1
+      - path: ExampleWeapon
+        weight: 1
+      - path: SkinMesh
+        weight: 1
+      - path: SkirtMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: OneHandHackPower
+      takeName: OneHandHackPower
+      firstFrame: 0
+      lastFrame: 39
+      wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Base
+        weight: 1
+      - path: Armature/Base/Body
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger/Finger_005
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001/Finger_006
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002/Finger_007
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_003
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004/Finger_008
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/OffHand
+        weight: 1
+      - path: Armature/Base/Body/Neck
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/MainHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers/Right_fingers_005
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001/Right_fingers_006
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002/Right_fingers_007
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003/Right_fingers_008
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_004
+        weight: 1
+      - path: Armature/Base/LeftLeg
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet/LeftFeet_001
+        weight: 1
+      - path: Armature/Base/RightLeg
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet/RightFeet_001
+        weight: 1
+      - path: BodyMesh
+        weight: 1
+      - path: Boots
+        weight: 1
+      - path: ExampleShield
+        weight: 1
+      - path: ExampleWeapon
+        weight: 1
+      - path: SkinMesh
+        weight: 1
+      - path: SkirtMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: OneHandHackAttackWeak
+      takeName: OneHandHackAttackWeak
+      firstFrame: 0
+      lastFrame: 11
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Base
+        weight: 1
+      - path: Armature/Base/Body
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger/Finger_005
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001/Finger_006
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002/Finger_007
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_003
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004/Finger_008
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/OffHand
+        weight: 1
+      - path: Armature/Base/Body/Neck
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/MainHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers/Right_fingers_005
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001/Right_fingers_006
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002/Right_fingers_007
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003/Right_fingers_008
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_004
+        weight: 1
+      - path: Armature/Base/LeftLeg
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet/LeftFeet_001
+        weight: 1
+      - path: Armature/Base/RightLeg
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet/RightFeet_001
+        weight: 1
+      - path: BodyMesh
+        weight: 1
+      - path: Boots
+        weight: 1
+      - path: ExampleShield
+        weight: 1
+      - path: ExampleWeapon
+        weight: 1
+      - path: SkinMesh
+        weight: 1
+      - path: SkirtMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: OneHandHackAttack
+      takeName: OneHandHackAttack
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Base
+        weight: 1
+      - path: Armature/Base/Body
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger/Finger_005
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_001/Finger_006
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_002/Finger_007
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_003
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/Finger_004/Finger_008
+        weight: 1
+      - path: Armature/Base/Body/LeftShoulder/LeftElbow/LeftHand/OffHand
+        weight: 1
+      - path: Armature/Base/Body/Neck
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/MainHand
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers/Right_fingers_005
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_001/Right_fingers_006
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_002/Right_fingers_007
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_003/Right_fingers_008
+        weight: 1
+      - path: Armature/Base/Body/RightShoulder/RightElbow/RightHand/Right_fingers_004
+        weight: 1
+      - path: Armature/Base/LeftLeg
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet
+        weight: 1
+      - path: Armature/Base/LeftLeg/LeftShin/LeftFeet/LeftFeet_001
+        weight: 1
+      - path: Armature/Base/RightLeg
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet
+        weight: 1
+      - path: Armature/Base/RightLeg/RightShiv/RightFeet/RightFeet_001
+        weight: 1
+      - path: BodyMesh
+        weight: 1
+      - path: Boots
+        weight: 1
+      - path: ExampleShield
+        weight: 1
+      - path: ExampleWeapon
+        weight: 1
+      - path: SkinMesh
+        weight: 1
+      - path: SkirtMesh
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: OneHandHackAttackStrong
+      takeName: OneHandHackAttackStrong
+      firstFrame: 0
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0

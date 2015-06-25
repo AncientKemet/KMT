@@ -13,7 +13,7 @@ namespace Code.Code.Libaries.Net.Packets
     public class EnterWorldPacket : BasePacket
     {
         public string worldId = "1";
-        public int myUnitID = -1;
+        public ushort myUnitID;
         public UnityEngine.Vector3 Position;
 
         #region implemented abstract members of BasePacket
@@ -33,7 +33,7 @@ namespace Code.Code.Libaries.Net.Packets
         protected override void deSerialize(ByteStream bytestream)
         {
             worldId = bytestream.GetString();
-            myUnitID = bytestream.GetShort();
+            myUnitID = bytestream.GetUnsignedShort();
             Position = bytestream.GetPosition6B();
         }
 

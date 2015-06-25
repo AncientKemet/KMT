@@ -29,7 +29,7 @@ namespace Code.Core.Client.UI.Controls.Items
         #region static
         private static Dictionary<int, ItemInventoryInterface> _activeInterfaces = new Dictionary<int, ItemInventoryInterface>();
 
-        public static ItemInventoryInterface GetInterface(int unitId)
+        public static ItemInventoryInterface GetInterface(ushort unitId)
         {
             if (_activeInterfaces.ContainsKey(unitId) && _activeInterfaces[unitId] != null)
             {

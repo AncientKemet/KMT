@@ -28,7 +28,7 @@ namespace Client.Enviroment
                     return activeMaps[id];
                 }
             }
-            KemetMap newMap = ((GameObject) Instantiate(Resources.Load("Maps/" + id))).GetComponent<KemetMap>();
+            KemetMap newMap = ((GameObject)Instantiate(Resources.Load("Maps/" + id))).GetComponent<KemetMap>();
             return newMap;
         }
 
@@ -38,7 +38,7 @@ namespace Client.Enviroment
 
         private bool _wasMovingLastFrame = false;
 
-        public List<PrefabInstance> PrefabInstances; 
+        public List<PrefabInstance> PrefabInstances;
 
         public TerrainCollider TerrainCollider
         {
@@ -56,45 +56,31 @@ namespace Client.Enviroment
         {
             activeMaps.Add(name, this);
         }
-        private void Start(){
+        private void Start()
+        {
             var clickable = GetComponent<Clickable>();
-            clickable.OnLeftClick+= delegate { UnitSelectionInterface.I.Unit = null; };
-            clickable.OnRightMouseHold += () => { isHolding = true; };
-            clickable.OnRightClick += () => { isHolding = false; };
+            clickable.OnLeftClick += delegate { UnitSelectionInterface.I.Unit = null; };
         }
-
-        public bool isHolding { get; private set; }
 
         private void Update()
         {
-            if(!CreateCharacterInterface.IsNull)
+            if (!CreateCharacterInterface.IsNull)
                 return;
 
 
-
-            if (isHolding)
+            if (Input.GetMouseButton(1))
             {
-                if (Input.GetMouseButton(1))
+                if (PlayerUnit.MyPlayerUnit != null)
                 {
-                    if (PlayerUnit.MyPlayerUnit != null)
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    float distance = 100;
+                    const int layerMask = 1 << 8;
+                    if (Physics.Raycast(ray, out hit, distance, layerMask))
                     {
-                        RaycastHit hit;
-                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        float distance = 100;
-                        const int layerMask = 1 << 8;
-                        if (Physics.Raycast(ray, out hit, distance, layerMask))
-                        {
-                            SendPacket(hit, true);
-                            _wasMovingLastFrame = true;
-                        }
+                        SendPacket(hit, true);
+                        _wasMovingLastFrame = true;
                     }
-                }
-                else if (_wasMovingLastFrame)
-                {
-                    //This will make the player stop, once he's not holding right mouse anymore
-                    RaycastHit hit = new RaycastHit();
-                    StartCoroutine(StopAndResumeWalk());
-                    _wasMovingLastFrame = false;
                 }
             }
             else
@@ -166,16 +152,14 @@ namespace Client.Enviroment
 
         private void SendPacket(RaycastHit hit, bool Walk, bool invert)
         {
-            
+
             Vector3 myPos = PlayerUnit.MyPlayerUnit.MovementTargetPosition;
             var update = new WalkRequestPacket();
-            
-            update.Mask = new BitArray(new[] {Walk});
-            
+
+            update.Mask = new BitArray(new[] { Walk });
+
             if (Walk)
             {
-                
-
                 if (invert)
                 {
                     //used for going away from the hitpoint
@@ -187,9 +171,9 @@ namespace Client.Enviroment
                 else
                 {
                     Vector3 difference = (hit.point - myPos);
-                    if (difference.magnitude > 1f)
+                    if (difference.magnitude > 3f)
                     {
-                        update.DirecionVector = difference.normalized;
+                        update.DirecionVector = difference.normalized * 3f;
                     }
                     else
                     {
@@ -206,13 +190,5 @@ namespace Client.Enviroment
         }
 
 
-        IEnumerator StopAndResumeWalk()
-        {
-            ClientCommunicator.Instance.SendToServer(new InputEventPacket(PacketEnums.INPUT_TYPES.StopWalk));
-            yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
-            ClientCommunicator.Instance.SendToServer(new InputEventPacket(PacketEnums.INPUT_TYPES.ContinueWalk));
-        }
-    
     }
 }

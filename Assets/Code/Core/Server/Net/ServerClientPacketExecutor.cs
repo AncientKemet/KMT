@@ -176,9 +176,14 @@ namespace Server.Net
                     if (mov != null)
                     {
                         if (update.Mask[0]) //should walk
+                        {
                             mov.WalkWay(update.DirecionVector);
+                        }
                         else // just rotate
+                        {
+                            mov.DiscardPath();
                             mov.RotateWay(update.DirecionVector);
+                        }
                     }
                     return;
                 }

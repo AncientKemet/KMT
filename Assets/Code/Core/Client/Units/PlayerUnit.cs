@@ -36,7 +36,8 @@ namespace Client.Units
             {
                 _isStatic = value;
                 enabled = !value;
-                Display.enabled = !value;
+                if(_display != null)
+                    _display.enabled = !value;
                 if (GetComponent<Collider>() != null)
                     GetComponent<Collider>().enabled = !value;
             }
@@ -52,7 +53,7 @@ namespace Client.Units
         [SerializeField]
         protected float _visualSpeed = 0.2f;
 
-        private bool _isStatic;
+        private bool _isStatic = true;
         private int _parentId = -1;
         private int _parentPlaneId = -1;
 
@@ -60,20 +61,18 @@ namespace Client.Units
         public event Action<BuffInstance> OnBuffWasAdded;
         public event Action<BuffInstance> OnBuffWasRemoved;
 
-        public int Id
+        public ushort Id
         {
             get
             {
-                return _id;
+                return (ushort) _id;
             }
             set
             {
                 _id = value;
             }
         }
-
-        public bool IsFlying { get; set; }
-
+        
         public static PlayerUnit MyPlayerUnit { get; set; }
 
         public string Name
@@ -131,7 +130,7 @@ namespace Client.Units
 
         public UnitDisplay Display
         {
-            get { return _display ?? (_display = GetComponent<UnitDisplay>()); }
+            get { return _display; }
         }
 
         public Projector Projector
@@ -238,7 +237,7 @@ namespace Client.Units
 
         protected virtual void Update()
         {
-
+            if(!_isStatic)
             {// Process rotation
                 if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
                 {
@@ -264,9 +263,6 @@ namespace Client.Units
             if (_distanceToTarget > 0.017f)
             {// Process DirecionVector
                 calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
-
-                if (!IsFlying)
-                    FixYOnTerrain(ref calculatedPosition);
                 transform.localPosition = calculatedPosition;
             }
         }
@@ -291,9 +287,8 @@ namespace Client.Units
 
                 bool teleported = movementMask[0];
                 bool parentUpdate = movementMask[1];
-                IsFlying = movementMask[2];
 
-                Vector3 pos = b.GetPosition6B();
+                Vector3 pos = b.GetPosition12B();
                 if (!teleported && !IsStatic)
                 {
                     MovementTargetPosition = pos;
@@ -314,13 +309,14 @@ namespace Client.Units
                     _parentPlaneId = b.GetByte();
                     if (_parentId != -1)
                     {
-                        if (UnitManager.Instance[_parentId].Display.Model != -1)
+                        var u = UnitManager.Instance[_parentId]._display;
+                        if (u != null && u.Model != -1)
                         {
                             JoinParent();
                         }
                         else
                         {
-                            UnitManager.Instance[_parentId].Display.OnModelChange += JoinParent;
+                            UnitManager.Instance[_parentId]._display.OnModelChange += JoinParent;
                         }
                     }
                     else
@@ -343,16 +339,17 @@ namespace Client.Units
                 bool _hasCharacterCustoms = displayMask[4];
                 bool _visible = displayMask[5];
 
+                if (_display == null)
+                    _display = gameObject.AddComponent<UnitDisplay>();
+
                 if (!isItem)
                 {
-                    if (Display != null)
+                    if (Display.Model != modelId)
                     {
-                        if (Display.Model != modelId)
-                        {
-                            Display.Model = modelId;
-                        }
+                        Display.Model = modelId;
                     }
                 }
+
                 else
                 {
                     if (item != null)
@@ -447,7 +444,7 @@ namespace Client.Units
                 bool _hpUpdate = mask[0], _enUpdate = mask[1], _attributesUpdate = mask[2];
 
                 if (_hpUpdate)
-                    PlayerUnitAttributes.CurrentHealth = b.GetUnsignedByte();
+                    PlayerUnitAttributes.CurrentHealth = b.GetUnsignedShort();
 
                 if (_enUpdate)
                     PlayerUnitAttributes.CurrentEnergy = b.GetUnsignedByte();
@@ -596,16 +593,8 @@ namespace Client.Units
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
 
-            if (p.Mask[0])
-            {
                 _movementTargetPosition = _movementTargetPosition + p.Difference;
-            }
-            else
-            {
-                float angleY = p.YAngle / (180 / Mathf.PI);
-                _movementTargetPosition = _movementTargetPosition + (new Vector3(Mathf.Cos(angleY), 0, Mathf.Sin(angleY)) * p.Distance);
                 TargetRotation = p.Face;
-            }
         }
 
         public Action OnBeforeDestroy;

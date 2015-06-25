@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
+using Server.Model.Entities.StaticObjects;
 #if SERVER
 using Shared.Content.Types;
-using Server.Model.Entities.Vegetation;
 using Pathfinding;
 using Server.Model.Entities;
 using UnityEngine;
@@ -42,9 +42,7 @@ namespace Server.Model.Extensions.UnitExts
         private Vector3 destination;
         private Path _path;
         private bool _lookingForPath;
-        private bool _dontWalk;
-        public float _rotationSpeed = 10f;
-        private System.Action OnArrive;
+        private Action OnArrive;
 
         public UnitMovement Parent
         {
@@ -109,26 +107,13 @@ namespace Server.Model.Extensions.UnitExts
                 _wasUpdate = true;
             else
             {
-                float distance = Vector3.Distance(_lastPositionSent, _position);
                 Vector3 difference = _position - _lastPositionSent;
-                if (!IsFlying)
-                {
+                
                     UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                    UnprecieseMovementPacket.Mask = new BitArray(new[] {_isFlying});
-
-                    UnprecieseMovementPacket.YAngle = Mathf.Atan2(difference.z, difference.x)*180/Mathf.PI;
-                    UnprecieseMovementPacket.Face = Rotation;
-                    UnprecieseMovementPacket.Distance = distance;
-                    UnprecieseMovementPacket.UnitID = Unit.ID;
-                }
-                else
-                {
-                    UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                    UnprecieseMovementPacket.Mask = new BitArray(new[] {_isFlying});
-
+                    UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
+                    UnprecieseMovementPacket.Face = _rotation;
                     UnprecieseMovementPacket.Difference = difference;
                     UnprecieseMovementPacket.UnitID = Unit.ID;
-                }
                 _lastPositionSent = _position;
             }
         }
@@ -156,13 +141,13 @@ namespace Server.Model.Extensions.UnitExts
 
         public bool Running { get; set; }
 
+        public float WalkSpeed { get; set; }
         public float CurrentSpeed
         {
             get
             {
-                return _baseSpeed * (1.0f + Unit.Attributes[UnitAttributeProperty.MovementSpeed])
-                    *
-                    (Running ? 3f : 1f);
+                return 1.75f * (1.0f + Unit.Attributes[UnitAttributeProperty.MovementSpeed])
+                    *  Mathf.Min(WalkSpeed, Running ? 3f:1.5f);
             }
         }
 
@@ -186,7 +171,7 @@ namespace Server.Model.Extensions.UnitExts
                 Physics.Raycast(_position, Force, out hit, _force.magnitude, 1 << 8);
                 if (hit.collider != null)
                 {
-                    Position = hit.point;
+                    Position = hit.point + new Vector3(0,0.3f,0);
                     _force = Vector3.zero;
                     IsFlying = false;
                 }
@@ -217,11 +202,6 @@ namespace Server.Model.Extensions.UnitExts
                 }
             }
 
-            if (_dontWalk)
-            {
-                _path = null;
-            }
-
             /*
             RotateTo(Quaternion.LookRotation(new Vector3(destination.x, 0, destination.z) - new Vector3(_position.x, 0, _position.z)).eulerAngles.y);
 
@@ -233,52 +213,16 @@ namespace Server.Model.Extensions.UnitExts
 
         private void MoveAndRotate(float time)
         {
-            try
-            {
-                //Check if we are close enough to the next waypoint
-                //If we are, proceed to follow the next waypoint
-                for (int i = 0; i < 3; i++)
-                {
-                    Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
-                    if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
-                        Unit.Display.Size * 0.75f)
-                    {
-                        _currentWaypoint++;
-                    }
-                }
+            Vector3 waypoint = _path.vectorPath[_currentWaypoint];
+            Vector3 dir = waypoint - _position;
+            _rotation = Quaternion.LookRotation(dir).eulerAngles.y;
+            
+            float step = CurrentSpeed * time;
 
-                Vector3 waypoint = _path.vectorPath[_currentWaypoint];
-                Vector3 dir = waypoint - _position;
+            if (dir.magnitude < step)
+                _currentWaypoint++;
 
-                float dirMagnitude = dir.magnitude;
-
-                if (dirMagnitude > 0.3f)
-                {
-                    RotateTo(Quaternion.LookRotation(dir).eulerAngles.y);
-                    //eq holding space
-                    if (!_dontWalk /*&&
-                        Vector3.Distance(Position + Forward * 1.25f, waypoint) < Vector3.Distance(Position + Forward * -1, waypoint)*/)
-                    {
-                        MoveForward(CurrentSpeed * time);
-                        _position.y += (waypoint.y - _position.y) * (CurrentSpeed * time);
-                    }
-
-                }
-
-                //Check if we are close enough to the next waypoint
-                //If we are, proceed to follow the next waypoint
-                for (int i = 0; i < 3; i++)
-                {
-                    Vector3 wayPoint = _path.vectorPath[_currentWaypoint];
-                    if (Vector2.Distance(new Vector2(_position.x, _position.z), new Vector2(wayPoint.x, wayPoint.z)) <
-                        Unit.Display.Size * 0.75f)
-                    {
-                        _currentWaypoint++;
-                    }
-                }
-            }
-            catch (ArgumentOutOfRangeException e)
-            { }
+            MoveTo(_position + dir.normalized * step);
         }
 
         private void MoveForward(float speed)
@@ -309,17 +253,7 @@ namespace Server.Model.Extensions.UnitExts
                 Position = newPosition;
             }
         }
-
-        public void StopWalking()
-        {
-            _dontWalk = true;
-        }
-
-        public void ContinueWalking()
-        {
-            _dontWalk = false;
-        }
-
+        
         /// <summary>
         /// Smoothly walks to the destination.
         /// </summary>
@@ -362,14 +296,15 @@ namespace Server.Model.Extensions.UnitExts
 
         public void WalkWay(Vector3 direction)
         {
-            WalkTo(_position + direction * (Unit.Display.Size + 0.5f));
+            WalkSpeed = direction.magnitude;
+            WalkTo(_position + direction);
         }
 
 
         public void RotateWay(Vector3 direcionVector)
         {
-            if(direcionVector != Vector3.zero)
-            RotateTo(Quaternion.LookRotation(direcionVector).eulerAngles.y);
+            if (direcionVector != Vector3.zero)
+                RotateTo(Quaternion.LookRotation(direcionVector).eulerAngles.y);
         }
 
         private void RotateTo(float newRotation)
@@ -401,7 +336,7 @@ namespace Server.Model.Extensions.UnitExts
             _lookingForPath = false;
             if (!path.error)
             {
-                _currentWaypoint = 0;
+                _currentWaypoint = 1;
                 _path = path;
             }
             else
@@ -434,7 +369,7 @@ namespace Server.Model.Extensions.UnitExts
         protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
         {
             packet.AddFlag(true, true, _isFlying);
-            packet.AddPosition6B(_position);
+            packet.AddPosition12B(_position);
 
             packet.AddAngle1B(_rotation);
 
@@ -446,7 +381,7 @@ namespace Server.Model.Extensions.UnitExts
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
         {
             packet.AddFlag(Teleported, _parentUpdate, _isFlying);
-            packet.AddPosition6B(_position);
+            packet.AddPosition12B(_position);
 
             packet.AddAngle1B(_rotation);
             if (_parentUpdate)
@@ -491,7 +426,10 @@ namespace Server.Model.Extensions.UnitExts
         public void Push(Vector3 vector3, float strenght)
         {
             if (CanMove)
-                MoveTo(_position + vector3.normalized * strenght);
+            {
+                MoveTo(_position + vector3.normalized*strenght);
+                IsFlying = true;
+            }
         }
 
         public override void Serialize(JSONObject j)
@@ -530,10 +468,14 @@ namespace Server.Model.Extensions.UnitExts
         {
             if (!_isFlying)
             {
-                Fly(Vector3.up * 0.3f + Forward * 0.1f);
+                Fly(Vector3.up * 0.5f + Forward * 0.3f);
             }
         }
 
+        public void DiscardPath()
+        {
+            _path = null;
+        }
     }
 }
 #endif

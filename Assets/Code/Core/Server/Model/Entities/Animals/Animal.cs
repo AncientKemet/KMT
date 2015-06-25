@@ -1,4 +1,4 @@
-using Server.Model.Entities.Vegetation;
+using Server.Model.Entities.StaticObjects;
 using Random = UnityEngine.Random;
 #if SERVER
 using System;

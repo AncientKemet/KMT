@@ -125,11 +125,25 @@ namespace Shared.Content.Types
             }
         }
 
-        [SerializeField]
+        [Serializable]
         public class ItemInstance
         {
-            public Item Item { get; private set; }
-            public int Amount { get; set; }
+            [SerializeField]
+            private Item _item;
+            [SerializeField]
+            private int _amount;
+
+            public Item Item
+            {
+                get { return _item; }
+                private set { _item = value; }
+            }
+
+            public int Amount
+            {
+                get { return _amount; }
+                set { _amount = value; }
+            }
 
             public ItemInstance(Item _item, int _amount)
             {

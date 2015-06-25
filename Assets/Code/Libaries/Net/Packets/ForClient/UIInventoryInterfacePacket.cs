@@ -22,7 +22,7 @@ namespace Code.Code.Libaries.Net.Packets
         }
 
         public PacketType type {get;set;}
-        public int UnitID { get; set; }
+        public ushort UnitID { get; set; }
         public int Value { get; set; }
         public int Amount { get; set; }
         public int X { get; set; }

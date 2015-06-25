@@ -23,12 +23,7 @@ namespace Server.Model.Extensions.PlayerExtensions
                 }
                 if (input == PacketEnums.INPUT_TYPES.StopWalk)
                 {
-                    Player.Movement.StopWalking();
-                    continue;
-                }
-                if (input == PacketEnums.INPUT_TYPES.ContinueWalk)
-                {
-                    Player.Movement.ContinueWalking();
+                    Player.Movement.DiscardPath();
                     continue;
                 }
                 if (input == PacketEnums.INPUT_TYPES.Jump)

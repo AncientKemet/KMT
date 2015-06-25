@@ -1,3 +1,4 @@
+using System;
 using Libaries.IO;
 using Server.Model.Content.Spawns.NpcSpawns;
 using Server.Model.Extensions.UnitExts;
@@ -45,6 +46,10 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
         {
             if (value == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
             {
+                if (player.ClientUi.Inventories == null)
+                    throw new Exception("Null player.ClientUi.Inventories");
+                if (Unit.GetExt<UnitInventory>() == null)
+                    throw new Exception("Null Unit.GetExt<UnitInventory>()");
                 player.ClientUi.Inventories.ShowInventory(Unit.GetExt<UnitInventory>());
             }
             else if (value == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
@@ -123,9 +128,9 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
         public void Open(ServerUnit __otherUnit, ProfileInterfaceUpdatePacket.PacketTab tab)
         {
+            Unit = __otherUnit;
             Tab = tab;
             Opened = true;
-            Unit = __otherUnit;
             SendPacket();
         }
 

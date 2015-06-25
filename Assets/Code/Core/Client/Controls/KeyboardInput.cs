@@ -51,11 +51,7 @@ namespace Code.Core.Client.Controls
 
                     if (jump)
                         ClientCommunicator.Instance.SendToServer(new InputEventPacket(PacketEnums.INPUT_TYPES.Jump));
-
-                    if (canWak)
-                        ClientCommunicator.Instance.SendToServer(
-                            new InputEventPacket(PacketEnums.INPUT_TYPES.ContinueWalk));
-
+                    
                 }
                 else
                 {

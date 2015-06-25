@@ -1,4 +1,5 @@
 ﻿using Client.Enviroment;
+using Development.Libary.Spawns;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,11 +28,12 @@ public class PrefabInstance : MonoBehaviour
     [System.NonSerializedAttribute]
     public List<Thingy> things = new List<Thingy>();
 
-    void Awake()
+    void Start()
     {
         if (Application.isPlaying)
         {
-            var o = Instantiate(prefab, transform.position, transform.rotation) as GameObject;
+            /*var o = Instantiate(prefab, transform.position, transform.rotation) as GameObject;*/
+            BakeInstance(this);
             Destroy(gameObject);
         }
     }
@@ -155,18 +157,14 @@ public class PrefabInstance : MonoBehaviour
     {
         if (!pi.prefab || !pi.enabled)
             return;
-        pi.enabled = false;
-        GameObject go = PrefabUtility.InstantiatePrefab(pi.prefab) as GameObject;
-        go.SendMessage("OnBake", pi.UnitId);
-        Quaternion rot = go.transform.localRotation;
-        Vector3 scale = go.transform.localScale;
-        go.transform.parent = pi.transform;
-        go.transform.localPosition = Vector3.zero;
-        go.transform.localScale = scale;
-        go.transform.localRotation = rot;
-        pi.prefab = null;
+        var go = Instantiate(pi.prefab, pi.transform.position, pi.transform.rotation) as GameObject;
         foreach (PrefabInstance childPi in go.GetComponentsInChildren<PrefabInstance>())
             BakeInstance(childPi);
+
+        var _in = go.GetComponent<StaticObjectInstance>();
+        if(_in != null)
+            _in.OnBake((ushort) pi.UnitId);
+
     }
 
 #endif

@@ -1,3 +1,4 @@
+using Server.Model.Extensions.PlayerExtensions;
 #if SERVER
 using Server.Servers;
 
@@ -15,14 +16,27 @@ namespace Server
         public bool debug = false;
         public IDataProvider DataProvider;
 
-
-        public override void StartServer()
+        private void Awake()
         {
-            base.StartServer();
+            scm.Get.Server = this;
+
+            for (int i = 0; i < 5; i++)
+            {
+                GameObject ob = new GameObject("Free");
+                ob.AddComponent<ServerClient>();
+                ob.transform.parent = ServerSingleton.Instance.GOPool;
+                FreeClients.Add(ob.GetComponent<ServerClient>());
+            }
+
             DataProvider = new MySQLDataProvider();
             
             socket = CreateServerSocket(NetworkConfig.I.DataServerPort);
             Debug.Log("Data server running.");
+        }
+
+
+        public override void StartServer()
+        {
         }
 
         public override void ServerUpdate(float f)

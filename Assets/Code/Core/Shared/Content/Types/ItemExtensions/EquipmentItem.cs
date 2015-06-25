@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Shared.Content.Types;
+using UnityEngine;
 
 namespace Code.Core.Shared.Content.Types.ItemExtensions
 {
@@ -28,7 +29,6 @@ namespace Code.Core.Shared.Content.Types.ItemExtensions
 
         public string StandAnim = "Idle";
         public string WalkAnim = "Walk";
-
 
         public List<UnitAttributePropertySerializable> Attributes;
     }

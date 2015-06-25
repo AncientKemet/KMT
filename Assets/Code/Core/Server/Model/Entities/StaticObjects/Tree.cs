@@ -1,8 +1,7 @@
-﻿using Server.Model.Entities.Vegetation;
+﻿using UnityEngine;
 
 namespace Server.Model.Entities.StaticObjects
 {
     public class Tree : Plant {
-
     }
 }

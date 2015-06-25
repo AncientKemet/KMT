@@ -25,7 +25,7 @@ namespace Server.Model
 
         private int _serializedWorldId = -1;
 
-        public int ID
+        public ushort ID
         {
             get { return _id; }
             set { _id = value; }
@@ -34,7 +34,7 @@ namespace Server.Model
         private Dictionary<Type, EntityExtension> extensions = new Dictionary<Type, EntityExtension>();
 
         [SerializeField]
-        private int _id;
+        private ushort _id;
 
         public Dictionary<Type, EntityExtension>.ValueCollection Extensions
         {

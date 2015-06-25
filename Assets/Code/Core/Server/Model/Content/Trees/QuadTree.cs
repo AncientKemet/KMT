@@ -10,7 +10,8 @@ namespace Code.Libaries.Generic.Trees
     /// </summary>
     public class QuadTree
     {
-        public static bool AllowVisibilityFromTop = false;
+        public static bool AllowVisibilityFromTop = true;
+
         private int _divisions = 0;
         private bool _isDivided = false;
         private bool _wasInitialized = false;

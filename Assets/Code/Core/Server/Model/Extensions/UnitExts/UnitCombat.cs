@@ -4,6 +4,7 @@ using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 using Server.Model.Entities.Human;
 using Shared.StructClasses;
+using Tree = Server.Model.Entities.StaticObjects.Tree;
 #if SERVER
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,11 @@ namespace Server.Model.Extensions.UnitExts
     public class UnitCombat : UnitUpdateExt
     {
         private const int RegenUpdateTick = 20;
-        private readonly Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
+
+        /// <summary>
+        /// Dictionary of every unit that has ever dealt damage to this unit. It is being reset after calling OnDeath.
+        /// </summary>
+        private Dictionary<ServerUnit, float> _damageRecieved = new Dictionary<ServerUnit, float>();
         private int RegenTick;
         private bool _dead;
         private UnitAttributes _unitAttributes;
@@ -80,6 +85,7 @@ namespace Server.Model.Extensions.UnitExts
                     }
                     else
                     {
+                        if(Unit.Anim != null)
                         Unit.Anim.SetDefaults();
                     }
                 }
@@ -90,6 +96,7 @@ namespace Server.Model.Extensions.UnitExts
         public event Action<HitInformation> OnHitOther;
         public event Action<HitInformation> OnHitMe;
         public event Action<Dictionary<ServerUnit, float>> OnDeath;
+        public event Action OnRevive;
 
         public override void Progress(float time)
         {
@@ -101,10 +108,10 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     RegenTick = 0;
 
-                    CurrentEnergy += Unit.Attributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
-                    CurrentEnergy = Mathf.Clamp(CurrentEnergy, 0, 100);
-                    CurrenHealth += Unit.Attributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
-                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, 100);
+                    _currentEnergy += Unit.Attributes[UnitAttributeProperty.EnergyRegen] * time * RegenUpdateTick;
+                    CurrentEnergy = Mathf.Clamp(_currentEnergy, 0, Unit.Attributes[UnitAttributeProperty.Energy]);
+                    _currenHealth += Unit.Attributes[UnitAttributeProperty.HealthRegen] * time * RegenUpdateTick;
+                    CurrenHealth = Mathf.Clamp(_currenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
                 }
         }
 
@@ -136,10 +143,15 @@ namespace Server.Model.Extensions.UnitExts
             CurrentEnergy = 1;
             CurrenHealth = 1;
 
-            collider = gameObject.AddComponent<CapsuleCollider>();
-            collider.radius = 0.5f;
-            collider.center = new Vector3(0, 0.5f, 0);
-            collider.height = 2;
+            collider = gameObject.GetComponent<CapsuleCollider>();
+
+            if (collider == null)
+            {
+                collider = gameObject.AddComponent<CapsuleCollider>();
+                collider.radius = 0.5f;
+                collider.center = new Vector3(0, 0.5f, 0);
+                collider.height = 2;
+            }
 
             gameObject.layer = 30;
 
@@ -173,7 +185,6 @@ namespace Server.Model.Extensions.UnitExts
                     p.Client.ConnectionHandler.SendPacket(packet);
                 };
 
-                OnHitOther += (i) => p.Levels.AddExperience(Levels.Skills.Attack, (int) (i.Damage * Levels.DamageXpRatio));
             }
         }
 
@@ -212,15 +223,16 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (!Dead)
                 {
-                    CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
+                    CurrenHealth = Mathf.Clamp(_currenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
                     Dead = true;
                     if (OnDeath != null)
                         OnDeath(_damageRecieved);
+                    _damageRecieved = new Dictionary<ServerUnit, float>();
                     return;
                 }
             }
 
-            CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
+            CurrenHealth = Mathf.Clamp(_currenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
         }
 
         internal void Revive(float _health)
@@ -228,9 +240,11 @@ namespace Server.Model.Extensions.UnitExts
             if (Dead)
             {
                 Dead = false;
-                CurrenHealth = _health;
-                CurrenHealth = Mathf.Clamp(CurrenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
+                if(OnRevive != null)
+                    OnRevive();
             }
+            _currenHealth = _health;
+            CurrenHealth = Mathf.Clamp(_currenHealth, 0, Unit.Attributes[UnitAttributeProperty.Health]);
         }
 
         #region Update packet serialization
@@ -239,7 +253,7 @@ namespace Server.Model.Extensions.UnitExts
         {
             packet.AddFlag(new[] { true, true, true });
 
-            packet.AddByte((int)CurrenHealth);
+            packet.AddShort((int)CurrenHealth);
 
             packet.AddByte((int)CurrentEnergy);
 
@@ -257,7 +271,7 @@ namespace Server.Model.Extensions.UnitExts
             packet.AddFlag(new[] { _currentHpUpdate, _currentEnUpdate, _attributeUpdate });
 
             if (_currentHpUpdate)
-                packet.AddByte((int)CurrenHealth);
+                packet.AddShort((int)CurrenHealth);
 
             if (_currentEnUpdate)
                 packet.AddByte((int)CurrentEnergy);
@@ -287,10 +301,12 @@ namespace Server.Model.Extensions.UnitExts
 
         private void MeleePhysicalHitEffects(Spell.HitStrenght strenght, UnitCombat dealer, float damage)
         {
+            if(!Unit.IsStatic()) // Static units dont recieve special melee hit effects
+                return;
+            
             float distance = Vector3.Distance(Unit.Movement.Position, dealer.Unit.Movement.Position);
             float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward,
                                                          dealer.Unit.Movement.Position);
-
             Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), ((float)strenght) / 3f);
 
             if (Unit.Anim != null)
@@ -302,18 +318,23 @@ namespace Server.Model.Extensions.UnitExts
         {
             if(Dead)
                 return;
-            
+
+            if (Unit is Tree)
+            {
+                damage *= 1f + dealer.Unit.Attributes.Get(UnitAttributeProperty.DamageToTreePalm);
+            }
+
             if (dmgType == Spell.DamageType.Physical)
             {
-                damage = (damage * (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage])) *
-                                       (1.0f - Unit.Attributes[UnitAttributeProperty.Armor]);
+                damage *= (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage]) *
+                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.Armor] - dealer.Unit.Attributes.Get(UnitAttributeProperty.ArmorPenetration), 0f));
                 MeleePhysicalHitEffects(strenght, dealer, damage);
                 ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.Magical)
             {
-                damage = (damage * (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.MagicalDamage])) *
-                                       (1.0f - Unit.Attributes[UnitAttributeProperty.MagicResist]);
+                damage *= (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.MagicalDamage]) *
+                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.MagicResist] - dealer.Unit.Attributes.Get(UnitAttributeProperty.MagicResistPenetration), 0f));
                 ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.True)

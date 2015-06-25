@@ -27,7 +27,7 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
         private PlayerUnit _unit;
 
         [SerializeField]
-        private tk2dTextMesh UnitNameLabel, Armor, MagicResist, MovementSpeed, CooldownSpeed;
+        private tk2dTextMesh UnitNameLabel, Armor, MagicResist, HpLabel, EnLabel;
 
         [SerializeField]
         private ChannelBar _healthBar, _energyBar;
@@ -94,6 +94,9 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             if (Unit == null) return;
             _healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
             _energyBar.Progress = Unit.PlayerUnitAttributes.CurrentEnergy / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Energy);
+            _healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
+            HpLabel.text = Unit.PlayerUnitAttributes.CurrentHealth + "";
+            EnLabel.text = Unit.PlayerUnitAttributes.CurrentEnergy +"";
         }
 
         public void OnDataRecieved(UnitSelectionPacketData data)
@@ -114,21 +117,6 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
                 try
                 {
                     SetText(MagicResist, data.Attributes[UnitAttributeProperty.MagicResist]);
-                }
-                catch (KeyNotFoundException e)
-                {
-                }
-
-                try
-                {
-                    SetText(MovementSpeed, data.Attributes[UnitAttributeProperty.MovementSpeed]);
-                }
-                catch (KeyNotFoundException e)
-                {
-                }
-                try
-                {
-                    SetText(CooldownSpeed, data.Attributes[UnitAttributeProperty.ChargeSpeed]);
                 }
                 catch (KeyNotFoundException e)
                 {

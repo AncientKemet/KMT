@@ -21,6 +21,8 @@ namespace Server.Model.Extensions.UnitExts
 
         private int _currentCastingSpellId = -1;
         private float _currentSpellTime;
+        private float _globalCooldown = 1f;
+        private int _startQueuedSpell = -1;
 
         /// <summary>
         /// 
@@ -28,6 +30,19 @@ namespace Server.Model.Extensions.UnitExts
         /// <param name="time">Time that has passed since last call in seconds. (0.033f usually)</param>
         public override void Progress(float time)
         {
+            //Basically if the cooldown is > 0 we reduce it, and if after thre reducement its < 0 then we start casting the queued spell
+            if (_globalCooldown > 0)
+            {
+                _globalCooldown -= time*(1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
+                if (_globalCooldown < 0)
+                {
+                    if (_startQueuedSpell != -1)
+                    {
+                        StartSpell(_startQueuedSpell);
+                        _startQueuedSpell = -1;
+                    }
+                }
+            }
             if (CurrentCastingSpell != null)
             {
                 if (CurrentCastingSpell.HasEnergyCost)
@@ -52,7 +67,7 @@ namespace Server.Model.Extensions.UnitExts
 
             }
         }
-        
+
         public float CurrentCastStrenght
         {
             get { return (Mathf.Min(_currentSpellTime, CurrentCastingSpell.MaxDuration) - CurrentCastingSpell.ActivableDuration) / (CurrentCastingSpell.MaxDuration - CurrentCastingSpell.ActivableDuration); }
@@ -118,22 +133,29 @@ namespace Server.Model.Extensions.UnitExts
 
         public void StartSpell(int id)
         {
-            if (CurrentCastingSpell == null)
-                if (_spells[id] != null)
-                {
-                    _currentCastingSpellId = id;
-                    _spells[id].StartCasting(Unit);
-                    if (Unit is Player)
+            if (_globalCooldown > 0)
+            {
+                _startQueuedSpell = id;
+            }
+            else
+            {
+                if (CurrentCastingSpell == null)
+                    if (_spells[id] != null)
                     {
-                        Player p = Unit as Player;
+                        _currentCastingSpellId = id;
+                        _spells[id].StartCasting(Unit);
+                        if (Unit is Player)
+                        {
+                            Player p = Unit as Player;
 
-                        SpellUpdatePacket packet = new SpellUpdatePacket();
-                        packet.Index = _currentCastingSpellId;
-                        packet.UpdateState = SpellUpdateState.StartedCasting;
+                            SpellUpdatePacket packet = new SpellUpdatePacket();
+                            packet.Index = _currentCastingSpellId;
+                            packet.UpdateState = SpellUpdateState.StartedCasting;
 
-                        p.Client.ConnectionHandler.SendPacket(packet);
+                            p.Client.ConnectionHandler.SendPacket(packet);
+                        }
                     }
-                }
+            }
         }
 
         public void CancelSpell(int id)
@@ -141,8 +163,10 @@ namespace Server.Model.Extensions.UnitExts
             if (CurrentCastingSpell == null)
                 if (_spells[id] != null)
                 {
+                    _globalCooldown = 1f;
                     _currentCastingSpellId = id;
                     _spells[id].CancelCasting(Unit);
+
                     if (Unit is Player)
                     {
                         Player p = Unit as Player;
@@ -168,6 +192,7 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     if (CurrentCastingSpell.ActivableDuration < _currentSpellTime)
                     {
+                        _globalCooldown = 1f;
                         CurrentCastingSpell.FinishCasting(Unit, CurrentCastStrenght);
 
                         if (Unit is Player)
@@ -187,7 +212,7 @@ namespace Server.Model.Extensions.UnitExts
                     _currentCastingSpellId = -1;
                 }
         }
-        
+
         public bool HasSpell(Spell spell, int index)
         {
             return _spells[index] == spell;

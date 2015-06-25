@@ -30,38 +30,17 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
 
         public ClientInventoryInterface Inventories
         {
-            get
-            {
-                if (_inventoryInterface == null)
-                {
-                    _inventoryInterface = new ClientInventoryInterface(Player);
-                }
-                return _inventoryInterface;
-            }
+            get { return _inventoryInterface ?? (_inventoryInterface = new ClientInventoryInterface(Player)); }
         }
 
         public ProfileInterface ProfileInterface
         {
-            get
-            {
-                if (_profileInterface == null)
-                {
-                    _profileInterface = new ProfileInterface(this);
-                }
-                return _profileInterface;
-            }
+            get { return _profileInterface ?? (_profileInterface = new ProfileInterface(this)); }
         }
 
         public LobbyInterface Lobby
         {
-            get
-            {
-                if (_lobby == null)
-                {
-                    _lobby = new LobbyInterface(this);
-                }
-                return _lobby;
-            }
+            get { return _lobby ?? (_lobby = new LobbyInterface(this)); }
         }
 
         public LoginInterface Login { get; private set; }

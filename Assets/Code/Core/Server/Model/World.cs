@@ -1,3 +1,5 @@
+using System;
+using Code.Core.Client.Settings;
 using Server.Servers;
 #if SERVER
 using Server.Model.Content;
@@ -33,27 +35,31 @@ namespace Server.Model
 
             bool _foundNullIndex = false;
             int _nullIndex = -1;
+
             if (_forcedId != -1)
             {
                 _foundNullIndex = true;
                 _nullIndex = _forcedId;
             }
-            if (_freeIds.Count > 0)
-            {
-                _nullIndex = _freeIds[0];
-                _freeIds.RemoveAt(0);
-                _foundNullIndex = true;
-            }
-            
-            if (!_foundNullIndex)
+            else
+                if (_freeIds.Count > 0)
+                {
+                    _nullIndex = _freeIds[0];
+                    _freeIds.RemoveAt(0);
+                    _foundNullIndex = true;
+                }
+
+            if (!_foundNullIndex && _forcedId == -1)
             {
                 _entities.Add(entity);
-                entity.ID = _entities.Count - 1;
+                entity.ID = (ushort) (_entities.Count - 1);
             }
             else
             {
+                if(_entities[_nullIndex] != null)
+                    throw new Exception("Fuck at this Id there already is an unit! " +_nullIndex);
                 _entities[_nullIndex] = entity;
-                entity.ID = _nullIndex;
+                entity.ID = (ushort) _nullIndex;
             }
 
             entity.CurrentWorld = this;
@@ -75,17 +81,24 @@ namespace Server.Model
 
         public void RemoveEntity(WorldEntity entity)
         {
-            _freeIds.Add(entity.ID);
-            _entities[entity.ID] = null;
+            try
+            {
+                _freeIds.Add(entity.ID);
+                _entities[entity.ID] = null;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Debug.LogError("ArgumentOutOfRangeException [" + entity.ID + "] " + entity.name);
+            }
         }
 
         public void Progress(float time)
         {
             LAST_TICK++;
-            
+
             foreach (var player in Players)
             {
-                foreach (var o in player.CurrentBranch.ActiveObjectsVisible)
+                foreach (var o in player.CurrentBranch.ObjectsVisible)
                 {
                     ServerUnit e = o as ServerUnit;
                     if (e != null)
@@ -94,7 +107,7 @@ namespace Server.Model
                     }
                 }
             }
-            if (LAST_TICK%20 == 0)
+            if (LAST_TICK % 5 == 0)
             {
                 LAST_TICK = 0;
                 Tree.Update();
@@ -118,10 +131,10 @@ namespace Server.Model
 
             _initialized = true;
 
-            _entities = new List<WorldEntity>(1024);
+            _entities = new List<WorldEntity>(new WorldEntity[GlobalConstants.Instance.MAX_UNIT_AMOUNT]);
             Units = new List<ServerUnit>();
             Players = new List<Player>();
-            Tree = new QuadTree(5, Vector2.zero, Vector2.one*1024);
+            Tree = new QuadTree(7, Vector2.zero, Vector2.one * 1024);
 
             Map = KemetMap.GetMap("1");
             Map.transform.parent = transform;
@@ -135,7 +148,7 @@ namespace Server.Model
         {
             get
             {
-                if (unitId > _entities.Count-1 || unitId < 0)
+                if (unitId > _entities.Count - 1 || unitId < 0)
                 {
                     //throw  new Exception("Wrong unit index: "+unitId);
                     return null;
@@ -149,10 +162,10 @@ namespace Server.Model
             Debug.Log("Saving world.");
             foreach (var player in Players)
             {
-                
+
                 if (player.Client.UserAccount != null)
                 {
-                    Debug.Log("Saving player : "+player.Client.UserAccount.Username);
+                    Debug.Log("Saving player : " + player.Client.UserAccount.Username);
                     player.Client.UserAccount.SaveAccount();
                     player.Client.UserAccount.SaveUnit(player);
                 }

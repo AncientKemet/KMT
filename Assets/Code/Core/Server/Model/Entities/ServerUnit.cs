@@ -39,6 +39,15 @@ namespace Server.Model.Entities
             if (OnLastSetup != null)
                 OnLastSetup();
             OnLastSetup = null;
+
+            //in the end find all updatable extensions
+            foreach (EntityExtension extension in Extensions)
+                if (extension is UnitUpdateExt)
+                    _updateExtensions.Add(extension as UnitUpdateExt);
+
+            _updateExtensions.Sort(
+                (ext, updateExt) => ext.UpdateFlag().CompareTo(updateExt.UpdateFlag())
+                );
         }
 
         public override World CurrentWorld
@@ -63,14 +72,7 @@ namespace Server.Model.Entities
             Movement = AddExt<UnitMovement>();
             Details = AddExt<UnitDetails>();
 
-            //in the end find all updatable extensions
-            foreach (EntityExtension extension in Extensions)
-                if (extension is UnitUpdateExt)
-                    _updateExtensions.Add(extension as UnitUpdateExt);
-
-            _updateExtensions.Sort(
-                (ext, updateExt) => ext.UpdateFlag().CompareTo(updateExt.UpdateFlag())
-                );
+            
         }
 
         public override void Progress(float time)

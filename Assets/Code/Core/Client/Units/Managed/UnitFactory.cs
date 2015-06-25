@@ -20,7 +20,7 @@ namespace Code.Core.Client.Units.Managed
         /// </summary>
         /// <returns>The player.</returns>
         /// <param name="id">Identifier.</param>
-        public PlayerUnit CreateNewUnit(int id){
+        public PlayerUnit CreateNewUnit(ushort id){
             PlayerUnit playerUnit = ((GameObject)Instantiate (_playerUnitPrefab.gameObject)).GetComponent<PlayerUnit>();
             playerUnit.Id = id;
             playerUnit.transform.parent = KemetMap.Instance.transform;

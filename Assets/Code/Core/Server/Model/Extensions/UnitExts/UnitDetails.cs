@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Code.Code.Libaries.Net;
 using Libaries.Net.Packets.ForClient;
 using Server.Model.Entities;
@@ -31,8 +32,8 @@ namespace Server.Model.Extensions.UnitExts
         /// <param name="_action"></param>
         public void RemoveAction(string _action)
         {
-            _actions.Remove(_action);
-            _wasUpdate = true;
+            if(_actions.Remove(_action))
+                _wasUpdate = true;
         } 
 
         public override byte UpdateFlag()
@@ -72,9 +73,13 @@ namespace Server.Model.Extensions.UnitExts
             ServerUnit selectedUnit = _unit.CurrentWorld[unitId];
             if (selectedUnit == null)
                 return;
-            
+
             float distance = Vector3.Distance(_unit.Movement.Position, selectedUnit.Movement.Position);
-            if (distance > _unit.Display.Size + selectedUnit.Display.Size)
+            float maxDistance = selectedUnit.Display == null
+                ? _unit.Display.Size + 1
+                : _unit.Display.Size + selectedUnit.Display.Size;
+
+            if (distance > maxDistance)
             {
                 if (distance < 32f)
                     _unit.Movement.WalkTo(selectedUnit.Movement.Position, _unit.Details.DoAction, unitId, actionName);
@@ -138,25 +143,25 @@ namespace Server.Model.Extensions.UnitExts
             #endregion
 
             #region Open
-            else if (actionName == "Open")
+            else if (actionName == "Loot")
             {
                 UnitAccessOwnership acc = _unit.Access;
                 UnitInventory inventory = _unit.GetExt<UnitInventory>();
 
                 if (inventory == null)
-                    Debug.LogError("Not an inventory.");
+                    throw new Exception("Not an inventory.");
 
-                if (acc == null || acc.GetAccessFor(fromUnit).View_Inventory)
+                if (acc == null || (acc.GetAccessFor(fromUnit).View_Inventory))
                 {
                     if (fromUnit is Player)
                     {
                         Player p = fromUnit as Player;
-                        p.ClientUi.Inventories.ShowInventory(inventory);
+                        p.ClientUi.ProfileInterface.Open(inventory.Unit, ProfileInterfaceUpdatePacket.PacketTab.Inventory);
                     }
                 }
                 else
                 {
-                    Debug.Log("i have no access.");
+                    Debug.Log("i have no access to view inventory.");
                 }
                 return;
             }
