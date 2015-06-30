@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Code.Libaries.Generic;
+using Server.Servers;
 using UnityEngine;
 
 namespace Server
 {
+    [ExecuteInEditMode]
     public class ServerSingleton : MonoSingleton<ServerSingleton>
     {
-
-
         public static List<Action> StuffToRunOnUnityThread;
 
         public string DataServerIPAdress = "127.0.0.1";
@@ -36,8 +36,10 @@ namespace Server
         private void OnDisable()
         {
         }
-	
-        void FixedUpdate () {
+
+        void FixedUpdate()
+        {
+
             //Run stuff that needs to be ran
             lock (StuffToRunOnUnityThread)
             {
@@ -48,16 +50,29 @@ namespace Server
                     {
                         action = StuffToRunOnUnityThread[i];
                     }
-                    catch (Exception e) { }
-                    
-                    if(action != null)
+                    catch (Exception e)
+                    {
+                    }
+
+                    if (action != null)
                         action();
                 }
-                    
+
 
                 StuffToRunOnUnityThread.Clear();
             }
 
+        }
+
+        void Update()
+        {
+            if (Application.isPlaying)
+            {
+            }
+            else
+            {
+                DataServerIPAdress = AServer.LocalIPAddress();
+            }
         }
 
         private void OnDrawGizmos()

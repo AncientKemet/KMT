@@ -92,7 +92,7 @@ namespace Shared.Content.Types
 
             foreach (var attribute in Attributes)
             {
-                s += UnitAttributePropertySerializable.GetLabeledString(attribute) + "\n";
+                s += UnitAttributePropertySerializable.GetLabeledString(attribute.Property) + " " + UnitAttributePropertySerializable.GetLabeledString(attribute.Property,attribute.Value) + "\n";
             }
 
             return Description + "\n" + s;

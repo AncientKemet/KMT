@@ -178,7 +178,7 @@ namespace Server.Model.Extensions.UnitExts
                 else
                 {
                     Position += _force;
-                    _force += Vector3.down / 25f;
+                    _force += Vector3.down / 5f;
                 }
                 return;
             }

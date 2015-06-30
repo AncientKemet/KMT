@@ -2,6 +2,7 @@
 using Client.UI.Scripts;
 using Client.Units;
 using Code.Code.Libaries.Net.Packets;
+using Code.Core.Client.UI.Controls;
 using Code.Core.Client.Units.Managed;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
@@ -102,7 +103,16 @@ namespace Client.UI.Interfaces.Profile
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Equipment)
                 CurrentTab = _equipmentTab;
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
+            {
                 CurrentTab = _inventoryTab;
+                foreach (var button in _inventoryTab.Inventory.Buttons)
+                {
+                    button.Button.AddAction(new RightClickAction("Take x"));
+                    button.Button.AddAction(new RightClickAction("Take 10"));
+                    button.Button.AddAction(new RightClickAction("Take 5"));
+                    button.Button.AddAction(new RightClickAction("Take 1"));
+                }
+            }
             if (p.Tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
             {
                 JSONObject levels = p.JsonObject.GetField("Levels");

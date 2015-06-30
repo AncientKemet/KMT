@@ -67,7 +67,6 @@ namespace Code.Core.Client.UI.Interfaces
             {
                 _hasInjectedMyPlayer = false;
             }
-
         }
         
     }

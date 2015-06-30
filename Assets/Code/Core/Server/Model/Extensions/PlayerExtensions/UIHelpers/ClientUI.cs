@@ -104,10 +104,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
                 {
                     if (e.Action == "Open Bag")
                     {
-
                         OpenOrCloseInterface(InterfaceType.MyCharacterInventory);
                         return;
-
                     }
                     if (e.Action == "View Equipment")
                     {
@@ -164,13 +162,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
                     return;
                 }
             }
-
-            if (e.Action == "Close interface")
-            {
-                Close(e.interfaceId);
-                return;
-            }
-
+            
             if (e.interfaceId == InterfaceType.LobbyInterface)
             {
                 Lobby.OnEvent(e.Action, e.controlID);
@@ -286,16 +278,16 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
             }
             if (p.BeingDragInterfaceID == InterfaceType.MyCharacterInventory && p.DropOnInterfaceID == InterfaceType.ProfileInterface)
             {
-                UnitAccess a = ProfileInterface.Unit.Access.GetAccessFor(Player);
+                UnitAccess a = ProfileInterface.ViewingUnit.Access.GetAccessFor(Player);
                 if (a.View_Inventory && a.Add_To_Inventory && p.DropOnID > 500)
-                    Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID - 500, ProfileInterface.Unit.GetExt<UnitInventory>());
+                    Player.Inventory.MoveItem(p.BeingDragID, p.DropOnID - 500, ProfileInterface.ViewingUnit.GetExt<UnitInventory>());
                 return;
             }
             if (p.BeingDragInterfaceID == InterfaceType.ProfileInterface && p.DropOnInterfaceID == InterfaceType.MyCharacterInventory)
             {
-                UnitAccess a = ProfileInterface.Unit.Access.GetAccessFor(Player);
+                UnitAccess a = ProfileInterface.ViewingUnit.Access.GetAccessFor(Player);
                 if (a.View_Inventory && a.Add_To_Inventory && p.BeingDragID > 500)
-                    ProfileInterface.Unit.GetExt<UnitInventory>().MoveItem(p.BeingDragID - 500, p.DropOnID, Player.Inventory);
+                    ProfileInterface.ViewingUnit.GetExt<UnitInventory>().MoveItem(p.BeingDragID - 500, p.DropOnID, Player.Inventory);
                 return;
             }
             throw new Exception("Unhandled item drag. p.BeingDragInterfaceID == " + p.BeingDragInterfaceID + " p.DropOnInterfaceID ==" + p.DropOnInterfaceID);

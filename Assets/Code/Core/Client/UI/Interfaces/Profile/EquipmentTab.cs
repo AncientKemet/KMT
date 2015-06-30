@@ -16,9 +16,23 @@ namespace Client.UI.Interfaces.Profile
 
         public Transform AttributeContainer;
 
-        private Dictionary<UnitAttributeProperty, Attribute> Attributes;
+        public EquipmentTabDetail CurrentDetail
+        {
+            get { return _currentDetail; }
+            set
+            {
+                if(_currentDetail != value)
+                    _currentDetail.ChildTab.gameObject.SetActive(false);
+                _currentDetail = value;
+                value.ChildTab.gameObject.SetActive(true);
+            }
+        }
 
-       public override void ReloadFromUnit(PlayerUnit unit)
+        private Dictionary<UnitAttributeProperty, Attribute> Attributes;
+        [SerializeField]
+        private EquipmentTabDetail _currentDetail;
+
+        public override void ReloadFromUnit(PlayerUnit unit)
         {
             if (Unit != unit)
             {
@@ -74,7 +88,7 @@ namespace Client.UI.Interfaces.Profile
             try
             {
                 string formatedValue = UnitAttributePropertySerializable.GetLabeledString(property, f);
-                Attributes[property].ValueLabel.text = (f > 0 ? "+" : "") + formatedValue;
+                Attributes[property].ValueLabel.text = formatedValue;
             }
             catch (KeyNotFoundException e)
             {

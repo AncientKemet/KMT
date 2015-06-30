@@ -1,8 +1,10 @@
+using System;
+using System.Net;
+using System.Net.Sockets;
+using Server.Model.Entities;
 #if SERVER
-
 using Libaries.IO;
 using Server.Model;
-using Server.Model.Extensions.PlayerExtensions;
 using Shared.NET;
 using UnityEngine;
 
@@ -12,30 +14,24 @@ namespace Server.Servers
     {
         [SerializeField]
         private World _world;
-
-        [SerializeField]
-        private string _ipAdress;
         
-        public string IpAdress
-        {
-            get { return _ipAdress; }
-            private set { _ipAdress = value; }
-        }
-
         public World World
         {
             get { return _world; }
             private set { _world = value; }
         }
-        
+
         public override void StartServer()
         {
             base.StartServer();
             socket = CreateServerSocket(NetworkConfig.I.WorldServerPort);
-            AddServerToPublicList();
+            RemoveServerFromPublicList();
+            StartCoroutine(SEase.Action(AddServerToPublicList
+
+    , -1, 3f));
             Debug.Log("WorldServer running.");
         }
-
+        
         public override void ServerUpdate(float f)
         {
             base.ServerUpdate(f);
@@ -55,29 +51,26 @@ namespace Server.Servers
             Debug.Log("Stopping WorldServer server.");
         }
 
-        public override void AddClient(ServerClient client)
-        {
-            base.AddClient(client);
-        }
-
         private void RemoveServerFromPublicList()
         {
             DataServerConnection.ReplaceData("lobby/PlayPage/Data", "$" + GetServerInfo(), "");
+            Debug.Log("WorldServer Cleared.");
         }
         
         private void AddServerToPublicList()
         {
             DataServerConnection.AppendData("lobby/PlayPage/Data", "$" + GetServerInfo());
+            Debug.Log("WorldServer Added.");
         }
 
         private JSONObject GetServerInfo()
         {
             JSONObject o = new JSONObject();
 
-            o.AddField("name", "beta world");
+            o.AddField("name", "w" + LocalIPAddress());
             o.AddField("type", "Beta testing");
             o.AddField("online", ""+World.Players.Count);
-            o.AddField("IP", IpAdress);
+            o.AddField("IP", LocalIPAddress());
 
             return o;
         }

@@ -25,7 +25,9 @@ namespace Shared.Content.Types
         DamageToMineral,
         WeaponReach,
         ArmorPenetration,
-        MagicResistPenetration
+        MagicResistPenetration,
+        Offence,
+        Toughtness
     }
 
     [Serializable]
@@ -34,15 +36,18 @@ namespace Shared.Content.Types
         public UnitAttributeProperty Property;
         public float Value;
 
-        public static string GetLabeledString(UnitAttributePropertySerializable a)
+        public static string GetLabeledString(UnitAttributeProperty property)
         {
-            string s = 
-                HexConverter(UIContentManager.I.AttributeColors.Find(color => color.Property == a.Property).Color)+
-                (a.Value >= 0 ? "+" : "-") +
-                " " +
-                (int)(a.Value * 100) + "%" +
-                " " +
-                a.Property;
+            string s;
+            try
+            {
+                 s = HexConverter(UIContentManager.I.AttributeColors.Find(color => color.Property == property).Color) + property.ToString();
+            }
+            catch (NullReferenceException)
+            {
+                Debug.LogError("Missing UIContentManager.I.AttributeColors "+property);
+                return "missing "+property;
+            }
             return s;
         }
 
@@ -51,7 +56,7 @@ namespace Shared.Content.Types
             String rtn = String.Empty;
             try
             {
-                rtn = "^C" + ((int)(c.r * 256f)).ToString("X2") + ((int)(c.g * 256f)).ToString("X2") + ((int)(c.b * 256f)).ToString("X2") + "FF";
+                rtn = "^C" + ((int)(c.r * 255f)).ToString("X2") + ((int)(c.g * 255f)).ToString("X2") + ((int)(c.b * 255f)).ToString("X2") + "FF";
             }
             catch (Exception ex)
             {
@@ -70,9 +75,14 @@ namespace Shared.Content.Types
 
                 case UnitAttributeProperty.Health:
                 case UnitAttributeProperty.Energy:
+                case UnitAttributeProperty.Toughtness:
+                    break;
+                case UnitAttributeProperty.WeaponReach:
+                    addition = "m";
                     break;
                 case UnitAttributeProperty.HealthRegen:
                 case UnitAttributeProperty.EnergyRegen:
+                case UnitAttributeProperty.Offence:
                     addition = "/s";
                     break;
                 default:

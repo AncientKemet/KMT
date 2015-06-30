@@ -2,6 +2,7 @@ using System;
 using Libaries.IO;
 using Server.Model.Content.Spawns.NpcSpawns;
 using Server.Model.Extensions.UnitExts;
+using Shared.Content.Types;
 #if SERVER
 using Code.Core.Shared.Content.Types.ItemExtensions;
 
@@ -14,12 +15,17 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 {
     public class ProfileInterface : AInterface
     {
-        private ServerUnit _unit;
-        private ProfileInterfaceUpdatePacket.PacketTab _tab;
-
         public ProfileInterface(ClientUI ui)
             : base(ui)
         {
+        }
+
+        public override void OnClose()
+        {
+            base.OnClose();
+            CloseCurrentTab();
+            ViewingUnit = null;
+            Tab = ProfileInterfaceUpdatePacket.PacketTab.Main;
         }
 
         public override InterfaceType GetInterfaceType
@@ -28,19 +34,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
         }
 
 
-        public ProfileInterfaceUpdatePacket.PacketTab Tab
-        {
-            get { return _tab; }
-            private set
-            {
-                if (_tab != value)
-                {
-                    CloseCurrentTab();
-                    OpenNewTab(value);
-                }
-                _tab = value;
-            }
-        }
+        public ProfileInterfaceUpdatePacket.PacketTab Tab { get; private set; }
 
         private void OpenNewTab(ProfileInterfaceUpdatePacket.PacketTab value)
         {
@@ -48,9 +42,9 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             {
                 if (player.ClientUi.Inventories == null)
                     throw new Exception("Null player.ClientUi.Inventories");
-                if (Unit.GetExt<UnitInventory>() == null)
+                if (ViewingUnit.GetExt<UnitInventory>() == null)
                     throw new Exception("Null Unit.GetExt<UnitInventory>()");
-                player.ClientUi.Inventories.ShowInventory(Unit.GetExt<UnitInventory>());
+                player.ClientUi.Inventories.ShowInventory(ViewingUnit.GetExt<UnitInventory>());
             }
             else if (value == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
             {
@@ -77,94 +71,77 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             {
                 UnityEngine.Debug.LogError("Unhandle profile tab opening: " + value);
             }
+            Tab = value;
         }
 
         private void CloseCurrentTab()
         {
-            if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
-                player.ClientUi.Inventories.CloseInventory(Unit.GetExt<UnitInventory>());
-            //else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
-                //player.ClientUi.Shop.CloseInventory(Unit.GetExt<UnitInventory>());
+            if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
+                if(ViewingUnit != player)
+                player.ClientUi.Inventories.CloseInventory(ViewingUnit.GetExt<UnitInventory>());
 
 
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Equipment)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Equipment)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Access)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Access)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Dialogue)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Dialogue)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Main)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Main)
             {
             }
-            else if (_tab == ProfileInterfaceUpdatePacket.PacketTab.Trade)
+            else if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Trade)
             {
             }
             else
             {
-                UnityEngine.Debug.LogError("Unhandled profile tab closing: " + _tab);
+                UnityEngine.Debug.LogError("Unhandled profile tab closing: " + Tab);
             }
         }
 
-        public ServerUnit Unit
-        {
-            get { return _unit; }
-            private set
-            {
-                if (_unit != value)
-                {
-                    _unit = value;
-                }
-            }
-        }
+        public ServerUnit ViewingUnit { get; private set; }
 
-        public void Open(ServerUnit __otherUnit, ProfileInterfaceUpdatePacket.PacketTab tab)
+        public void Open(ServerUnit __otherUnit, ProfileInterfaceUpdatePacket.PacketTab newTab)
         {
-            Unit = __otherUnit;
-            Tab = tab;
-            Opened = true;
-            SendPacket();
-        }
+            if (Opened && Tab != newTab)
+                CloseCurrentTab();
 
-        private void SendPacket()
-        {
-            if (_unit == null)
-            {
-                Opened = false;
-                return;
-            }
+            ViewingUnit = __otherUnit;
+            OpenNewTab(newTab);
 
+            
             if (!Opened)
                 Opened = true;
             
             var packet = new ProfileInterfaceUpdatePacket();
 
-            packet.HasEquipmentTab = _unit == player;
-            packet.HasLevelsTab = _unit is Player;
-            packet.HasMainTab = _unit is Player;
+            packet.HasEquipmentTab = ViewingUnit == player;
+            packet.HasLevelsTab = ViewingUnit is Player;
+            packet.HasMainTab = ViewingUnit is Player;
             packet.HasDialogueTab = false;
-            packet.HasVendorTradeTab = _unit.GetComponent<NpcShop>() != null;
-            packet.HasInventoryTab = _unit.GetExt<UnitInventory>() != null && _unit.Access != null && _unit.Access.GetAccessFor(player).View_Inventory;
-            packet.HasAccessTab = _unit.Access != null;
-            packet.HasTradeTab = _unit is Player;
-            packet.Tab = _tab;
-            packet.UnitID = Unit.ID;
+            packet.HasVendorTradeTab = ViewingUnit.GetComponent<NpcShop>() != null;
+            packet.HasInventoryTab = ViewingUnit.GetExt<UnitInventory>() != null && ViewingUnit.Access != null && ViewingUnit.Access.GetAccessFor(player).View_Inventory;
+            packet.HasAccessTab = ViewingUnit.Access != null;
+            packet.HasTradeTab = ViewingUnit is Player;
+            packet.Tab = Tab;
+            packet.UnitID = ViewingUnit.ID;
 
             if (packet.Tab == ProfileInterfaceUpdatePacket.PacketTab.Levels)
             {
                 packet.JsonObject = new JSONObject();
-                packet.JsonObject.AddField("Levels", _unit.GetExt<PlayerLevels>().ToJsonObject());
+                packet.JsonObject.AddField("Levels", ViewingUnit.GetExt<PlayerLevels>().ToJsonObject());
             }
 
-            if (_unit.Access != null) packet.Access = _unit.Access.GetAccessFor(player);
+            if (ViewingUnit.Access != null) packet.Access = ViewingUnit.Access.GetAccessFor(player);
 
             player.Client.ConnectionHandler.SendPacket(packet);
         }
@@ -174,9 +151,9 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
             base.OnEvent(action, controlId);
 
             if (controlId >= 0 && controlId <= 7)
-                Open(_unit, (ProfileInterfaceUpdatePacket.PacketTab)controlId);
+                Open(ViewingUnit, (ProfileInterfaceUpdatePacket.PacketTab)controlId);
 
-            if (Unit == player)
+            if (ViewingUnit == player)
                 if (action == "Unequip")
                 {
                     if (controlId == 101)
@@ -204,6 +181,48 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                         player.Equipment.UnequipItem(EquipmentItem.Type.OffHand);
                     }
                 }
+
+            if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Inventory)
+            {
+                if (action.StartsWith("Take"))
+                {
+                    var inventory = ViewingUnit.GetExt<UnitInventory>();
+                    var index = controlId - 501;
+                    var amount = int.Parse(action.Split(' ')[1]);
+                    if (inventory != null)
+                    {
+                        if (inventory[index] != null)
+                        {
+                            var ii = new Item.ItemInstance(inventory[index].Item, amount);
+
+                            if (inventory.RemoveItem(ii))
+                            {
+                                ui.Player.Inventory.AddItem(ii);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Tab == ProfileInterfaceUpdatePacket.PacketTab.Vendor)
+            {
+                if (action.StartsWith("Buy"))
+                {
+                    var shop = ViewingUnit.GetComponents<NpcShop>();
+                    var index = controlId - 1001;
+                    var amount = int.Parse(action.Split(' ')[1]);
+                    if (shop != null)
+                    {
+                    }
+                }
+            }
+
+            if (action == "Close interface")
+            {
+                if (Opened)
+                    Opened = false;
+            }
+
         }
 
     }

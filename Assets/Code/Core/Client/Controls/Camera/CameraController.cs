@@ -79,10 +79,8 @@ namespace Code.Core.Client.Controls.Camera
                 Vector3 objectPos = _objectToFollow.transform.position;
 
                 if (lastObjectPosition == Vector3.zero)
-                {
                     lastObjectPosition = objectPos;
-                }
-
+                
                 //CINEMATIC CAMERA
                 if (_type == CameraType.Cinematic)
                 {
@@ -102,25 +100,15 @@ namespace Code.Core.Client.Controls.Camera
                 //Locked CAMERA
                 if (_type == CameraType.Locked)
                 {
-                    PlayerUnit moveableUnit = _objectToFollow.GetComponent<PlayerUnit>();
-
-                    objectLookVector3 = Vector3.Lerp(objectLookVector3, _objectToFollow.transform.forward * (objectPos - lastObjectPosition).magnitude, Time.deltaTime);
-
+                    objectLookVector3 = Vector3.Lerp(objectLookVector3, _objectToFollow.transform.forward * (objectPos - lastObjectPosition).magnitude, Time.deltaTime*2f);
 
                     float x = objectPos.x + CameraToObjectDistance* (_zoomFactor) * Mathf.Cos(_rotation);
                     float z = objectPos.z + CameraToObjectDistance * (_zoomFactor) * Mathf.Sin(_rotation);
-
-                    /*_zoomFactor += Input.GetAxis("Mouse ScrollWheel");
-                    _zoomFactor = Mathf.Clamp(_zoomFactor, 0.3f, 1.2f);*/
-
-
+                    
                     lookAtOffset = objectLookVector3;
-
                     Vector3 _targetPos = new Vector3(x, objectPos.y + CameraY * (Input.GetMouseButton(2) ? 0.5f : 1f), z) + objectLookVector3;
-
                     transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * 15);
-
-                    lastObjectPosition += (objectPos-lastObjectPosition) / 50f;
+                    lastObjectPosition += (objectPos-lastObjectPosition) / 50;
                 }
 
                 //Follow CAMERA

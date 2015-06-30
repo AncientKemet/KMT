@@ -327,14 +327,14 @@ namespace Server.Model.Extensions.UnitExts
             if (dmgType == Spell.DamageType.Physical)
             {
                 damage *= (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage]) *
-                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.Armor] - dealer.Unit.Attributes.Get(UnitAttributeProperty.ArmorPenetration), 0f));
+                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.Armor] * (1f - dealer.Unit.Attributes.Get(UnitAttributeProperty.ArmorPenetration)), 0f));
                 MeleePhysicalHitEffects(strenght, dealer, damage);
                 ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.Magical)
             {
                 damage *= (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.MagicalDamage]) *
-                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.MagicResist] - dealer.Unit.Attributes.Get(UnitAttributeProperty.MagicResistPenetration), 0f));
+                          (1.0f - Mathf.Max(Unit.Attributes[UnitAttributeProperty.MagicResist] * (1f - dealer.Unit.Attributes.Get(UnitAttributeProperty.MagicResistPenetration)), 0f));
                 ReduceHealth(dealer, damage);
             }
             else if (dmgType == Spell.DamageType.True)

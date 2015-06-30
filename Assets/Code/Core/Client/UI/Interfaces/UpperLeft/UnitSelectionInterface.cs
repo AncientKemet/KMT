@@ -19,8 +19,6 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
 {
     public class UnitSelectionInterface : UIInterface<UnitSelectionInterface>
     {
-        public System.Action<PlayerUnit> OnUnitWasSelected;
-
         [SerializeField]
         private List<Animation> Animations = new List<Animation>();
 
@@ -46,17 +44,12 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             set
             {
                 if (_unit != null && _unit != value)
-                {
                     _unit.Projector.gameObject.SetActive(false);
-                }
-
+                
                 if (value != null)
                     value.Projector.gameObject.SetActive(true);
 
-                if (OnUnitWasSelected == null)
-                    OnUnitWasSelected = ShowUnit;
-
-                OnUnitWasSelected(value);
+                ShowUnit(value);
 
                 _unit = value;
             }
@@ -77,10 +70,12 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             }
             if (u == null)
             {
+                if(Visible)
                 Hide();
             }
             else
             {
+                if(!Visible)
                 Show();
             }
         }
@@ -94,7 +89,7 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             if (Unit == null) return;
             _healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
             _energyBar.Progress = Unit.PlayerUnitAttributes.CurrentEnergy / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Energy);
-            _healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
+            //_healthBar.Progress = Unit.PlayerUnitAttributes.CurrentHealth / Unit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
             HpLabel.text = Unit.PlayerUnitAttributes.CurrentHealth + "";
             EnLabel.text = Unit.PlayerUnitAttributes.CurrentEnergy +"";
         }
@@ -149,21 +144,10 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
                     {
                         if (!Visible)
                             transform.localScale = vector3;
-                    },
-                    delegate
-                    {
-                        if (!Visible)
-                            gameObject.SetActive(false);
-                        if (Unit != null)
-                        {
-                            Unit = null;
-                        }
-
-                    },
+                    },null,
                     AnimSpeed
                     )
                 );
-
         }
 
         public override void Show()
@@ -176,14 +160,13 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             {
                 if (a.name == "Wing")
                 {
-                    a.gameObject.SetActive(false);
                     a.Stop();
                 }
             }
 
             StartCoroutine(PlayAnimations());
 
-            CorotineManager.Instance.StartCoroutine(
+            StartCoroutine(
                 Ease.Vector(
                     transform.localScale,
                     Vector3.one,

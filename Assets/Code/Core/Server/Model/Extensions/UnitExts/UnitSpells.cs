@@ -24,6 +24,8 @@ namespace Server.Model.Extensions.UnitExts
         private float _globalCooldown = 1f;
         private int _startQueuedSpell = -1;
 
+        private bool _forceFinish = true;
+
         /// <summary>
         /// 
         /// </summary>
@@ -52,6 +54,7 @@ namespace Server.Model.Extensions.UnitExts
                 _currentSpellTime += time * (1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
                 CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
 
+
                 //If the unit is player we'll send them direct Spell strenght Update packet.
                 if (Unit is Player)
                 {
@@ -63,6 +66,11 @@ namespace Server.Model.Extensions.UnitExts
                     packet.Strenght = CurrentCastStrenght;
 
                     p.Client.ConnectionHandler.SendPacket(packet);
+                }
+
+                if (_forceFinish)
+                {
+                    FinishSpell(_currentCastingSpellId);
                 }
 
             }
@@ -192,9 +200,10 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     if (CurrentCastingSpell.ActivableDuration < _currentSpellTime)
                     {
+                        _forceFinish = false;
+                        
                         _globalCooldown = 1f;
                         CurrentCastingSpell.FinishCasting(Unit, CurrentCastStrenght);
-
                         if (Unit is Player)
                         {
                             Player p = Unit as Player;
@@ -205,11 +214,13 @@ namespace Server.Model.Extensions.UnitExts
 
                             p.Client.ConnectionHandler.SendPacket(packet);
                         }
+                        _currentSpellTime = 0;
+                        _currentCastingSpellId = -1;
                     }
                     else
-                        CancelSpell(id);
-                    _currentSpellTime = 0;
-                    _currentCastingSpellId = -1;
+                    {
+                        _forceFinish = true;
+                    }
                 }
         }
 

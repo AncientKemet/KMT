@@ -11,7 +11,7 @@ namespace Code.Core.Client.UI.Controls
     public class InterfaceButton : UIControl
     {
 
-        protected virtual void Start()
+        protected override void Start()
         {
             base.Start();
             foreach (var rightClickAction in Actions)

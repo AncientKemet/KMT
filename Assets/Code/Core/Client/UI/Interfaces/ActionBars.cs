@@ -107,6 +107,7 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != Q.spell)
                     {
                         currentCastingSpell = Q.spell;
+                        Q.ServerStartedCasting();
                         if (Q.spell.ClientOnStartedCasting != null)
                             Q.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
@@ -116,6 +117,7 @@ namespace Code.Core.Client.UI.Interfaces
                     if (currentCastingSpell != W.spell)
                     {
                         currentCastingSpell = W.spell;
+                        W.ServerStartedCasting();
                         if (W.spell.ClientOnStartedCasting != null)
                             W.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
                     }
@@ -124,6 +126,7 @@ namespace Code.Core.Client.UI.Interfaces
                 {
                     if (currentCastingSpell != E.spell)
                     {
+                        E.ServerStartedCasting();
                         currentCastingSpell = E.spell;
                         if (E.spell.ClientOnStartedCasting != null)
                             E.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
@@ -133,6 +136,7 @@ namespace Code.Core.Client.UI.Interfaces
                 {
                     if (currentCastingSpell != R.spell)
                     {
+                        R.ServerStartedCasting();
                         currentCastingSpell = R.spell;
                         if (R.spell.ClientOnStartedCasting != null)
                             R.spell.ClientOnStartedCasting(PlayerUnit.MyPlayerUnit);
@@ -141,23 +145,28 @@ namespace Code.Core.Client.UI.Interfaces
             }
             else if (p.UpdateState == SpellUpdateState.FinishedCasting)
             {
+                
                 if (p.Index == 0)
                 {
+                    Q.ServerFinishedCasting();
                     if (Q.spell.ClientOnFinishedCasting != null)
                         Q.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 1)
                 {
+                    W.ServerFinishedCasting();
                     if (W.spell.ClientOnFinishedCasting != null)
                         W.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 2)
                 {
+                    E.ServerFinishedCasting();
                     if (E.spell.ClientOnFinishedCasting != null)
                         E.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
                 else if (p.Index == 3)
                 {
+                    R.ServerFinishedCasting();
                     if (R.spell.ClientOnFinishedCasting != null)
                         R.spell.ClientOnFinishedCasting(PlayerUnit.MyPlayerUnit);
                 }
