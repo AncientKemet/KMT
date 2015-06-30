@@ -424,7 +424,7 @@ namespace Client.Units
 
                 if (_attributesUpdate)
                 {
-                    int count = b.GetUnsignedByte();
+                    byte count = b.GetUnsignedByte();
 
                     for (int i = 0; i < count; i++)
                     {

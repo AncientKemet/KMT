@@ -119,7 +119,7 @@ namespace Code.Code.Libaries.Net
 
         public byte GetUnsignedByte()
         {
-            return (byte) (GetByte() & 0xFF);
+            return (byte) GetByte();
         }
 
         public short GetShort()
