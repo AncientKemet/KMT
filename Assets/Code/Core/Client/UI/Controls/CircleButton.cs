@@ -31,22 +31,18 @@ namespace Client.UI.Controls
                 OnLeftClick += () => SendClickPacket("");
             }
             else
-            {
                 OnLeftClick += ScaleDownAndBack;
-            }
             OnMouseIn += Highlight;
             OnMouseOff += Dehighlight;
+
         }
 
         private void SendButtonDown()
         {
             UIInterfaceEvent p = new UIInterfaceEvent();
-
             p.interfaceId = InterfaceId;
             p.controlID = Index;
-
             p._eventType = UIInterfaceEvent.EventType.Button_Down;
-
             ClientCommunicator.Instance.SendToServer(p);
         }
 
@@ -57,20 +53,14 @@ namespace Client.UI.Controls
                 if (_canBeHeldDown)
                 {
                     if (OnLeftDown != null)
-                    {
                         OnLeftDown();
-                    }
                 }
                 else if (OnLeftClick != null) OnLeftClick();
             }
 
             if (Input.GetKeyUp(HotKey) && KeyboardInput.Instance.FullListener == null)
-            {
                 if (_canBeHeldDown)
-                {
                     if (OnLeftClick != null) OnLeftClick();
-                }
-            }
         }
 
         private void Dehighlight()

@@ -126,26 +126,29 @@ namespace Development.Libary.Spells.Codes
                 List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
 
                 //critical
-                foreach (var o in unit.CurrentBranch.ObjectsVisible)
+                if (critArea > 0.01f)
                 {
-                    ServerUnit u = o as ServerUnit;
-
-                    if (u == null)
-                        continue;
-
-                    if (u == unit)
-                        continue;
-
-                    UnitCombat com = u.Combat;
-
-                    if (com != null)
+                    foreach (var o in unit.CurrentBranch.ObjectsVisible)
                     {
-                        if (!DoCritHitBoxTestAngle(unit, u.Movement.Position, reach, critArea))
+                        ServerUnit u = o as ServerUnit;
+
+                        if (u == null)
                             continue;
 
-                        com.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
-                                       BaseDamage * GetStrenghtDamageRatio(strenght) * critDmg);
-                        AlreadyHitUnits.Add(com);
+                        if (u == unit)
+                            continue;
+
+                        UnitCombat com = u.Combat;
+
+                        if (com != null)
+                        {
+                            if (!DoCritHitBoxTestAngle(unit, u.Movement.Position, reach, critArea))
+                                continue;
+
+                            com.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
+                                    BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
+                            AlreadyHitUnits.Add(com);
+                        }
                     }
                 }
 
@@ -186,6 +189,7 @@ namespace Development.Libary.Spells.Codes
 
                 List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
                 //critical
+                if (critArea > 0.01f)
                 {
                     foreach (
                         var hit in

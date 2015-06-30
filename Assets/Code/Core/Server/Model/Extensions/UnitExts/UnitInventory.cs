@@ -24,19 +24,15 @@ namespace Server.Model.Extensions.UnitExts
         }
 
         private int _width = 1;
-
         private int _height = 1;
 
         private List<Item.ItemInstance> _items;
-
         public ServerUnit Unit { get; private set; }
-
         public List<Player> ListeningPlayers = new List<Player>();
 
         public Action<ServerUnit> OnWasOpened;
         public Action<ServerUnit> OnWasClosed;
-
-
+        
         public int Width
         {
             get { return _width; }
@@ -133,6 +129,20 @@ namespace Server.Model.Extensions.UnitExts
             SendUpdateToPlayers(x, y);
         }
 
+        /// <summary>
+        /// Gets an null item in the list.
+        /// </summary>
+        /// <returns>An index of items list that contains null.,</returns>
+        private int GetFreeIndex()
+        {
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (_items[i] == null)
+                    return i;
+            }
+            throw new Exception("There is no free space. Check for HasSpace in your code!");
+        }
+
         protected override void OnExtensionWasAdded()
         {
             base.OnExtensionWasAdded();
@@ -170,7 +180,7 @@ namespace Server.Model.Extensions.UnitExts
                 this[i]=(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am "+i).str)));
             }
         }
-        
+
         public bool AddItem(Item.ItemInstance item)
         {
             int nullIndexX = -1;
@@ -180,26 +190,30 @@ namespace Server.Model.Extensions.UnitExts
                 for (int x = 0; x < Width; x++)
                 {
                     var that = this[x, y];
-                    if(that != null)
-                    if (that.Item == item.Item)
-                    {
-                        if (that.Amount < that.Item.MaxStacks)
+                    if (that != null)
+                        if (that.Item == item.Item)
                         {
-                            if (item.Amount > that.Item.MaxStacks - that.Amount)
+                            if (that.Amount < that.Item.MaxStacks)
                             {
-                                item.Amount -= that.Item.MaxStacks - that.Amount;
-                                that.Amount = that.Item.MaxStacks;
-                                SendUpdateToPlayers(x, y);
-                                return AddItem(item);
-                            }
-                            else
-                            {
-                                that.Amount += item.Amount;
-                                SendUpdateToPlayers(x, y);
-                                return true;
+                                if (item.Amount > that.Item.MaxStacks - that.Amount)
+                                {
+                                    if (HasSpace(1+(item.Amount - that.Item.MaxStacks - that.Amount)/item.Item.MaxStacks))
+                                    {
+                                        item.Amount -= that.Item.MaxStacks - that.Amount;
+                                        that.Amount = that.Item.MaxStacks;
+                                        SendUpdateToPlayers(x, y);
+                                        return AddItem(item);
+                                    }
+                                    return false;
+                                }
+                                else
+                                {
+                                    that.Amount += item.Amount;
+                                    SendUpdateToPlayers(x, y);
+                                    return true;
+                                }
                             }
                         }
-                    }
                     if (that == null && nullIndexX == -1)
                     {
                         nullIndexX = x;
@@ -211,6 +225,28 @@ namespace Server.Model.Extensions.UnitExts
             {
                 this[nullIndexX, nullIndexY] = item;
                 return true;
+            }
+            return false;
+        }
+
+        public bool RemoveItem(Item.ItemInstance item)
+        {
+            var ii = _items.Find(instance => instance.Item == item.Item);
+            if (ii != null)
+            {
+                int index = _items.IndexOf(ii);
+                if (ii.Amount == item.Amount)
+                {
+                    _items[index] = null;
+                    SendUpdateToPlayers(index);
+                    return true;
+                }
+                else if(ii.Amount > item.Amount)
+                {
+                    ii.Amount -= item.Amount;
+                    SendUpdateToPlayers(index);
+                    return true;
+                }
             }
             return false;
         }
@@ -258,13 +294,14 @@ namespace Server.Model.Extensions.UnitExts
 
                     this[x, y] = null;
                 }
+
                 if (e.Action == "Equip")
                 {
                     if (selectedItem.Item.EQ != null)
                     {
                         UnitEquipment equipment = player.Equipment;
 
-                        DroppedItem droppedItem = ServerMonoBehaviour.CreateInstance<DroppedItem>();
+                        DroppedItem droppedItem = CreateInstance<DroppedItem>();
 
                         droppedItem.Movement.Teleport(player.Movement.Position + player.Movement.Forward);
                         droppedItem.Item = selectedItem;
@@ -284,6 +321,7 @@ namespace Server.Model.Extensions.UnitExts
             }
 
         }
+
 
         public void MoveItem(int index, int targetIndex, UnitInventory inventory)
         {

@@ -53,6 +53,25 @@ namespace Server.Model.Extensions.UnitExts
 
             if(Unit.Combat != null)
                 Unit.Combat.AttributeHasChanged(type, val);
+
+            switch (type)
+            {
+                case UnitAttributeProperty.PhysicalDamage:
+                case UnitAttributeProperty.MagicalDamage:
+                case UnitAttributeProperty.ChargeSpeed:
+                case UnitAttributeProperty.ArmorPenetration:
+                case UnitAttributeProperty.CriticalArea:
+                case UnitAttributeProperty.CriticalDamage:
+                case UnitAttributeProperty.MagicResistPenetration:
+                    RecalculateOffence();
+                    break;
+                case UnitAttributeProperty.Armor:
+                case UnitAttributeProperty.MagicResist:
+                case UnitAttributeProperty.Health:
+                    RecalculateThoughtness();
+                    break;
+            }
+            
         }
 
         public void Add(UnitAttributeProperty type, float val)
@@ -74,11 +93,11 @@ namespace Server.Model.Extensions.UnitExts
             base.OnExtensionWasAdded();
             Unit = entity as ServerUnit;
 
-            Add(UnitAttributeProperty.Health, 10);
-            Add(UnitAttributeProperty.Energy, 100);
+            Add(UnitAttributeProperty.Health, 0);
+            Add(UnitAttributeProperty.Energy, 0);
             Add(UnitAttributeProperty.HealthRegen, 0);
             Add(UnitAttributeProperty.EnergyRegen, 0);
-            Add(UnitAttributeProperty.CriticalArea, 0.33f);
+            Add(UnitAttributeProperty.CriticalArea, 0);
             Add(UnitAttributeProperty.CriticalDamage, 1.33f);
             Add(UnitAttributeProperty.Armor, 0);
             Add(UnitAttributeProperty.MagicResist, 0);
@@ -203,6 +222,31 @@ namespace Server.Model.Extensions.UnitExts
                     Remove(attribute.Property, attribute.Value);
                 }
             }
+        }
+
+        private void RecalculateOffence()
+        {
+            var PrimaryOffence = Get(UnitAttributeProperty.PhysicalDamage) >= Get(UnitAttributeProperty.MagicalDamage)
+                ? UnitAttributeProperty.PhysicalDamage
+                : UnitAttributeProperty.MagicalDamage;
+            var PrimaryPenetration = PrimaryOffence == UnitAttributeProperty.PhysicalDamage
+                ? UnitAttributeProperty.ArmorPenetration
+                : UnitAttributeProperty.MagicResistPenetration;
+            float damage = 1 * (1.0f + Get(PrimaryOffence)) *
+                          (1.0f - (0.5f * (1f-Get(PrimaryPenetration)))) * (1 + (Get(UnitAttributeProperty.CriticalArea) * Get(UnitAttributeProperty.CriticalDamage)));
+
+            Set(UnitAttributeProperty.Offence, damage);
+        }
+        private void RecalculateThoughtness()
+        {
+            var PrimaryDefence = Get(UnitAttributeProperty.Armor) >= Get(UnitAttributeProperty.MagicResist)
+                ? UnitAttributeProperty.Armor
+                : UnitAttributeProperty.MagicResist;
+
+            float seconds = Get(UnitAttributeProperty.Health) 
+                / (10.0f * (1.0f - Get(PrimaryDefence) * (1f - 0.25f)));
+
+            Set(UnitAttributeProperty.Toughtness, seconds);
         }
     }
 }

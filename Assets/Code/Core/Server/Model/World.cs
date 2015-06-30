@@ -119,8 +119,6 @@ namespace Server.Model
         private void Start()
         {
             ServerSpawnManager.Instance(this);
-            AstarPath.Instance.Scan();
-
             EnsureInitialization();
         }
 

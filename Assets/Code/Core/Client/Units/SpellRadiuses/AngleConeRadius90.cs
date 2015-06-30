@@ -20,13 +20,13 @@ namespace Client.Units.SpellRadiuses
         public override float Range
         {
             get { return _range; }
-            set { _range = value; }
+            set { _range = Mathf.Clamp(value,0,100); }
         }
 
         public override float CriticalArea
         {
             get { return _criticalArea; }
-            set { _criticalArea = value; }
+            set { _criticalArea = Mathf.Clamp01(value); }
         }
 
         private void Update()

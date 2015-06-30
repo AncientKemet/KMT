@@ -1,6 +1,7 @@
 using Server.Model.Content.Spawns;
 using Server.Model.ContentHandling;
 using Server.Servers;
+using Shared.Content.Types;
 #if SERVER
 using Code.Core.Client.UI;
 
@@ -47,6 +48,11 @@ namespace Server.Model.Entities.Human
             PlayerUdp = AddExt<PlayerUDP>();
             Levels = AddExt<PlayerLevels>();
             base.Awake();
+
+            Attributes.Add(UnitAttributeProperty.Health, 100);
+            Attributes.Add(UnitAttributeProperty.HealthRegen, 0.2f);
+            Attributes.Add(UnitAttributeProperty.Energy, 100);
+            Attributes.Add(UnitAttributeProperty.EnergyRegen, 0.5f);
         }
         
         /// <summary>

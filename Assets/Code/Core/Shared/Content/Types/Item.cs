@@ -106,10 +106,13 @@ namespace Shared.Content.Types
         {
             string s = "";
 
+
+
             if(EQ != null)
             foreach (var attribute in EQ.Attributes)
             {
-                s += UnitAttributePropertySerializable.GetLabeledString(attribute.Property, attribute.Value) + "\n";
+                s +=UnitAttributePropertySerializable.GetLabeledString(attribute.Property, attribute.Value) + " " +
+                    UnitAttributePropertySerializable.GetLabeledString(attribute.Property)+"\n";
             }
 
             return Description + "\n" + s;

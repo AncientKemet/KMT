@@ -21,7 +21,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
         {
             set
             {
-                bool isOpened = Player.ClientUi.ProfileInterface.Unit != null && Player.ClientUi.ProfileInterface.Unit.ID == id;
+                bool isOpened = Player.ClientUi.ProfileInterface.ViewingUnit != null && Player.ClientUi.ProfileInterface.ViewingUnit.ID == id;
 
                 if (!isOpened)
                 {
@@ -116,8 +116,8 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
 
             Player.Client.ConnectionHandler.SendPacket(packet);
 
-            if (inventory.OnWasOpened != null)
-                inventory.OnWasOpened(Player);
+            /*if (inventory.OnWasOpened != null)
+                inventory.OnWasOpened(Player);*/
         }
     }
 }

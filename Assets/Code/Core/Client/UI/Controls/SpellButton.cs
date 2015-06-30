@@ -12,7 +12,11 @@ namespace Client.UI.Controls
 {
     public class SpellButton : InterfaceButton
     {
-        private static SpellButton currentHeldDownButton;
+        private tk2dSlicedSprite Sprite
+        {
+            get { return _sprite ?? (_sprite = GetComponent<tk2dSlicedSprite>()); }
+        }
+
         public Spell spell
         {
             get { return _spell; }
@@ -23,14 +27,14 @@ namespace Client.UI.Controls
                 {
                     icon.Texture = null;
                     icon.gameObject.SetActive(false);
-                    GetComponent<tk2dSlicedSprite>().color =
+                    Sprite.color =
                         UIContentManager.I.SpellColors.Find(color => color.Type == SpellType.Other).Color;
                 }
                 else
                 {
                     icon.gameObject.SetActive(true);
                     icon.Texture = _spell.Icon;
-                    GetComponent<tk2dSlicedSprite>().color =
+                    Sprite.color =
                         UIContentManager.I.SpellColors.Find(color => color.Type == spell.Type).Color;
                 }
             }
@@ -39,10 +43,12 @@ namespace Client.UI.Controls
         public Icon icon;
         private Spell _spell;
         public KeyCode HotKey;
+        private tk2dSlicedSprite _sprite;
 
         protected override void Start()
         {
             base.Start();
+            
             OnMouseIn += () =>
             {
                 if (spell != null)
@@ -53,17 +59,11 @@ namespace Client.UI.Controls
             };
             OnMouseOff += () => DescriptionInterface.I.Hide();
             OnLeftDown += SendButtonDown;
-            OnLeftClick += () =>
-            {
-                currentHeldDownButton = null;
-                spell = spell;
-            };
-            OnLeftClick += () => SendClickPacket("");
+            OnLeftUp+= () => SendClickPacket("");
         }
 
         protected virtual void Update()
         {
-            if(currentHeldDownButton == null)
             if (Input.GetKeyDown(HotKey) && KeyboardInput.Instance.FullListener == null)
             {
                 if (OnLeftDown != null)
@@ -72,20 +72,25 @@ namespace Client.UI.Controls
                 }
                 else if (OnLeftClick != null) OnLeftClick();
             }
-            if(currentHeldDownButton == this)
-            if (Input.GetKeyUp(HotKey) && KeyboardInput.Instance.FullListener == null)
+            if (Sprite.color == Color.white)
             {
-
-                if (OnLeftClick != null) OnLeftClick();
+                if (Input.GetKeyUp(HotKey) && KeyboardInput.Instance.FullListener == null)
+                {
+                    if (OnLeftUp != null) OnLeftUp();
+                }
+                else
+                {
+                    if (!Input.GetKey(HotKey))
+                    {
+                        if (OnLeftUp != null) OnLeftUp();
+                        Sprite.color = Color.red;
+                    }
+                }
             }
         }
 
         private void SendButtonDown()
         {
-            currentHeldDownButton = this;
-
-            GetComponent<tk2dSlicedSprite>().color = Color.white;;
-
             UIInterfaceEvent p = new UIInterfaceEvent();
 
             p.interfaceId = InterfaceId;
@@ -96,5 +101,15 @@ namespace Client.UI.Controls
             ClientCommunicator.Instance.SendToServer(p);
         }
 
+        public void ServerStartedCasting()
+        {
+            Sprite.color = Color.white;
+        }
+
+        public void ServerFinishedCasting()
+        {
+            Sprite.color =
+                        UIContentManager.I.SpellColors.Find(color => color.Type == spell.Type).Color;
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Development.Libary.Spawns.StaticObjects.Client
                 {
                     Animation["HealthState"].speed = 0;
                     Animation["HealthState"].time = 1f - ((float) Attributes.CurrentHealth/
-                                                          (float) Attributes.GetAttribute(UnitAttributeProperty.Health));
+                                                          ((float) Attributes.GetAttribute(UnitAttributeProperty.Health) + 0.01f));
                     Animation.Sample();
                 }
                 else

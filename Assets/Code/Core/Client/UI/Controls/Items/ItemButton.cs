@@ -79,9 +79,9 @@ namespace Client.UI.Controls.Items
             {
                 Background.color = _onHoverColor;
                 if(Item != null)
-                DescriptionInterface.I.Show(Item.name,
+                DescriptionInterface.I.Show(Item.name+ " [ click to "+Button.Actions[0].Name+" ]",
                 string.IsNullOrEmpty(Item.Subtitle) ? null : Item.Subtitle,
-                Item.GetDescribtion());
+                Item.GetDescribtion(), Item.Icon);
             };
 
             Button.OnMouseOff += () =>
@@ -90,7 +90,6 @@ namespace Client.UI.Controls.Items
                 {
                     Background.color = _originalColor;
                 }
-                if(Item != null)
                 DescriptionInterface.I.Hide();
             };
         }

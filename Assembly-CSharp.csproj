@@ -120,6 +120,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\Attribute.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\DialogTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\EquipmentTab.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\EquipmentTabDetail.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\InventoryTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\LevelTab.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Profile\MainTab.cs" />

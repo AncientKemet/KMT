@@ -4,6 +4,7 @@ using Client.Controls;
 using Client.Net;
 using Client.UI.Interfaces;
 using Client.Units;
+using Code.Core.Client.Controls;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
 using Code.Core.Shared.NET;
@@ -37,6 +38,7 @@ namespace Client.Enviroment
             _cachedTerrainColliderReference;
 
         private bool _wasMovingLastFrame = false;
+        private float _timeDown = 0f;
 
         public List<PrefabInstance> PrefabInstances;
 
@@ -58,8 +60,7 @@ namespace Client.Enviroment
         }
         private void Start()
         {
-            var clickable = GetComponent<Clickable>();
-            clickable.OnLeftClick += delegate { UnitSelectionInterface.I.Unit = null; };
+            GetComponent<Clickable>().OnLeftClick += delegate { if (!UnitSelectionInterface.IsNull) UnitSelectionInterface.I.Unit = null; };
         }
 
         private void Update()
@@ -67,26 +68,36 @@ namespace Client.Enviroment
             if (!CreateCharacterInterface.IsNull)
                 return;
 
-
+            if (Input.GetMouseButtonUp(1))
+            {
+                _timeDown = 0;
+            }
             if (Input.GetMouseButton(1))
             {
-                if (PlayerUnit.MyPlayerUnit != null)
+                if (_timeDown > 0.25f)
                 {
-                    RaycastHit hit;
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    float distance = 100;
-                    const int layerMask = 1 << 8;
-                    if (Physics.Raycast(ray, out hit, distance, layerMask))
+                    if (PlayerUnit.MyPlayerUnit != null)
                     {
-                        SendPacket(hit, true);
-                        _wasMovingLastFrame = true;
+                        RaycastHit hit;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        float distance = 100;
+                        const int layerMask = 1 << 8;
+                        if (Physics.Raycast(ray, out hit, distance, layerMask))
+                        {
+                            SendPacket(hit, true);
+                            _wasMovingLastFrame = true;
+                        }
                     }
+                }
+                else
+                {
+                    _timeDown += Time.deltaTime;
                 }
             }
             else
             {
                 //If iam holding my spell keys i shall rotate towards my mouse point anyway
-                if (ClientCommunicator.Instance.WorldServerConnection != null)
+                if (ClientCommunicator.Instance.WorldServerConnection != null && KeyboardInput.Instance.FullListener == null)
                     if (Input.GetKey(ClientControlSettings.Spell0) || Input.GetKey(ClientControlSettings.Spell1) ||
                         Input.GetKey(ClientControlSettings.Spell2) || Input.GetKey(ClientControlSettings.Spell3))
                     {
@@ -171,14 +182,7 @@ namespace Client.Enviroment
                 else
                 {
                     Vector3 difference = (hit.point - myPos);
-                    if (difference.magnitude > 3f)
-                    {
-                        update.DirecionVector = difference.normalized * 3f;
-                    }
-                    else
-                    {
                         update.DirecionVector = difference;
-                    }
                 }
             }
             else

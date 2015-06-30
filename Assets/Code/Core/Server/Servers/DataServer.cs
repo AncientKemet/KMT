@@ -1,3 +1,4 @@
+using System.Threading;
 using Server.Model.Extensions.PlayerExtensions;
 #if SERVER
 using Server.Servers;
@@ -29,13 +30,17 @@ namespace Server
             }
 
             DataProvider = new MySQLDataProvider();
-            
+
             socket = CreateServerSocket(NetworkConfig.I.DataServerPort);
             Debug.Log("Data server running.");
         }
 
 
         public override void StartServer()
+        {
+        }
+
+        public override void Stop()
         {
         }
 
@@ -48,24 +53,27 @@ namespace Server
             if (DataProvider == null)
                 DataProvider = new MySQLDataProvider();
             scm.Get.AcceptConnections(socket);
-                lock (Clients)
+            lock (Clients)
+            {
+                foreach (var client in Clients)
                 {
-                    foreach (var client in Clients)
-                    {
-                        client.Progress(f);
-                    }
+                    client.Progress(f);
                 }
+            }
         }
 
-        public override void Stop()
+        public void OnDestroy()
         {
-            foreach (var client in Clients)
+            for (int i = 0; i < 10; i++)
             {
-                client.Progress(1f);
+                ServerUpdate(1f);
+                Thread.Sleep(100);
             }
+            
             MySQLDataProvider.ExecuteAllSQL();
             socket.Close();
             DataProvider = null;
+            Debug.Log("Stopping Data server.");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Client.UI.Controls.Items;
 using Code.Core.Client.UI.Scripts;
 using Code.Libaries.Generic.Managers;
@@ -150,6 +151,11 @@ namespace Code.Core.Client.UI.Controls.Items
         }
 
         public Action<ItemButton, Item.ItemInstance> OnItemUpdate;
+
+        public ReadOnlyCollection<ItemButton> Buttons
+        {
+            get { return buttons.AsReadOnly(); }
+        }
 
     }
 }

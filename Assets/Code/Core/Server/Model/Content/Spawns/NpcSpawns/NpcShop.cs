@@ -66,9 +66,7 @@ namespace Server.Model.Content.Spawns.NpcSpawns
 
             StartCoroutine(Restock(new Item.ItemInstance(itemInstance.Item, 1), restockRate));
         }
-
-
-
+        
         public enum ShopType
         {
             Trader,

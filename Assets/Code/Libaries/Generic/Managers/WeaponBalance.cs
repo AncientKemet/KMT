@@ -20,6 +20,19 @@ namespace Code.Libaries.Generic.Managers
         private static void SelectAsset()
         {
             Selection.activeObject = I;
+            I.Rebalance();
+        }
+
+        private void Rebalance()
+        {
+            foreach (var item in ContentManager.I.Items)
+            {
+                if (item.GetComponent<Weapon>() != null)
+                {
+                    var wep = item.GetComponent<Weapon>();
+                    wep.Rebalance();
+                }
+            }
         }
 
 #endif

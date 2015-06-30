@@ -31,9 +31,25 @@ namespace Server.Servers
         {
             Socket newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             newSocket.Blocking = false;
-			newSocket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), port));
+            newSocket.Bind(new IPEndPoint(IPAddress.Parse(LocalIPAddress()), port));
             newSocket.Listen(10);
             return newSocket;
+        }
+
+        public static string LocalIPAddress()
+        {
+            IPHostEntry host;
+            string localIP = "";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+            return localIP;
         }
 
         private void Update()

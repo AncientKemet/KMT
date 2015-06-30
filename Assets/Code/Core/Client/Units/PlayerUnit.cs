@@ -189,43 +189,12 @@ namespace Client.Units
 
             OnLeftClick += delegate
             {
-                if (!CreateCharacterInterface.IsNull)
-                    return;
-
-                if (UnitSelectionInterface.IsNull)
-                    return;
-
-                if (UnitSelectionInterface.I.Unit != this)
-                    UnitSelectionInterface.I.Unit = this;
-                else
-                {
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    if (this == null)
-                        return;
-
-                    if (Actions[0].Action != null)
-                    {
-                        Actions[0].Action();
-                        GameObject effect = Instantiate((ContentManager.I.Effects[0]));
-                        effect.transform.parent = transform;
-                        effect.transform.localPosition = Vector3.zero;
-                    }
-                }
+                UnitSelectionInterface.I.Unit = this;
             };
 
             OnRightClick += () =>
             {
-                if (!CreateCharacterInterface.IsNull)
-                    return;
-
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (this == null)
-                    return;
-
-                if (UnitSelectionInterface.I.Unit == this)
-                {
-                    OpenRightClickMenu();
-                }
+                OpenRightClickMenu();
             };
 
 
@@ -309,14 +278,18 @@ namespace Client.Units
                     _parentPlaneId = b.GetByte();
                     if (_parentId != -1)
                     {
-                        var u = UnitManager.Instance[_parentId]._display;
-                        if (u != null && u.Model != -1)
+                        var unit = UnitManager.Instance[_parentId];
+                        var display = UnitManager.Instance[_parentId]._display;
+                        if (display != null && display.Model != -1)
                         {
                             JoinParent();
                         }
                         else
                         {
-                            UnitManager.Instance[_parentId]._display.OnModelChange += JoinParent;
+                            if(unit._display == null)
+                                unit._display = unit.gameObject.AddComponent<UnitDisplay>();
+
+                            unit._display.OnModelChange += JoinParent;
                         }
                     }
                     else
