@@ -83,21 +83,25 @@ public class PrefabInstance : MonoBehaviour
     }
 
     private void CheckInstanceId()
-    {
-        if (UnitId == -1)
+    {   var parent = transform.parent;
+        KemetMap map = parent.GetComponent<KemetMap>();
+        while (map == null)
         {
-            var parent = transform.parent;
-            while (parent != null && UnitId == -1)
-            {
-                KemetMap map = parent.GetComponent<KemetMap>();
-                if (map != null)
-                {
+            parent = parent.parent;
+            map = parent.GetComponent<KemetMap>();
+        }
+        if (map.PrefabInstances[UnitId] != this)
+            UnitId = -1;
+        if (UnitId == -1 )
+        {
+                
                     for (int i = 0; i < map.PrefabInstances.Count; i++)
                     {
                         if (map.PrefabInstances[i] == null)
                         {
                             map.PrefabInstances[i] = this;
                             UnitId = i;
+                            break;
                         }
                     }
                     if (UnitId == -1)
@@ -105,13 +109,7 @@ public class PrefabInstance : MonoBehaviour
                         UnitId = map.PrefabInstances.Count;
                         map.PrefabInstances.Add(this);
                     }
-                    break;
-                }
-                else
-                {
-                    parent = parent.parent;
-                }
-            }
+            
         }
     }
 
