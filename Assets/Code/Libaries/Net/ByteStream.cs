@@ -62,7 +62,7 @@ namespace Code.Code.Libaries.Net
             }
             else
             {
-                Debug.LogError("Readigngdsg streamsize: " + stream.Count + " off: " + Offset);
+                //Debug.LogError("Readigngdsg streamsize: " + stream.Count + " off: " + Offset);
                 Application.Quit();
                 throw new Exception("Broken bytestream.");
             }
@@ -363,14 +363,14 @@ namespace Code.Code.Libaries.Net
             item = id == -1 ? null : ContentManager.I.Items[id].GetComponent<EquipmentItem>();
         }
 
-        public void AddAngle1B(float angleInDegrees)
+        public void AddAngle2B(float angleInDegrees)
         {
-            AddByte((int) (angleInDegrees*0.7));
+            AddShort((int) (angleInDegrees*10));
         }
 
-        public float GetAngle1B()
+        public float GetAngle2B()
         {
-            return GetUnsignedByte()/0.7f;
+            return GetShort()/10f;
         }
 
         public void AddIdMask2B(int id, BitArray mask)

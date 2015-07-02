@@ -301,7 +301,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private void MeleePhysicalHitEffects(Spell.HitStrenght strenght, UnitCombat dealer, float damage)
         {
-            if(!Unit.IsStatic()) // Static units dont recieve special melee hit effects
+            if(Unit.IsStatic()) // Static units dont recieve special melee hit effects
                 return;
             
             float distance = Vector3.Distance(Unit.Movement.Position, dealer.Unit.Movement.Position);

@@ -23,7 +23,6 @@ namespace Server.Model.Extensions.UnitExts
         //important variables
         [SerializeField]
         private Vector3 _position = Vector3.one;
-        [SerializeField]
         private float _rotation;
 
         public float _baseSpeed = 2.5f;
@@ -134,11 +133,7 @@ namespace Server.Model.Extensions.UnitExts
                 RecreateUpdatePrecesion();
             }
         }
-
-        public bool CanMove { get; set; }
-
-        public bool CanRotate { get; set; }
-
+        
         public bool Running { get; set; }
 
         public float WalkSpeed { get; set; }
@@ -201,14 +196,6 @@ namespace Server.Model.Extensions.UnitExts
                     MoveAndRotate(time);
                 }
             }
-
-            /*
-            RotateTo(Quaternion.LookRotation(new Vector3(destination.x, 0, destination.z) - new Vector3(_position.x, 0, _position.z)).eulerAngles.y);
-
-            if (Vector2.Distance(new Vector2(destination.x, destination.z), new Vector2()) > 0.5f)
-            {
-                MoveTo(_position + Quaternion.Euler(new Vector3(0,_rotation,0)) * Vector3.forward * _baseSpeed);
-            }*/
         }
 
         private void MoveAndRotate(float time)
@@ -247,29 +234,10 @@ namespace Server.Model.Extensions.UnitExts
         /// <param name="newPosition"></param>
         private void MoveTo(Vector3 newPosition)
         {
-            if (CanMove)
-            {
                 _force += (newPosition - _position) * ForceWeight;
                 Position = newPosition;
-            }
         }
         
-        /// <summary>
-        /// Smoothly walks to the destination.
-        /// </summary>
-        /// <param name="newPosition">Destination of walk.</param>
-        public void WalkTo(Vector3 newPosition)
-        {
-            if (CanMove && !_lookingForPath)
-            {
-                if (Vector3.Distance(destination, newPosition) < 0.1f)
-                    return;
-                destination = newPosition;
-                _seeker.StartPath(_position, destination, OnPathWasFound);
-                _lookingForPath = true;
-                OnArrive = null;
-            }
-        }
 
         public void WalkTo(Vector3 newPosition, System.Action<int, string> _onArrive, int unitId, string action)
         {
@@ -278,43 +246,35 @@ namespace Server.Model.Extensions.UnitExts
 
         public void WalkTo(Vector3 newPosition, System.Action _onArrive)
         {
-            if (CanMove && !_lookingForPath)
+            if (!_lookingForPath)
             {
-                /*if (Vector3.Distance(destination, newPosition) < 0.1f)
+                if (Vector3.Distance(destination, newPosition) < 0.1f)
                 {
-                    this._onArrive = _onArrive;
+                    if (_onArrive != null)
+                        _onArrive();
                     return;
-                }*/
+                }
 
                 destination = newPosition;
+                OnArrive = _onArrive;
                 _seeker.StartPath(_position, destination, OnPathWasFound);
                 _lookingForPath = true;
 
-                OnArrive = _onArrive;
+                
             }
         }
 
         public void WalkWay(Vector3 direction)
         {
             WalkSpeed = direction.magnitude;
-            WalkTo(_position + direction);
+            WalkTo(_position + direction,null);
         }
 
 
         public void RotateWay(Vector3 direcionVector)
         {
             if (direcionVector != Vector3.zero)
-                RotateTo(Quaternion.LookRotation(direcionVector).eulerAngles.y);
-        }
-
-        private void RotateTo(float newRotation)
-        {
-            if (CanRotate)
-            {
-                Rotation = newRotation;
-                return;
-            }
-            return;
+                Rotation = Quaternion.LookRotation(direcionVector).eulerAngles.y;
         }
 
         public void Teleport(Vector3 location)
@@ -322,6 +282,7 @@ namespace Server.Model.Extensions.UnitExts
             _position = location;
             Teleported = true;
             _wasUpdate = true;
+            _path = null;
         }
 
         public bool Teleported { get; private set; }
@@ -355,13 +316,6 @@ namespace Server.Model.Extensions.UnitExts
             {
                 _seeker = entity.gameObject.AddComponent<Seeker>();
                 entity.gameObject.AddComponent<FunnelModifier>();
-                CanMove = true;
-                CanRotate = true;
-            }
-            if (!(Unit is Plant))
-            {
-                CanMove = true;
-                CanRotate = true;
             }
         }
 
@@ -371,7 +325,7 @@ namespace Server.Model.Extensions.UnitExts
             packet.AddFlag(true, true, _isFlying);
             packet.AddPosition12B(_position);
 
-            packet.AddAngle1B(_rotation);
+            packet.AddAngle2B(_rotation);
 
             packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
             packet.AddByte(ParentPlaneID);
@@ -383,7 +337,7 @@ namespace Server.Model.Extensions.UnitExts
             packet.AddFlag(Teleported, _parentUpdate, _isFlying);
             packet.AddPosition12B(_position);
 
-            packet.AddAngle1B(_rotation);
+            packet.AddAngle2B(_rotation);
             if (_parentUpdate)
             {
                 packet.AddShort(Parent == null ? -1 : Parent.Unit.ID);
@@ -411,9 +365,7 @@ namespace Server.Model.Extensions.UnitExts
         public void PushFromCollision(Vector3 strenght, ServerUnit secondUnit)
         {
             if (Unit is Plant && secondUnit is Plant)
-            {
                 Teleport(_position + new Vector3(strenght.x, 0, strenght.z));
-            }
             MoveTo(_position + new Vector3(strenght.x, 0, strenght.z));
             _path = null;
         }
@@ -425,11 +377,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public void Push(Vector3 vector3, float strenght)
         {
-            if (CanMove)
-            {
-                MoveTo(_position + vector3.normalized*strenght);
-                IsFlying = true;
-            }
+            MoveTo(_position + vector3.normalized*strenght);
         }
 
         public override void Serialize(JSONObject j)

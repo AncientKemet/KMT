@@ -96,6 +96,7 @@ namespace Server.Model
         {
             LAST_TICK++;
 
+            var progressId = (byte) LAST_TICK;
             foreach (var player in Players)
             {
                 foreach (var o in player.CurrentBranch.ObjectsVisible)
@@ -103,7 +104,7 @@ namespace Server.Model
                     ServerUnit e = o as ServerUnit;
                     if (e != null)
                     {
-                        e.Progress(time);
+                        e.ProgressOnce(time, progressId);
                     }
                 }
             }

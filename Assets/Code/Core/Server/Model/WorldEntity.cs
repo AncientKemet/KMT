@@ -14,7 +14,7 @@ namespace Server.Model
     public abstract class WorldEntity : ServerMonoBehaviour
     {
         private World _currentWorld = null;
-
+        protected bool _extensionsLocked = false;
         private long _last_world_tick = 0;
         private CollisionExt _collisionExt = null;
 
@@ -36,7 +36,7 @@ namespace Server.Model
         [SerializeField]
         private ushort _id;
 
-        public Dictionary<Type, EntityExtension>.ValueCollection Extensions
+        public IEnumerable<EntityExtension> Extensions
         {
             get { return extensions.Values; }
         }
@@ -54,6 +54,8 @@ namespace Server.Model
 
         public T AddExt<T>() where T : EntityExtension
         {
+            if (_extensionsLocked)
+                throw new Exception("_extensionsLocked == true");
             if (GetExt<T>() == null)
             {
                 T extension = gameObject.AddComponent<T>();

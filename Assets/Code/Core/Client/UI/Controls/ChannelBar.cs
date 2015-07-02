@@ -33,7 +33,7 @@ namespace Code.Core.Client.UI.Controls
         private void Update()
         {
             _progress = Mathf.Clamp01(_progress);
-            if (Math.Abs(_progress - _targetProgress) > 0.001f)
+            if (Math.Abs(_progress - _targetProgress) > 0.00001f)
             {
                 _progress += (_targetProgress - _progress)*Time.deltaTime*30f;
 

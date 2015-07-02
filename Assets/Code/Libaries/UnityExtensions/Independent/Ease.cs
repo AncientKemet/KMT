@@ -46,12 +46,12 @@ namespace Libaries.UnityExtensions.Independent
                 if (Time.realtimeSinceStartup - startTime < time / Time.timeScale)
                 {
                     start.position = Vector3.Lerp(start.position, end.position, Mathf.Min((t / time), 1f));
-                    start.rotation = Quaternion.Lerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
+                    //start.rotation = Quaternion.Lerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
                 }
             }
             
             start.position = end.position;
-            start.rotation = end.rotation;
+            //start.rotation = end.rotation;
 
             if (onFinish != null)
                 onFinish();

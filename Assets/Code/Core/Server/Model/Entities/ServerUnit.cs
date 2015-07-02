@@ -33,13 +33,16 @@ namespace Server.Model.Entities
         public UnitDetails Details;
 
         private List<UnitUpdateExt> _updateExtensions;
-
+        
         protected virtual void OnEnterWorld(World world)
         {
             if (OnLastSetup != null)
                 OnLastSetup();
             OnLastSetup = null;
 
+            _extensionsLocked = true;
+
+            _updateExtensions = new List<UnitUpdateExt>();
             //in the end find all updatable extensions
             foreach (EntityExtension extension in Extensions)
                 if (extension is UnitUpdateExt)
@@ -67,12 +70,8 @@ namespace Server.Model.Entities
 
         protected virtual void Awake()
         {
-            _updateExtensions = new List<UnitUpdateExt>();
-
             Movement = AddExt<UnitMovement>();
             Details = AddExt<UnitDetails>();
-
-            
         }
 
         public override void Progress(float time)
@@ -268,6 +267,15 @@ namespace Server.Model.Entities
         #endregion
 
         public event Action OnLastSetup;
+        private byte _lastProgressId = 50;
+        public void ProgressOnce(float time, byte ProgressID)
+        {
+            if (_lastProgressId != ProgressID)
+            {
+                Progress(time);
+                _lastProgressId =  ProgressID;
+            }
+        }
     }
 }
 

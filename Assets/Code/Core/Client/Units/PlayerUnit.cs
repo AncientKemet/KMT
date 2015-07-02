@@ -7,7 +7,6 @@ using Client.UI.Interfaces;
 using Client.Units.UnitControllers;
 using Code.Code.Libaries.Net;
 using Code.Core.Client.UI.Controls;
-using Code.Core.Client.UI.Interfaces;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
 using Code.Core.Client.Units.Managed;
 using Code.Libaries.Generic.Managers;
@@ -21,7 +20,6 @@ using UnityEngine;
 
 namespace Client.Units
 {
-    [RequireComponent(typeof(UnitDisplay))]
     public class PlayerUnit : Clickable
     {
         [SerializeField]
@@ -36,7 +34,7 @@ namespace Client.Units
             {
                 _isStatic = value;
                 enabled = !value;
-                if(_display != null)
+                if (_display != null)
                     _display.enabled = !value;
                 if (GetComponent<Collider>() != null)
                     GetComponent<Collider>().enabled = !value;
@@ -46,6 +44,7 @@ namespace Client.Units
 
         protected Vector3 _movementTargetPosition;
         protected Vector3 _smoothedTargetPosition;
+        [SerializeField]
         protected float _targetRotation;
 
         private Projector _projector;
@@ -65,14 +64,14 @@ namespace Client.Units
         {
             get
             {
-                return (ushort) _id;
+                return (ushort)_id;
             }
             set
             {
                 _id = value;
             }
         }
-        
+
         public static PlayerUnit MyPlayerUnit { get; set; }
 
         public string Name
@@ -206,17 +205,17 @@ namespace Client.Units
 
         protected virtual void Update()
         {
-            if(!_isStatic)
+            if (!_isStatic)
             {// Process rotation
-                if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
-                {
-                    var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
-                    calculatedRotation.x = 0;
-                    calculatedRotation.z = 0;
-
-                    calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, 0.25f);
-                    transform.localRotation = calculatedRotation;
-                }
+               
+                    if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
+                    {
+                        var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
+                        calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation,
+                                                             Time.deltaTime*30);
+                        transform.localRotation = calculatedRotation;
+                    }
+                
             }
 
             if (_parentId != -1)
@@ -268,7 +267,7 @@ namespace Client.Units
                     transform.localPosition = pos;
                 }
 
-                float rotation = b.GetAngle1B();
+                float rotation = b.GetAngle2B();
                 TargetRotation = rotation;
 
 
@@ -286,7 +285,7 @@ namespace Client.Units
                         }
                         else
                         {
-                            if(unit._display == null)
+                            if (unit._display == null)
                                 unit._display = unit.gameObject.AddComponent<UnitDisplay>();
 
                             unit._display.OnModelChange += JoinParent;
@@ -515,17 +514,7 @@ namespace Client.Units
                 plane,
                 () =>
                 {
-                    StartCoroutine(Ease.Join(
-                          transform,
-                          plane,
-                          () =>
-                          {
-                              transform.parent = plane;
-                              transform.localPosition = Vector3.zero;
-                              transform.localRotation = Quaternion.identity;
-                              transform.localScale = Vector3.one;
-                          },
-                          0.3f));
+                    transform.parent = plane;
                 },
                 0.3f));
 
@@ -565,9 +554,8 @@ namespace Client.Units
 
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
-
-                _movementTargetPosition = _movementTargetPosition + p.Difference;
-                TargetRotation = p.Face;
+            _movementTargetPosition = _movementTargetPosition + p.Difference;
+            TargetRotation = p.Face;
         }
 
         public Action OnBeforeDestroy;

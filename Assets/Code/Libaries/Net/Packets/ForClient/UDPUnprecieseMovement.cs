@@ -10,7 +10,7 @@ namespace Libaries.Net.Packets.ForClient
     {
         public float Face { get; set; }
 
-        public const float DistanceTo256Ratio = 200f;
+        public const float DistanceTo256Ratio = 100f;
 
         public int UnitID { get; set; }
 
@@ -24,7 +24,7 @@ namespace Libaries.Net.Packets.ForClient
 
         public override int Size
         {
-            get { return 6; }
+            get { return 7; }
         }
 
         public Vector3 Difference { get; set; }
@@ -34,7 +34,7 @@ namespace Libaries.Net.Packets.ForClient
             int IdMask = b.GetShort();
             Mask = b.GetIdMask2BMASK(IdMask);
             UnitID = b.GetIdMask2BID(IdMask);
-            Face = b.GetAngle1B();
+            Face = b.GetAngle2B();
 
             sbyte x = (sbyte) b.GetByte(), y = (sbyte) b.GetByte(), z = (sbyte) b.GetByte();
 
@@ -43,7 +43,7 @@ namespace Libaries.Net.Packets.ForClient
         public override void Serialize(ByteStream b)
         {
             b.AddIdMask2B(UnitID, Mask);
-            b.AddAngle1B(Face);
+            b.AddAngle2B(Face);
                 b.AddByte((int)(Difference.x * DistanceTo256Ratio));
                 b.AddByte((int)(Difference.y * DistanceTo256Ratio));
                 b.AddByte((int)(Difference.z * DistanceTo256Ratio));

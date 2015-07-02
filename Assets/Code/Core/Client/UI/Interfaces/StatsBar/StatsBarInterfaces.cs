@@ -34,6 +34,11 @@ namespace Code.Core.Client.UI.Interfaces
                 ENRegen.text = (PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.EnergyRegen) > 0 ? "+" : "") + "" +
                                (float)((int)(PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.EnergyRegen) * 10f)) / 10f;
 
+                HPBar.Progress = PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.CurrentHealth /
+                                 PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Health);
+                ENBar.Progress = PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.CurrentEnergy /
+                                 PlayerUnit.MyPlayerUnit.PlayerUnitAttributes.GetAttribute(UnitAttributeProperty.Energy);
+
                 if (!_hasInjectedMyPlayer)
                 {
                     _hasInjectedMyPlayer = true;
@@ -68,7 +73,6 @@ namespace Code.Core.Client.UI.Interfaces
                 _hasInjectedMyPlayer = false;
             }
         }
-        
     }
 }
 

@@ -42,7 +42,6 @@ namespace Development.Libary.Spells.Codes
             u.Movement.Parent = null;
             u.Movement.Rotation = unit.Movement.Rotation - 90;
             u.Movement._UnSafeMoveTo(unit.Movement.Position);
-            u.Movement.CanMove = true;
 
             Vector3 direction = unit.Movement.Forward;
 

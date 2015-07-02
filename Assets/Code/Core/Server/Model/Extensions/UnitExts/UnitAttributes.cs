@@ -232,7 +232,7 @@ namespace Server.Model.Extensions.UnitExts
             var PrimaryPenetration = PrimaryOffence == UnitAttributeProperty.PhysicalDamage
                 ? UnitAttributeProperty.ArmorPenetration
                 : UnitAttributeProperty.MagicResistPenetration;
-            float damage = 1 * (1.0f + Get(PrimaryOffence)) *
+            float damage = 10 * (1.0f + Get(PrimaryOffence)) *
                           (1.0f - (0.5f * (1f-Get(PrimaryPenetration)))) * (1 + (Get(UnitAttributeProperty.CriticalArea) * Get(UnitAttributeProperty.CriticalDamage)));
 
             Set(UnitAttributeProperty.Offence, damage);

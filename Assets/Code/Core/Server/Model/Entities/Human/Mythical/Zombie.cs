@@ -78,7 +78,7 @@ namespace Server.Model.Entities.Human.Mythical
 
         private void DoRandomWalk()
         {
-            Movement.WalkTo(Movement.Position + new Vector3(Random.Range(-5f, 5f), 0, (Random.Range(-5f, 5f))));
+            Movement.WalkTo(Movement.Position + new Vector3(Random.Range(-5f, 5f), 0, (Random.Range(-5f, 5f))), null);
         }
     }
 }

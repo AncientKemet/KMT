@@ -45,8 +45,6 @@ namespace Server.Model.Entities.Items
                 name = Item.Item.name;
 
                 Display.Item = _item.Item;
-                Movement.CanMove = false;
-                Movement.CanRotate = false;
 
                 ItemWithInventory withInventory = value.Item.GetComponent<ItemWithInventory>();
 

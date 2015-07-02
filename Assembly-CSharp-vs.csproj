@@ -187,7 +187,6 @@
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\NPC.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Player.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Items\DroppedItem.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Projectiles\Projectile.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\SEase.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\ServerUnit.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\ServerUnitPrioritization.cs" />
