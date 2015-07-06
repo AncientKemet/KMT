@@ -1,4 +1,5 @@
 ﻿using Client.UI.Interfaces;
+using Client.UI.Interfaces.Dialogues;
 using Code.Core.Client.UI;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Scripts;
@@ -11,8 +12,6 @@ namespace Client.UI.Controls.Items
 
     public class ItemButton : MonoBehaviour 
     {
-        
-
         private Item _item;
         [SerializeField]
         private tk2dSlicedSprite _background;
@@ -27,7 +26,7 @@ namespace Client.UI.Controls.Items
         private tk2dTextMesh _amount;
         [SerializeField]
         private Icon _icon;
-
+        
         public bool CanBeDragged
         {
             get { return _canBeDragged; }
@@ -63,6 +62,7 @@ namespace Client.UI.Controls.Items
             {
                 Button.OnLeftDown += () =>
                 {
+                    if(_item != null)
                     _timeDown = Time.realtimeSinceStartup;
                 };
             }
@@ -79,9 +79,9 @@ namespace Client.UI.Controls.Items
             {
                 Background.color = _onHoverColor;
                 if(Item != null)
-                DescriptionInterface.I.Show(Item.name+ " [ click to "+Button.Actions[0].Name+" ]",
-                string.IsNullOrEmpty(Item.Subtitle) ? null : Item.Subtitle,
-                Item.GetDescribtion(), Item.Icon);
+                    DescriptionInterface.I.Show(Item.name+ " [ click to "+Button.Actions[0].Name+" ]",
+                                                string.IsNullOrEmpty(Item.Subtitle) ? null : Item.Subtitle,
+                                                Item.GetDescribtion(), Item.Icon);
             };
 
             Button.OnMouseOff += () =>
@@ -99,8 +99,11 @@ namespace Client.UI.Controls.Items
             _background.color = _originalColor;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
+            if (ItemDragManager.IndragButton == this && !Input.GetMouseButton(0) && !Input.GetMouseButtonUp(0))
+                ItemDragManager.CancelDrag();
+                
             if (_timeDown > 0 && _canBeDragged)
             {
                 if (Time.realtimeSinceStartup - 0.3f > _timeDown)
@@ -112,6 +115,15 @@ namespace Client.UI.Controls.Items
                         Background.color = _onBeingDragColor;
                     }
                 }
+            }
+        }
+
+        void OnGUI()
+        {
+            if (ItemDragManager.IndragButton == this && Item != null)
+            {
+                GUI.Box(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 40, 40),
+                                Item.Icon);
             }
         }
 
@@ -135,22 +147,6 @@ namespace Client.UI.Controls.Items
 
                 Icon.Texture = value.Icon;
                 
-                if (value != null)
-                {
-                    Button.MenuOn = true;
-                    if (Button.InterfaceId != InterfaceType.ProfileInterface)
-                    {
-                        Button.ClearAllActions("Drop", "Unequip");
-                        foreach (var action in value.ActionsStrings)
-                        {
-                            Button.AddAction(new RightClickAction(action));
-                        }
-                    }
-                }
-                else
-                {
-                    Button.MenuOn = false;
-                }
             }
         }
 

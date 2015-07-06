@@ -23,6 +23,8 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
         public List<ItemButton> Buttons123;
 
         public ItemInventory Inventory;
+        
+        private static ItemButton UseItemButton;
 
         public State CurrentState
         {
@@ -89,9 +91,29 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
 
             Inventory.OnItemUpdate += (_itemButton, itemInstance) =>
             {
-                if(itemInstance.Item != null)
-                if(itemInstance.Item.EQ != null)
-                    _itemButton.Button.AddAction(new RightClickAction("Equip"));
+                if (itemInstance.Item != null)
+                {
+                    foreach (var action in itemInstance.Item.ActionsStrings)
+                        _itemButton.Button.AddAction(new RightClickAction(action));
+                    if (itemInstance.Item.EQ != null)
+                        _itemButton.Button.AddAction(new RightClickAction("Equip"));
+
+                    _itemButton.Button.AddAction(new RightClickAction("Use", () =>
+                    {
+                        if (UseItemButton == null)
+                        {
+                            UseItemButton = _itemButton;
+                        }
+                        else
+                        {
+                            UseItemButton = null;
+                        }
+                    }));
+                }
+                else
+                {
+                    _itemButton.Button.ClearAllActions();
+                }
             };
 
             Button.OnLeftClick += () =>
@@ -102,6 +124,12 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
                     CurrentState++;
                 
             };
+        }
+
+        void OnGUI()
+        {
+            if (ItemDragManager.IndragButton == null && UseItemButton != null && UseItemButton.Item != null)
+                GUI.DrawTexture(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 50,50), UseItemButton.Item.Icon);
         }
 
         protected virtual void Update()

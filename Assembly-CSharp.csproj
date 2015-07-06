@@ -53,6 +53,7 @@
      <Compile Include="Assets\Code\Core\Client\Controls\KeyboardInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\MouseInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\KemetMap.cs" />
+     <Compile Include="Assets\Code\Core\Client\Enviroment\MovementArrow.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\Weather.cs" />
      <Compile Include="Assets\Code\Core\Client\ModelUtils\Model.cs" />
      <Compile Include="Assets\Code\Core\Client\Net\ClientCommunicator.cs" />
@@ -197,6 +198,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\AnimalExtensions\AnimalMovement.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\CollisionExt.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\Frames.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerCrafting.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerInput.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerLevels.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerUDP.cs" />
@@ -244,6 +246,7 @@
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemRigid.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemWithInventory.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\Weapon.cs" />
+     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemRecipe.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Spell.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitAttributeProperty.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitPrefab.cs" />
@@ -255,7 +258,9 @@
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Damage.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Heal.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\HealthChange.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\ExperienceReward.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Level.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\LevelRequirement.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\MinimapEvent.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\AIPath.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\NavmeshController.cs" />

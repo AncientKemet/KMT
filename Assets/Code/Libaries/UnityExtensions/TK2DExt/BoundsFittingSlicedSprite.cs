@@ -20,18 +20,18 @@ namespace Code.Libaries.UnityExtensions
         public Bounds Bounds
         {
             get { return _bounds; }
-            set
+            private set
             {
-                if (_bounds != value)
-                {
-                    _bounds = value;
-                    SlicedSprite.transform.position = _bounds.center + new Vector3(0, 0, _bounds.size.z*2+1);
-                    //SlicedSprite.transform.position = Camera.main.WorldToScreenPoint(tk2dUIManager.Instance.UICamera.ScreenToWorldPoint(_bounds.center));
-                    SlicedSprite.dimensions = margin + _bounds.size * 20f + new Vector3(SlicedSprite.borderLeft + SlicedSprite.borderRight, SlicedSprite.borderBottom + SlicedSprite.borderTop,0) * 8f;
-                    SlicedSprite.anchor = tk2dBaseSprite.Anchor.MiddleCenter;
-                    
-                    SlicedSprite.ForceBuild();
-                }
+
+                _bounds = value;
+                SlicedSprite.transform.position = _bounds.center + new Vector3(0, 0, _bounds.size.z*2 + 1);
+                //SlicedSprite.transform.position = Camera.main.WorldToScreenPoint(tk2dUIManager.Instance.UICamera.ScreenToWorldPoint(_bounds.center));
+                SlicedSprite.dimensions = margin + _bounds.size*20f +
+                                          new Vector3(SlicedSprite.borderLeft + SlicedSprite.borderRight,
+                                                      SlicedSprite.borderBottom + SlicedSprite.borderTop, 0)*8f;
+                SlicedSprite.anchor = tk2dBaseSprite.Anchor.MiddleCenter;
+
+                SlicedSprite.ForceBuild();
             }
         }
 
@@ -58,7 +58,7 @@ namespace Code.Libaries.UnityExtensions
             if(renderers.Count <= 0 || renderers[0] == null) 
                 return;
 
-            Bounds bounds = new Bounds(renderers[0].transform.position, Vector3.zero);
+            Bounds bounds = renderers[0].bounds;
 
             foreach (var renderer1 in renderers)
             {

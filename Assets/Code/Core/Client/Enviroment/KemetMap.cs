@@ -20,6 +20,8 @@ namespace Client.Enviroment
 
         private static Dictionary<string, KemetMap> activeMaps = new Dictionary<string, KemetMap>();
 
+        public RaycastHit MouseAt;
+
         public static KemetMap GetMap(string id)
         {
             if (activeMaps.ContainsKey(id))
@@ -36,10 +38,7 @@ namespace Client.Enviroment
         [SerializeField]
         private TerrainCollider
             _cachedTerrainColliderReference;
-
-        private bool _wasMovingLastFrame = false;
-        private float _timeDown = 0f;
-
+        
         public List<PrefabInstance> PrefabInstances;
 
         public TerrainCollider TerrainCollider
@@ -60,7 +59,21 @@ namespace Client.Enviroment
         }
         private void Start()
         {
-            GetComponent<Clickable>().OnLeftClick += delegate { if (!UnitSelectionInterface.IsNull) UnitSelectionInterface.I.Unit = null; };
+            GetComponent<Clickable>().AddAction(new RightClickAction("Walk here", () =>
+            {
+                
+                if (PlayerUnit.MyPlayerUnit != null)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    float distance = 100;
+                    const int layerMask = 1 << 8;
+                    
+                    if (Physics.Raycast(ray, out MouseAt, distance, layerMask))
+                    {
+                        WalkOrTurn(MouseAt.point, true);
+                    }
+                }
+            }));
         }
 
         private void Update()
@@ -68,34 +81,17 @@ namespace Client.Enviroment
             if (!CreateCharacterInterface.IsNull)
                 return;
 
-            if (Input.GetMouseButtonUp(1))
+            if (PlayerUnit.MyPlayerUnit != null)
             {
-                _timeDown = 0;
-            }
-            if (Input.GetMouseButton(1))
-            {
-                if (_timeDown > 0.25f)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                float distance = 100;
+                const int layerMask = 1 << 8;
+                if (Physics.Raycast(ray, out MouseAt, distance, layerMask))
                 {
-                    if (PlayerUnit.MyPlayerUnit != null)
-                    {
-                        RaycastHit hit;
-                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        float distance = 100;
-                        const int layerMask = 1 << 8;
-                        if (Physics.Raycast(ray, out hit, distance, layerMask))
-                        {
-                            SendPacket(hit, true);
-                            _wasMovingLastFrame = true;
-                        }
-                    }
-                }
-                else
-                {
-                    _timeDown += Time.deltaTime;
                 }
             }
-            else
-            {
+            /*
+            
                 //If iam holding my spell keys i shall rotate towards my mouse point anyway
                 if (ClientCommunicator.Instance.WorldServerConnection != null && KeyboardInput.Instance.FullListener == null)
                     if (Input.GetKey(ClientControlSettings.Spell0) || Input.GetKey(ClientControlSettings.Spell1) ||
@@ -108,89 +104,30 @@ namespace Client.Enviroment
                         if (Physics.Raycast(ray, out hit, distance, layerMask))
                         {
                             SendPacket(hit, false);
-                            _wasMovingLastFrame = true;
                         }
                     }
-            }
+            */
+        }
+        
+        public void WalkOrTurn(Vector3 point, bool walk)
+        {
+            if (MovementArrow.Instance != null)
+            MovementArrow.Instance.Dismiss();
+            if(walk)
+            MovementArrow.SpawnArrow(point);
+            SendPacket(point, walk);
         }
 
-        #region DISABLED
-
-        private void MoveMyPlayerFromMouse()
+        private void SendPacket(Vector3 hit, bool Walk)
         {
-            if (PlayerUnit.MyPlayerUnit != null)
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                float distance = 100;
-                int layerMask = 1 << 7;
-                layerMask = ~layerMask;
-                if (Physics.Raycast(ray, out hit, distance, layerMask))
-                {
-                    SendPacket(hit, true, true);
-                }
-            }
-        }
-
-        private void MoveMyPlayerToClick()
-        {
-            if (PlayerUnit.MyPlayerUnit != null)
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                float distance = 100;
-                int layerMask = 1 << 7;
-                layerMask = ~layerMask;
-                if (Physics.Raycast(ray, out hit, distance, layerMask))
-                {
-                    SendPacket(hit, false);
-                }
-            }
-        }
-
-        #endregion
-
-
-        private void SendPacket(RaycastHit hit)
-        {
-            SendPacket(hit, false, false);
-        }
-
-        private void SendPacket(RaycastHit hit, bool Walk)
-        {
-            SendPacket(hit, Walk, false);
-        }
-
-        private void SendPacket(RaycastHit hit, bool Walk, bool invert)
-        {
-
             Vector3 myPos = PlayerUnit.MyPlayerUnit.MovementTargetPosition;
             var update = new WalkRequestPacket();
 
             update.Mask = new BitArray(new[] { Walk });
-
-            if (Walk)
-            {
-                if (invert)
-                {
-                    //used for going away from the hitpoint
-                    Vector3 inverted = (hit.point - myPos).normalized;
-                    inverted.x *= -1;
-                    inverted.z *= -1;
-                    update.DirecionVector = inverted;
-                }
-                else
-                {
-                    Vector3 difference = (hit.point - myPos);
-                        update.DirecionVector = difference;
-                }
-            }
-            else
-            {
-                update.DirecionVector = hit.point - myPos;
-            }
+            update.DirecionVector = hit - myPos;
 
             ClientCommunicator.Instance.WorldServerConnection.SendPacket(update);
+            ClientCommunicator.Instance.WorldServerConnection.ReadAndExecute();
         }
 
 

@@ -177,9 +177,6 @@ namespace Server.Net
                     {
                         if (update.Mask[0]) //should walk
                         {
-                            update.DirecionVector = (update.DirecionVector * 0.5f);
-                            if (update.DirecionVector.magnitude > 3.0f)
-                                update.DirecionVector = update.DirecionVector.normalized*3f;
                             mov.WalkWay(update.DirecionVector);
                         }
                         else // just rotate

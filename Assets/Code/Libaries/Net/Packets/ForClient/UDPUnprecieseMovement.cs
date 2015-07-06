@@ -10,7 +10,7 @@ namespace Libaries.Net.Packets.ForClient
     {
         public float Face { get; set; }
 
-        public const float DistanceTo256Ratio = 100f;
+        public const float DistanceTo256Ratio = 256f;
 
         public int UnitID { get; set; }
 

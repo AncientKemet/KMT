@@ -1,4 +1,5 @@
 using System;
+using Code.Libaries.Generic.Managers;
 using UnityEngine;
 
 namespace Code.Core.Shared.Content
@@ -7,22 +8,18 @@ namespace Code.Core.Shared.Content
     public class ContentItem : MonoBehaviour
     {
 
-        [HideInInspector][SerializeField] private string _guid;
-
-        /*public string GUID
+        [HideInInspector][SerializeField]
+        private int _inContentManagerIndex = -1;
+        public int InContentManagerIndex
         {
             get
             {
-#if UNITY_EDITOR
-                if (string.IsNullOrEmpty(_guid))
-                {
-                    _guid = Guid.NewGuid().ToString();
-                }
-#endif
-                return _guid;
+                return _inContentManagerIndex;
             }
-            set { _guid = value; }
-        }*/
+#if UNITY_EDITOR
+            set { _inContentManagerIndex = value; }
+#endif
+        }
     }
 }
 

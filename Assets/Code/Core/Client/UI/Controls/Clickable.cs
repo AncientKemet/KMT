@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Controls;
 using Client.UI.Interfaces;
 using Client.Units;
 #if UNITY_EDITOR
@@ -122,12 +123,18 @@ namespace Code.Core.Client.UI.Controls
         {
             if (OnMouseOff != null)
                 OnMouseOff();
+            MouseInput.Instance.SetCursorInactive();
         }
 
         private void OnMouseEnter()
         {
             if (OnMouseIn != null)
                 OnMouseIn();
+            if(Actions.Count > 0)
+            if (Actions[0] != null)
+            {
+                MouseInput.Instance.SetCursorActive(Actions[0].Name);
+            }
         }
         
         [SerializeField]

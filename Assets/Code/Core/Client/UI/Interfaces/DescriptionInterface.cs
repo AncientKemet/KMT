@@ -1,4 +1,5 @@
-﻿using Client.UI.Scripts;
+﻿using System.Collections;
+using Client.UI.Scripts;
 using Code.Core.Client.UI.Scripts;
 using Code.Libaries.UnityExtensions;
 using UnityEngine;
@@ -52,45 +53,32 @@ namespace Client.UI.Interfaces
 
         private void FitViewport()
         {
-            
-
             //Convert background sprite size to viewport size
-            Vector3 mousePos = tk2dUIManager.Instance.GetComponent<Camera>().ScreenToViewportPoint(Input.mousePosition);
+            Vector3 mousePos = tk2dUIManager.Instance.UICamera.ScreenToViewportPoint(Input.mousePosition);
 
-            transform.position = tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(mousePos);
+            transform.position = tk2dUIManager.Instance.UICamera.ViewportToWorldPoint(mousePos);
             //Update background sprie
             _mainSprite.RecalculateBounds();
 
-            Vector3 vpCenter = tk2dUIManager.Instance.GetComponent<Camera>().WorldToViewportPoint(_mainSprite.Bounds.center);
-            Vector3 vpSize = tk2dUIManager.Instance.GetComponent<Camera>().WorldToViewportPoint(_mainSprite.Bounds.size )- new Vector3(0.5f,0.5f,0);
-            vpSize *= 2f;
+            Vector3 vpSize = tk2dUIManager.Instance.UICamera.WorldToViewportPoint(_mainSprite.Bounds.size) / 3f;
             Vector3 finalPos = mousePos;
 
-            //finalPos.x += - vpSize.x/4f;
             finalPos.z = 0;
 
-            if (mousePos.x + vpSize.x > 1.0f)
+            Debug.Log(vpSize);
+
+            if (finalPos.x + vpSize.x > 1.0f)
             {
                 finalPos.x = 1f - vpSize.x;
             }
-            
-            //Calculate final position
-            /*if (mousePos.x > 0.5f)
+            if (finalPos.y - vpSize.y < 0.0f)
             {
-                if (mousePos.x + vpSize.x > 1.0f)
-                {
-                    finalPos.x -= vpSize.x;
-                }
-                if (mousePos.y - vpSize.y < 0)
-                {
-                    finalPos.y = vpSize.y;
-                }
-            }*/
+                finalPos.y = vpSize.y;
+            }
 
-            transform.position = tk2dUIManager.Instance.GetComponent<Camera>().ViewportToWorldPoint(finalPos);
-            _mainSprite.RecalculateBounds();
+            transform.position = tk2dUIManager.Instance.UICamera.ViewportToWorldPoint(finalPos);
         }
-
+        
         public override void Hide()
         {
             gameObject.SetActive(false);

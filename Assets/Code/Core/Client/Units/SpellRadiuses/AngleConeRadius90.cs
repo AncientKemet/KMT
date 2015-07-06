@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Client.Enviroment;
+using UnityEngine;
 
 namespace Client.Units.SpellRadiuses
 {
@@ -30,10 +31,20 @@ namespace Client.Units.SpellRadiuses
         }
 
         private void Update()
-        {   //range
+        {
+            if (KemetMap.Instance != null)
+            {
+                transform.LookAt(KemetMap.Instance.MouseAt.point);
+                var currentEulers = transform.localEulerAngles;
+                currentEulers.x = 0;
+                currentEulers.z = 0;
+                transform.localEulerAngles = currentEulers;
+            }
+            //range
             Normal.orthographicSize = (_range - (_range * _criticalArea)) * OneSize;
+            Normal.transform.localPosition = new Vector3(0, 0, Strenght * 2);
             Crit.orthographicSize = (_range) * OneSize;
-            Crit.transform.localPosition = new Vector3(0, 0,0);
+            Crit.transform.localPosition = new Vector3( 0,0,  Strenght*2 );
         }
     }
 }

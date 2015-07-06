@@ -33,15 +33,6 @@ namespace Client.UI.Controls.Items
             if (IndragButton == null)
                 throw new Exception("There is no itembutton in drag.");
 
-            /*UIInterfaceEvent packet = new UIInterfaceEvent();
-
-            packet._eventType = UIInterfaceEvent.EventType.ReleasedItemDrag;
-
-            packet.interfaceId = targetButton.Button.InterfaceId;
-            packet.controlID = targetButton.Button.Index;
-
-            ClientCommunicator.Instance.SendToServer(packet);*/
-
             var packet = new ItemDragPacket
             {
                 BeingDragID = IndragButton.Button.Index,
@@ -52,6 +43,12 @@ namespace Client.UI.Controls.Items
 
             ClientCommunicator.Instance.WorldServerConnection.SendPacket(packet);
 
+            IndragButton.DragEnded();
+            IndragButton = null;
+        }
+
+        public static void CancelDrag()
+        {
             IndragButton.DragEnded();
             IndragButton = null;
         }

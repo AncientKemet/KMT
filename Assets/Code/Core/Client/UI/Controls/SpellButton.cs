@@ -1,4 +1,5 @@
-﻿using Client.Net;
+﻿using Client.Enviroment;
+using Client.Net;
 using Client.UI.Interfaces;
 using Code.Core.Client.Controls;
 using Code.Core.Client.UI.Controls;
@@ -59,6 +60,13 @@ namespace Client.UI.Controls
             };
             OnMouseOff += () => DescriptionInterface.I.Hide();
             OnLeftDown += SendButtonDown;
+            OnLeftUp += () =>
+            {
+                if (KemetMap.Instance != null)
+                {
+                    KemetMap.Instance.WalkOrTurn(KemetMap.Instance.MouseAt.point, false);
+                }
+            };
             OnLeftUp+= () => SendClickPacket("");
         }
 

@@ -307,7 +307,7 @@ namespace Server.Model.Extensions.UnitExts
             float distance = Vector3.Distance(Unit.Movement.Position, dealer.Unit.Movement.Position);
             float distanceFromForward = Vector3.Distance(Unit.Movement.Position + Unit.Movement.Forward,
                                                          dealer.Unit.Movement.Position);
-            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), ((float)strenght) / 3f);
+            Unit.Movement.Push((Unit.Movement.Position - dealer.Unit.Movement.Position), ((float)strenght) / 3f, null);
 
             if (Unit.Anim != null)
                 Unit.Anim.ActionAnimation = "Hit" + (distance < distanceFromForward ? "Back" : "Front");

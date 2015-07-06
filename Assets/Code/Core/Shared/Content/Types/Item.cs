@@ -37,32 +37,8 @@ namespace Shared.Content.Types
 
         public Texture2D Icon;
         
-        private int _inContentManagerIndex = -1;
         private EquipmentItem _eq;
-
-        public int InContentManagerIndex
-        {
-            get
-            {
-                if (_inContentManagerIndex == -1)
-                {
-                    _inContentManagerIndex = ContentManager.I.Items.IndexOf(this);
-                }
-                /*if (_inContentManagerIndex == -1)
-                {
-                    for (int i = 0; i < ContentManager.I.Items.Count; i++)
-                    {
-                        if (ContentManager.I.Items[i] != null)
-                        if (GUID == ContentManager.I.Items[i].GUID)
-                        {
-                            _inContentManagerIndex = i;
-                            break;
-                        }
-                    }
-                }*/
-                return _inContentManagerIndex;
-            }
-        }
+        
 
         private void Start()
         {

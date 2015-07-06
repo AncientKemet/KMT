@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Client.Units;
+using Code.Core.Shared.Content;
 using Pathfinding;
+using Server.Model.Content.Spawns;
 using Shared.Content.Types;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -16,7 +18,9 @@ namespace Code.Libaries.Generic.Managers
         public List<Spell> Spells;
         public List<Buff> Buffs;
         public List<GameObject> Effects;
-        public List<ASpellRadius> SpellRadiuses; 
+        public List<ASpellRadius> SpellRadiuses;
+        public List<NPCSpawn> Npcs; 
+        public List<ItemRecipe> Recipes; 
         public Spell RestSpell;
         public Buff OverpowerDebuff;
 
@@ -49,12 +53,15 @@ namespace Code.Libaries.Generic.Managers
                 }
             }
         }
+
 #endif
 
         public void CreateEffect(int i, Vector3 position)
         {
             Instantiate(Effects[i], position, Quaternion.identity);
         }
+
+        
     }
 }
 

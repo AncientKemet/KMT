@@ -45,7 +45,7 @@ namespace Development.Libary.Spells.Codes
 
             Vector3 direction = unit.Movement.Forward;
 
-            u.StartCoroutine(SEase.Action(() => u.Movement.Push(direction, 1f), 10));
+            u.StartCoroutine(SEase.Action(() => u.Movement.Push(direction, 1f, null), 10));
         }
 
         public override void OnStartCasting(ServerUnit unit)

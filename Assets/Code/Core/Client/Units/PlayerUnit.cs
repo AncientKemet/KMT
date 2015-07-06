@@ -329,21 +329,30 @@ namespace Client.Units
                     else
                         transform.localPosition += Vector3.up;
 
-                    item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
-                    item.transform.parent = transform;
-                    item.transform.localPosition = Vector3.zero;
-                    item.transform.localRotation = Quaternion.identity;
-
-                    if (_parentId == -1)
+                    try
                     {
-                        var rigid = item.GetComponent<ItemRigid>();
+                        item = (Instantiate(ContentManager.I.Items[modelId].gameObject)).GetComponent<Item>();
+                        item.transform.parent = transform;
+                        item.transform.localPosition = Vector3.zero;
+                        item.transform.localRotation = Quaternion.identity;
 
-                        rigid.ForwardClicksToParent();
-                        rigid.PhysicsEnabled = true;
+
+                        if (_parentId == -1)
+                        {
+                            var rigid = item.GetComponent<ItemRigid>();
+
+                            rigid.ForwardClicksToParent();
+                            rigid.PhysicsEnabled = true;
+                        }
+
+                        if (GetComponent<Collider>() != null)
+                            GetComponent<Collider>().enabled = false;
                     }
-
-                    if (GetComponent<Collider>() != null)
-                        GetComponent<Collider>().enabled = false;
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Debug.LogError("Unexisting item in contentmanager.i.items["+modelId+"]");
+                        Debug.LogError(e.Message);
+                    }
                 }
 
                 if (wasDestroyed)

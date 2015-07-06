@@ -53,6 +53,7 @@
      <Compile Include="Assets\Code\Core\Client\Controls\KeyboardInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\MouseInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\KemetMap.cs" />
+     <Compile Include="Assets\Code\Core\Client\Enviroment\MovementArrow.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\Weather.cs" />
      <Compile Include="Assets\Code\Core\Client\ModelUtils\Model.cs" />
      <Compile Include="Assets\Code\Core\Client\Net\ClientCommunicator.cs" />
@@ -197,6 +198,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\AnimalExtensions\AnimalMovement.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\CollisionExt.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\Frames.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerCrafting.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerInput.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerLevels.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerUDP.cs" />
@@ -244,6 +246,7 @@
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemRigid.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemWithInventory.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\Weapon.cs" />
+     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemRecipe.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Spell.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitAttributeProperty.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitPrefab.cs" />
@@ -255,7 +258,9 @@
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Damage.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Heal.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\HealthChange.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\ExperienceReward.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Level.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\LevelRequirement.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\MinimapEvent.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\AIPath.cs" />
      <Compile Include="Assets\Code\Libaries\AstarPathfindingProject\Core\AI\NavmeshController.cs" />
@@ -811,40 +816,40 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.ClipperLib">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Clipper/Pathfinding.ClipperLib.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.JsonFx">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Poly2Tri">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/Parse.Unity.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/System.Drawing.dll</HintPath>
  </Reference>
  <Reference Include="MySql.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
  </Reference>
  <Reference Include="Parse.Unity">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="System.Drawing">
- <HintPath>C:/Users/Tollhotep/Documents/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
+ <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Drawing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

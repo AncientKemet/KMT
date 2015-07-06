@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
 using Server.Model.Entities.StaticObjects;
@@ -36,6 +37,7 @@ namespace Server.Model.Extensions.UnitExts
         //other variables
         private UnitCombat _combat;
         private bool _parentUpdate;
+        private Action _pushAction;
 
         //destination variables
         private Vector3 destination;
@@ -72,7 +74,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private Vector3 _lastPositionSent;
         private float _correctionWasSent;
-        private const float _correctionRatio = 0.333f;
+        private const float _correctionRatio = 1.333f;
         #endregion
 
         #region UnprecieseMovement
@@ -107,12 +109,12 @@ namespace Server.Model.Extensions.UnitExts
             else
             {
                 Vector3 difference = _position - _lastPositionSent;
-                
-                    UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                    UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
-                    UnprecieseMovementPacket.Face = _rotation;
-                    UnprecieseMovementPacket.Difference = difference;
-                    UnprecieseMovementPacket.UnitID = Unit.ID;
+
+                UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
+                UnprecieseMovementPacket.Face = _rotation;
+                UnprecieseMovementPacket.Difference = difference;
+                UnprecieseMovementPacket.UnitID = Unit.ID;
                 _lastPositionSent = _position;
             }
         }
@@ -133,7 +135,7 @@ namespace Server.Model.Extensions.UnitExts
                 RecreateUpdatePrecesion();
             }
         }
-        
+
         public bool Running { get; set; }
 
         public float WalkSpeed { get; set; }
@@ -142,7 +144,7 @@ namespace Server.Model.Extensions.UnitExts
             get
             {
                 return 1.75f * (1.0f + Unit.Attributes[UnitAttributeProperty.MovementSpeed])
-                    *  Mathf.Min(WalkSpeed, Running ? 3f:1.5f);
+                    * Mathf.Min(WalkSpeed, Running ? 3f : 1.5f);
             }
         }
 
@@ -166,7 +168,7 @@ namespace Server.Model.Extensions.UnitExts
                 Physics.Raycast(_position, Force, out hit, _force.magnitude, 1 << 8);
                 if (hit.collider != null)
                 {
-                    Position = hit.point + new Vector3(0,0.3f,0);
+                    Position = hit.point + new Vector3(0, 0.3f, 0);
                     _force = Vector3.zero;
                     IsFlying = false;
                 }
@@ -203,7 +205,7 @@ namespace Server.Model.Extensions.UnitExts
             Vector3 waypoint = _path.vectorPath[_currentWaypoint];
             Vector3 dir = waypoint - _position;
             _rotation = Quaternion.LookRotation(dir).eulerAngles.y;
-            
+
             float step = CurrentSpeed * time;
 
             if (dir.magnitude < step)
@@ -234,10 +236,10 @@ namespace Server.Model.Extensions.UnitExts
         /// <param name="newPosition"></param>
         private void MoveTo(Vector3 newPosition)
         {
-                _force += (newPosition - _position) * ForceWeight;
-                Position = newPosition;
+            _force += (newPosition - _position) * ForceWeight;
+            Position = newPosition;
         }
-        
+
 
         public void WalkTo(Vector3 newPosition, System.Action<int, string> _onArrive, int unitId, string action)
         {
@@ -260,14 +262,14 @@ namespace Server.Model.Extensions.UnitExts
                 _seeker.StartPath(_position, destination, OnPathWasFound);
                 _lookingForPath = true;
 
-                
+
             }
         }
 
         public void WalkWay(Vector3 direction)
         {
             WalkSpeed = direction.magnitude;
-            WalkTo(_position + direction,null);
+            WalkTo(_position + direction, null);
         }
 
 
@@ -304,6 +306,20 @@ namespace Server.Model.Extensions.UnitExts
             {
                 Debug.LogError("Error finding path: " + path.errorLog);
             }
+        }
+
+        private void OnPathWasFoundPush(Path path)
+        {
+            if (_pushAction != null)
+                _pushAction();
+            _pushAction = null;
+            if (!path.error)
+            {
+                if (path.GetTotalLength() < 5f)
+                    MoveTo(path.vectorPath.Last());
+            }
+            else
+                Debug.LogError("Error finding path: " + path.errorLog);
         }
 
         protected override void OnExtensionWasAdded()
@@ -372,12 +388,19 @@ namespace Server.Model.Extensions.UnitExts
 
         public void PushForward(float strenght)
         {
-            Push(Forward, strenght);
+            Push(Forward, strenght, null);
         }
 
-        public void Push(Vector3 vector3, float strenght)
+
+        public void PushForward(float strenght, Action action)
         {
-            MoveTo(_position + vector3.normalized*strenght);
+            Push(Forward, strenght, action);
+        }
+
+        public void Push(Vector3 vector3, float strenght, Action action)
+        {
+            _pushAction = action;
+            _seeker.StartPath(_position, _position + vector3 * strenght, OnPathWasFoundPush);
         }
 
         public override void Serialize(JSONObject j)
