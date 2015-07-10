@@ -4,6 +4,7 @@ using System.Linq;
 using Code.Core.Shared.Content;
 using Code.Libaries.Generic.Managers;
 using Server.Model.Content.Spawns;
+using Shared.Content;
 using Shared.Content.Types;
 using Shared.Content.Types.ItemExtensions;
 using Shared.SharedTypes;
@@ -221,11 +222,11 @@ namespace Assets.Editor
                                         GUILayout.Label(recipe.Item2.Item.name);
                                         GUILayout.BeginHorizontal();
                                         GUILayout.Label("X");
-                                        recipe.Item1.Amount = EditorGUILayout.IntField(recipe.Item2.Amount);
+                                        recipe.Item2.Amount = EditorGUILayout.IntField(recipe.Item2.Amount);
                                         GUILayout.EndHorizontal();
                                         GUILayout.BeginHorizontal();
                                         GUILayout.Label("con.");
-                                        recipe.isConsumed1 = EditorGUILayout.Toggle(recipe.isConsumed2);
+                                        recipe.isConsumed2 = EditorGUILayout.Toggle(recipe.isConsumed2);
                                         GUILayout.EndHorizontal();
                                     }
                                     GUILayout.EndVertical();
@@ -239,7 +240,7 @@ namespace Assets.Editor
                                         GUILayout.Label(recipe.Result.Item.name);
                                         GUILayout.BeginHorizontal();
                                         GUILayout.Label("X");
-                                        recipe.Item1.Amount = EditorGUILayout.IntField(recipe.Result.Amount);
+                                        recipe.Result.Amount = EditorGUILayout.IntField(recipe.Result.Amount);
                                         GUILayout.EndHorizontal();
                                     }
                                     GUILayout.EndVertical();
