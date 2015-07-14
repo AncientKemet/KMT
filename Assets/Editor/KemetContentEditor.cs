@@ -295,7 +295,7 @@ namespace Assets.Editor
                     {
                         var go = AssetDatabase.LoadAssetAtPath(file, typeof(GameObject)) as GameObject;
                         var item = go.GetComponent<ContentItem>();
-                        if (item.InContentManagerIndex == -1)
+                        if (item.InContentManagerIndex == -1 || list[item.InContentManagerIndex] != item)
                         {
                             list.Add(item);
                             item.InContentManagerIndex = list.IndexOf(item);

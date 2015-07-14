@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Client.Controls;
+using System.Linq;
 using Client.Net;
 using Client.UI.Interfaces;
 using Client.Units;
-using Code.Core.Client.Controls;
 using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Interfaces.UpperLeft;
-using Code.Core.Shared.NET;
 using Code.Libaries.Generic;
 using Code.Libaries.Net.Packets.ForServer;
 using UnityEngine;
@@ -15,6 +13,7 @@ using UnityEngine;
 namespace Client.Enviroment
 {
     [RequireComponent(typeof(Clickable))]
+    [ExecuteInEditMode]
     public class KemetMap : MonoSingleton<KemetMap>
     {
 
@@ -38,7 +37,7 @@ namespace Client.Enviroment
         [SerializeField]
         private TerrainCollider
             _cachedTerrainColliderReference;
-        
+        [HideInInspector]
         public List<PrefabInstance> PrefabInstances;
 
         public TerrainCollider TerrainCollider
@@ -59,6 +58,9 @@ namespace Client.Enviroment
         }
         private void Start()
         {
+            if(!Application.isPlaying)
+                return;
+
             GetComponent<Clickable>().AddAction(new RightClickAction("Walk here", () =>
             {
                 
@@ -76,6 +78,11 @@ namespace Client.Enviroment
             }));
         }
 
+
+#if UNITY_EDITOR
+        private List<PrefabInstance> _currentList;
+        private int _ptr = 0;
+#endif
         private void Update()
         {
             if (!CreateCharacterInterface.IsNull)
@@ -90,31 +97,18 @@ namespace Client.Enviroment
                 {
                 }
             }
-            /*
-            
-                //If iam holding my spell keys i shall rotate towards my mouse point anyway
-                if (ClientCommunicator.Instance.WorldServerConnection != null && KeyboardInput.Instance.FullListener == null)
-                    if (Input.GetKey(ClientControlSettings.Spell0) || Input.GetKey(ClientControlSettings.Spell1) ||
-                        Input.GetKey(ClientControlSettings.Spell2) || Input.GetKey(ClientControlSettings.Spell3))
-                    {
-                        RaycastHit hit;
-                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        float distance = 100;
-                        const int layerMask = 1 << 8;
-                        if (Physics.Raycast(ray, out hit, distance, layerMask))
-                        {
-                            SendPacket(hit, false);
-                        }
-                    }
-            */
         }
         
         public void WalkOrTurn(Vector3 point, bool walk)
         {
             if (MovementArrow.Instance != null)
             MovementArrow.Instance.Dismiss();
-            if(walk)
-            MovementArrow.SpawnArrow(point);
+            if (walk)
+            {
+                MovementArrow.SpawnArrow(point);
+                if (!UnitSelectionInterface.IsNull)
+                    UnitSelectionInterface.I.Unit = null;
+            }
             SendPacket(point, walk);
         }
 

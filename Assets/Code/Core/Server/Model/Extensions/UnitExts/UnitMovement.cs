@@ -58,15 +58,6 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-        public bool IsFlying
-        {
-            get { return _isFlying; }
-            private set
-            {
-                _isFlying = value;
-                _wasUpdate = true;
-            }
-        }
 
         public int ParentPlaneID = 0;
 
@@ -138,7 +129,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public bool Running { get; set; }
 
-        public float WalkSpeed { get; set; }
+        public float WalkSpeed = 1f;
         public float CurrentSpeed
         {
             get
@@ -155,30 +146,6 @@ namespace Server.Model.Extensions.UnitExts
 
             if (Parent != null)
                 return;
-
-            _force *= ForceFade;
-
-            if (IsFlying)
-            {
-                //Stop walking on floor
-                _path = null;
-
-                //Raycast next hit
-                RaycastHit hit;
-                Physics.Raycast(_position, Force, out hit, _force.magnitude, 1 << 8);
-                if (hit.collider != null)
-                {
-                    Position = hit.point + new Vector3(0, 0.3f, 0);
-                    _force = Vector3.zero;
-                    IsFlying = false;
-                }
-                else
-                {
-                    Position += _force;
-                    _force += Vector3.down / 5f;
-                }
-                return;
-            }
 
             if (Running && Unit.Combat.CurrentEnergy < 20)
             {
@@ -427,20 +394,6 @@ namespace Server.Model.Extensions.UnitExts
         public void _UnSafeMoveTo(Vector3 position)
         {
             Position = position;
-        }
-
-        public void Fly(Vector3 wayAndStrenght)
-        {
-            _force += wayAndStrenght;
-            IsFlying = true;
-        }
-
-        public void Jump()
-        {
-            if (!_isFlying)
-            {
-                Fly(Vector3.up * 0.5f + Forward * 0.3f);
-            }
         }
 
         public void DiscardPath()

@@ -28,7 +28,6 @@ namespace Server.Model.Extensions.PlayerExtensions
                 }
                 if (input == PacketEnums.INPUT_TYPES.Jump)
                 {
-                    Player.Movement.Jump();
                     continue;
                 }
 

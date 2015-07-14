@@ -1,4 +1,6 @@
-﻿using Client.Enviroment;
+﻿using System;
+using System.Linq;
+using Client.Enviroment;
 using Development.Libary.Spawns;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -13,7 +15,8 @@ public class PrefabInstance : MonoBehaviour
     [SerializeField]
     private GameObject prefab;
 
-    [SerializeField] private bool _rebuild = true;
+    [SerializeField]
+    private bool _rebuild = true;
     public int UnitId = -1;
 
 #if UNITY_EDITOR
@@ -44,26 +47,72 @@ public class PrefabInstance : MonoBehaviour
         prefab.transform.localRotation = Quaternion.identity;
         if (enabled)
             Rebuild(prefab, Matrix4x4.identity);
+
     }
 
     void OnEnable()
     {
+        KemetMap map = GetComponentInParent<KemetMap>();
+        if (map != null)
+        {
+            if (UnitId <= -1 || UnitId >= map.PrefabInstances.Count)
+            {
+                UnitId = map.PrefabInstances.IndexOf(this);
+                if (UnitId == -1)
+                {
+                    int nullID = map.PrefabInstances.IndexOf(null);
+                    if (nullID != -1)
+                    {
+                        UnitId = nullID;
+                        map.PrefabInstances[nullID] = this;
+                    }
+                    else
+                    {
+                        UnitId = map.PrefabInstances.Count;
+                        map.PrefabInstances.Add(this);
+                    }
+                }
+                map.PrefabInstances = map.PrefabInstances.Distinct().ToList();
+            }
+            else if (map.PrefabInstances[UnitId] != this)
+            {
+                UnitId = map.PrefabInstances.IndexOf(this);
+                int nullID = map.PrefabInstances.IndexOf(null);
+                if (UnitId == -1)
+                {
+                    if (nullID != -1)
+                    {
+                        UnitId = nullID;
+                        map.PrefabInstances[nullID] = this;
+                    }
+                    else
+                    {
+                        UnitId = map.PrefabInstances.Count;
+                        map.PrefabInstances.Add(this);
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Unable to validate prefab instance " + name + " probably has no KemetMap in root.");
+        }
         things.Clear();
         prefab.transform.localRotation = Quaternion.identity;
         if (enabled)
             Rebuild(prefab, Matrix4x4.identity);
+
     }
 
     void Rebuild(GameObject source, Matrix4x4 inMatrix)
     {
-        CheckInstanceId();
         _rebuild = false;
         if (!source)
             return;
 
         Matrix4x4 baseMat = inMatrix * Matrix4x4.TRS(-source.transform.position, Quaternion.identity, Vector3.one);
 
-// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
+        // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
         foreach (Renderer mr in source.GetComponentsInChildren(typeof(Renderer), true))
         {
             things.Add(new Thingy()
@@ -74,42 +123,11 @@ public class PrefabInstance : MonoBehaviour
             });
         }
 
-// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
+        // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
         foreach (PrefabInstance pi in source.GetComponentsInChildren(typeof(PrefabInstance), true))
         {
             if (pi.enabled && pi.gameObject.activeSelf)
                 Rebuild(pi.prefab, baseMat * pi.transform.localToWorldMatrix);
-        }
-    }
-
-    private void CheckInstanceId()
-    {   var parent = transform.parent;
-        KemetMap map = parent.GetComponent<KemetMap>();
-        while (map == null)
-        {
-            parent = parent.parent;
-            map = parent.GetComponent<KemetMap>();
-        }
-        if (map.PrefabInstances[UnitId] != this)
-            UnitId = -1;
-        if (UnitId == -1 )
-        {
-                
-                    for (int i = 0; i < map.PrefabInstances.Count; i++)
-                    {
-                        if (map.PrefabInstances[i] == null)
-                        {
-                            map.PrefabInstances[i] = this;
-                            UnitId = i;
-                            break;
-                        }
-                    }
-                    if (UnitId == -1)
-                    {
-                        UnitId = map.PrefabInstances.Count;
-                        map.PrefabInstances.Add(this);
-                    }
-            
         }
     }
 
@@ -118,7 +136,7 @@ public class PrefabInstance : MonoBehaviour
     {
         if (EditorApplication.isPlaying)
             return;
-        if(_rebuild)
+        if (_rebuild)
             Rebuild(prefab, Matrix4x4.identity);
         Matrix4x4 mat = transform.localToWorldMatrix;
         foreach (Thingy t in things)
@@ -146,8 +164,8 @@ public class PrefabInstance : MonoBehaviour
     [PostProcessScene(-2)]
     public static void OnPostprocessScene()
     {
-// ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-        foreach (PrefabInstance pi in UnityEngine.Object.FindObjectsOfType(typeof(PrefabInstance)))
+        // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
+        foreach (PrefabInstance pi in FindObjectsOfType(typeof(PrefabInstance)))
             BakeInstance(pi);
     }
 
@@ -155,13 +173,20 @@ public class PrefabInstance : MonoBehaviour
     {
         if (!pi.prefab || !pi.enabled)
             return;
+
         var go = Instantiate(pi.prefab, pi.transform.position, pi.transform.rotation) as GameObject;
+        go.name = go.name.Replace("(Clone)", "");
+        go.transform.parent = pi.transform.parent;
+
         foreach (PrefabInstance childPi in go.GetComponentsInChildren<PrefabInstance>())
             BakeInstance(childPi);
 
+        foreach (var rs in pi.GetComponentsInChildren<RelationShip>())
+            rs.transform.parent = go.transform;
+
         var _in = go.GetComponent<StaticObjectInstance>();
-        if(_in != null)
-            _in.OnBake((ushort) pi.UnitId);
+        if (_in != null)
+            _in.OnBake((ushort)pi.UnitId);
 
     }
 

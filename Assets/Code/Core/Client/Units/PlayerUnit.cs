@@ -186,9 +186,12 @@ namespace Client.Units
                 _projector.material = Instantiate(_projector.material);
             }
 
+            AddAction(new RightClickAction("Target", delegate { UnitSelectionInterface.I.Unit = this; }));
+
             OnLeftClick += delegate
             {
-                UnitSelectionInterface.I.Unit = this;
+                if (Actions != null && Actions.Count >= 1)
+                    Actions[0].Action();
             };
 
             OnRightClick += () =>
@@ -200,7 +203,7 @@ namespace Client.Units
             OnMouseIn += () => DescriptionInterface.I.Show(Name);
             OnMouseOff += () => DescriptionInterface.I.Hide();
 
-            MovementTargetPosition = transform.localPosition;
+            MovementTargetPosition = transform.position;
         }
 
         protected virtual void Update()
@@ -221,17 +224,17 @@ namespace Client.Units
             if (_parentId != -1)
                 return;
 
-            _distanceToTarget = Vector2.Distance(new Vector2(transform.localPosition.x, transform.localPosition.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
+            _distanceToTarget = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
             _visualSpeed = Mathf.Clamp(_distanceToTarget, 0f, CurrentMovementSpeed);
 
             _smoothedTargetPosition = Vector3.Lerp(_smoothedTargetPosition, _movementTargetPosition, 1.3f);
 
-            Vector3 calculatedPosition = transform.localPosition;
+            Vector3 calculatedPosition = transform.position;
 
             if (_distanceToTarget > 0.017f)
             {// Process DirecionVector
                 calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
-                transform.localPosition = calculatedPosition;
+                transform.position = calculatedPosition;
             }
         }
 
@@ -264,7 +267,7 @@ namespace Client.Units
                 else
                 {
                     MovementTargetPosition = pos;
-                    transform.localPosition = pos;
+                    transform.position = pos;
                 }
 
                 float rotation = b.GetAngle2B();
@@ -293,7 +296,7 @@ namespace Client.Units
                     }
                     else
                     {
-                        transform.parent = KemetMap.Instance.transform;
+                        transform.parent = KemetMap.Instance.GetComponent<MapQuadTree>().GetTreeFor(new Vector2(MovementTargetPosition.x, MovementTargetPosition.z)).transform;
                     }
                 }
             }

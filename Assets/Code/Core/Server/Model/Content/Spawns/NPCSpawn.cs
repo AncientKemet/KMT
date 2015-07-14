@@ -1,44 +1,26 @@
+using Development.Libary.Spawns;
 using Server.Model.Content.Spawns.NpcSpawns;
 using Server.Model.Entities.Human;
 using Server.Servers;
+using Shared.Content.Types;
 using UnityEngine;
 #if SERVER
 
 namespace Server.Model.Content.Spawns
 {
-    public class NPCSpawn : MonoBehaviour
+    public class NPCSpawn : StaticObjectInstance
     {
 
         public int ModelID = 0;
 
-        [Range(-1f, 100f)]
-        public float WalkRange = -1f;
-
-        public float MinSleepTime = 1;
-        public float MaxSleepTime = 5;
-        public bool EnableWalking = true;
-        public bool EnableFocusing = true;
-
         public Vector3 StaticPosition { get; set; }
         private NPC n;
 
-        private void Awake()
+        protected override void ApplySpawnExtensions()
         {
-            name = name.Replace("(Clone)", "");
-            n = gameObject.AddComponent<NPC>();
-            n.Spawn = this;
-            
-            n.OnLastSetup += ApplySpawnExtensions;
-            
-            ServerSingleton.Instance.GetComponent<WorldServer>().World.AddEntity(n);
-        }
-
-        void ApplySpawnExtensions()
-        {
+            base.ApplySpawnExtensions();
+            n = _serverUnit as NPC;
             n.Display.ModelID = ModelID;
-
-            n.Movement.Teleport(transform.position);
-            n.Movement.Rotation = transform.eulerAngles.y;
 
             StaticPosition = transform.position;
 

@@ -5,6 +5,7 @@ using Code.Core.Client.Units.Managed;
 using Development.Libary.Spawns.StaticObjects;
 using Server;
 using Server.Model.Entities;
+using Server.Model.Entities.Human;
 using Server.Model.Entities.StaticObjects;
 using Server.Model.Extensions.UnitExts;
 using Server.Servers;
@@ -20,14 +21,15 @@ namespace Development.Libary.Spawns
         Other,
         Plant,
         Tree,
-        Mineral
+        Mineral,
+        NPC
     }
 
     public class StaticObjectInstance : MonoBehaviour
     {
         public StaticObjectType Type;
         public List<UnitAttributePropertySerializable> AttributePropertySerializables;
-        private ushort _id;
+        protected ushort _id;
         public ushort Id
         {
             get { return _id; }
@@ -38,7 +40,7 @@ namespace Development.Libary.Spawns
         /// Is called by prefabinstance.
         /// </summary>
         /// <param name="unitId"></param>
-        public void OnBake(ushort unitId)
+        public virtual void OnBake(ushort unitId)
         {
             Id = unitId;
 #if SERVER
@@ -53,8 +55,11 @@ namespace Development.Libary.Spawns
                 case StaticObjectType.Mineral:
                     _serverUnit = gameObject.AddComponent<Tree>();
                     break;
+                case StaticObjectType.NPC:
+                    _serverUnit = gameObject.AddComponent<NPC>();
+                    break;
                 default:
-                    _serverUnit = new ServerUnit();
+                    Debug.LogError("unable to holy shit");
                     break;
             }
             _serverUnit.OnLastSetup += ApplySpawnExtensions;
@@ -75,15 +80,15 @@ namespace Development.Libary.Spawns
         }
 
 #if SERVER
-        private ServerUnit _serverUnit;
+        protected ServerUnit _serverUnit;
 #endif
 #if CLIENT
-        private PlayerUnit _playerUnit;
+        protected PlayerUnit _playerUnit;
         
 #endif
         
 #if SERVER
-        void ApplySpawnExtensions()
+        protected virtual void ApplySpawnExtensions()
         {
             if (AttributePropertySerializables.Count > 0)
                 _serverUnit.Attributes = _serverUnit.AddExt<UnitAttributes>();

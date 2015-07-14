@@ -545,11 +545,9 @@ namespace Client.Units.UnitControllers
             else
             {
                 _bootsRenderer.enabled = true;
-
                 try
                 {
-                    _boots.mainTexture =
-                        ContentManager.I.Items[BootsId].GetComponentInChildren<Renderer>().material.mainTexture;
+                    _boots.mainTexture = ContentManager.I.Items[BootsId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -568,7 +566,7 @@ namespace Client.Units.UnitControllers
                 try
                 {
                     _chest.mainTexture =
-                        ContentManager.I.Items[ChestId].GetComponentInChildren<Renderer>().material.mainTexture;
+                        ContentManager.I.Items[ChestId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
                 }
                 catch (ArgumentOutOfRangeException)
                 {

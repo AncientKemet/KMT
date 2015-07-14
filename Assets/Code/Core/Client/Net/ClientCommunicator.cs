@@ -153,6 +153,7 @@ namespace Client.Net
                 }
             }
         }
+
         void Update()
         {
             if (!Application.isPlaying)
@@ -167,6 +168,8 @@ namespace Client.Net
                         opcodes[pair.Key] = pair.Value.Name;
                     }
                 }
+                LoginServerIP = LocalIPAddress();
+                DataServerIP = LocalIPAddress();
             }
         }
 
@@ -206,8 +209,22 @@ namespace Client.Net
                 socket.Connect(IPAddress.Parse(ipAdress), NetworkConfig.I.WorldUnprecieseMovmentPort);
                 WorldServerUnprecieseMovementConnection = new UDPConnectionHandler(socket, NetworkConfig.I.WorldUnprecieseMovmentPort, true, false);
             }
+        }
 
-            
+        public static string LocalIPAddress()
+        {
+            IPHostEntry host;
+            string localIP = "";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+            return localIP;
         }
     }
 }

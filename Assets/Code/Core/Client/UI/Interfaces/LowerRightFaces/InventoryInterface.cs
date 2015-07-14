@@ -93,10 +93,10 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
             {
                 if (itemInstance.Item != null)
                 {
+                    _itemButton.Button.AddAction(new RightClickAction("Drop"));
                     foreach (var action in itemInstance.Item.ActionsStrings)
                         _itemButton.Button.AddAction(new RightClickAction(action));
-                    if (itemInstance.Item.EQ != null)
-                        _itemButton.Button.AddAction(new RightClickAction("Equip"));
+                    
 
                     _itemButton.Button.AddAction(new RightClickAction("Use", () =>
                     {
@@ -109,6 +109,9 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
                             UseItemButton = null;
                         }
                     }));
+                    
+                    if (itemInstance.Item.EQ != null)
+                        _itemButton.Button.AddAction(new RightClickAction("Equip"));
                 }
                 else
                 {

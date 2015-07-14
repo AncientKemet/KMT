@@ -34,7 +34,7 @@ public class MovementArrow : MonoBehaviour {
 	
 	void Update ()
 	{
-	    if (PlayerUnit.MyPlayerUnit != null)
+        if (PlayerUnit.MyPlayerUnit != null && Vector3.Distance(PlayerUnit.MyPlayerUnit.transform.position, transform.position) > 3f)
 	        transform.LookAt(PlayerUnit.MyPlayerUnit.transform.position);
 	    else
 	        Dismiss();

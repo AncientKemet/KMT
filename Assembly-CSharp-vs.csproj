@@ -53,6 +53,7 @@
      <Compile Include="Assets\Code\Core\Client\Controls\KeyboardInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Controls\MouseInput.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\KemetMap.cs" />
+     <Compile Include="Assets\Code\Core\Client\Enviroment\MapQuadTree.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\MovementArrow.cs" />
      <Compile Include="Assets\Code\Core\Client\Enviroment\Weather.cs" />
      <Compile Include="Assets\Code\Core\Client\ModelUtils\Model.cs" />
@@ -496,12 +497,13 @@
      <Compile Include="Assets\Code\Scripts\GridMovement.cs" />
      <Compile Include="Assets\Code\Scripts\PlayAnimScript.cs" />
      <Compile Include="Assets\Development\Libary\Buffs\Codes\RestBuff.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\Objects\Client\StaticObjectHealthState.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\Objects\ClientStaticObjectExtension.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\Objects\Server\StaticObjectLoot.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\Objects\ServerStaticObjectExtension.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\Objects\StaticObjectInstance.cs" />
      <Compile Include="Assets\Development\Libary\Spawns\PrefabInstance.cs" />
-     <Compile Include="Assets\Development\Libary\Spawns\StaticObjects\Client\StaticObjectHealthState.cs" />
-     <Compile Include="Assets\Development\Libary\Spawns\StaticObjects\ClientStaticObjectExtension.cs" />
-     <Compile Include="Assets\Development\Libary\Spawns\StaticObjects\Server\StaticObjectLoot.cs" />
-     <Compile Include="Assets\Development\Libary\Spawns\StaticObjects\ServerStaticObjectExtension.cs" />
-     <Compile Include="Assets\Development\Libary\Spawns\StaticObjects\StaticObjectInstance.cs" />
+     <Compile Include="Assets\Development\Libary\Spawns\RelationShip.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\BlockSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\MeleeSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\OffHandCharge.cs" />
@@ -827,6 +829,9 @@
  <Reference Include="Pathfinding.Poly2Tri">
  <HintPath>D:/KMT/Assets/Code/Libaries/AstarPathfindingProject/Plugins/Poly2Tri/Pathfinding.Poly2Tri.dll</HintPath>
  </Reference>
+ <Reference Include="ChatterBotAPI">
+ <HintPath>D:/KMT/Assets/Plugins/ChatterBotAPI.dll</HintPath>
+ </Reference>
  <Reference Include="MySql.Data">
  <HintPath>D:/KMT/Assets/Plugins/MySql.Data.dll</HintPath>
  </Reference>
@@ -841,9 +846,6 @@
  </Reference>
  <Reference Include="MySql.Data">
  <HintPath>D:/KMT/Assets/Plugins/x86_64/MySql.Data.dll</HintPath>
- </Reference>
- <Reference Include="Parse.Unity">
- <HintPath>D:/KMT/Assets/Plugins/x86_64/Parse.Unity.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>D:/KMT/Assets/Plugins/x86_64/System.Data.dll</HintPath>
