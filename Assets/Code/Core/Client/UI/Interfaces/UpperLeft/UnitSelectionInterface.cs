@@ -38,7 +38,7 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             get { return 0.2f; }
         }
 
-        public PlayerUnit Unit
+        private PlayerUnit Unit
         {
             get { return _unit; }
             set
@@ -80,9 +80,11 @@ namespace Code.Core.Client.UI.Interfaces.UpperLeft
             }
         }
 
-        protected override void OnFixedUpdate()
+        private void Update()
         {
-            base.OnFixedUpdate();
+            if (PlayerUnit.MyPlayerUnit != null)
+                if(PlayerUnit.MyPlayerUnit.Display!=null)
+                Unit = PlayerUnit.MyPlayerUnit.Display.LookAtUnit;
 
             if (_unit == null) Unit = _unit;
 

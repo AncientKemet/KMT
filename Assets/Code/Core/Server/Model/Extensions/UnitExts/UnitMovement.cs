@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Code.Libaries.Generic.Trees;
 using Libaries.IO;
 using Libaries.Net.Packets.ForClient;
+using Server.Model.Entities.Human;
 using Server.Model.Entities.StaticObjects;
 #if SERVER
 using Shared.Content.Types;
@@ -26,8 +29,6 @@ namespace Server.Model.Extensions.UnitExts
         private Vector3 _position = Vector3.one;
         private float _rotation;
 
-        public float _baseSpeed = 2.5f;
-
         private Vector3 _force = Vector3.zero;
 
         //Pathfinding seeker
@@ -38,12 +39,15 @@ namespace Server.Model.Extensions.UnitExts
         private UnitCombat _combat;
         private bool _parentUpdate;
         private Action _pushAction;
+        private float _pushLenght = -1;
 
         //destination variables
         private Vector3 destination;
         private Path _path;
         private bool _lookingForPath;
         private Action OnArrive;
+        private Action OnInterrupt;
+        private LinkedList<Action> NextMovements = new LinkedList<Action>();
 
         public UnitMovement Parent
         {
@@ -58,24 +62,19 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
-
+        [SerializeField]
+        private UnitMovement _parent;
         public int ParentPlaneID = 0;
 
         #region CORRECTION
-
         private Vector3 _lastPositionSent;
         private float _correctionWasSent;
         private const float _correctionRatio = 1.333f;
         #endregion
 
         #region UnprecieseMovement
-
-        public UDPUnprecieseMovement UnprecieseMovementPacket;
-        [SerializeField]
-        private UnitMovement _parent;
-
+        private bool _smallUpdate = false;
         private bool _isFlying;
-
         #endregion
 
         //property getters
@@ -85,28 +84,34 @@ namespace Server.Model.Extensions.UnitExts
             private set
             {
                 _position = value;
-
-                transform.position = value;
-
-                RecreateUpdatePrecesion();
+                _smallUpdate = true;
             }
         }
 
-        private void RecreateUpdatePrecesion()
+        private void CheckForSmallUpdate()
         {
-            bool _correction = (_correctionWasSent + _correctionRatio) < Time.time || Teleported;
-            if (_correction)
-                _wasUpdate = true;
-            else
+            if (_smallUpdate)
             {
-                Vector3 difference = _position - _lastPositionSent;
+                if (_correctionWasSent + _correctionRatio < Time.time || Teleported)
+                    _wasUpdate = true;
+                else
+                {
+                    Vector3 difference = _position - _lastPositionSent;
 
-                UnprecieseMovementPacket = new UDPUnprecieseMovement();
-                UnprecieseMovementPacket.Mask = new BitArray(new[] { _isFlying });
-                UnprecieseMovementPacket.Face = _rotation;
-                UnprecieseMovementPacket.Difference = difference;
-                UnprecieseMovementPacket.UnitID = Unit.ID;
-                _lastPositionSent = _position;
+                    var UnprecieseMovementPacket = new UDPUnprecieseMovement();
+                    UnprecieseMovementPacket.Face = _rotation;
+                    UnprecieseMovementPacket.Difference = difference;
+                    UnprecieseMovementPacket.UnitID = Unit.ID;
+                    _lastPositionSent = _position;
+
+                    foreach (IQuadTreeObject objectAround in Unit.CurrentBranch.ActiveObjectsVisible)
+                    {
+                        Player playerAround = objectAround as Player;
+                        if (playerAround != null)
+                            playerAround.PlayerUdp.Send(UnprecieseMovementPacket);
+                    }
+                }
+                _smallUpdate = false;
             }
         }
 
@@ -123,19 +128,17 @@ namespace Server.Model.Extensions.UnitExts
             set
             {
                 _rotation = value;
-                RecreateUpdatePrecesion();
+                _smallUpdate = true;
             }
         }
 
         public bool Running { get; set; }
 
-        public float WalkSpeed = 1f;
         public float CurrentSpeed
         {
             get
             {
-                return 1.75f * (1.0f + Unit.Attributes[UnitAttributeProperty.MovementSpeed])
-                    * Mathf.Min(WalkSpeed, Running ? 3f : 1.5f);
+                return 1.75f * (1.0f + Mathf.Clamp01(Unit.Attributes[UnitAttributeProperty.MovementSpeed])) * (Running ? 3f : 1.5f);
             }
         }
 
@@ -148,23 +151,31 @@ namespace Server.Model.Extensions.UnitExts
                 return;
 
             if (Running && Unit.Combat.CurrentEnergy < 20)
-            {
                 Running = false;
-            }
 
-            if (_path != null)
+            lock (NextMovements)
             {
-                if (_currentWaypoint >= _path.vectorPath.Count)
+                if (NextMovements.Count > 0)
                 {
-                    _path = null;
-                    if (OnArrive != null)
-                        OnArrive();
+                    NextMovements.First()();
+                    NextMovements.RemoveFirst();
                 }
                 else
                 {
-                    MoveAndRotate(time);
+                    if (_path != null)
+                    {
+                        if (_currentWaypoint >= _path.vectorPath.Count)
+                        {
+                            _path = null;
+                            if (OnArrive != null)
+                                OnArrive();
+                        }
+                        else
+                            MoveAndRotate(time);
+                    }
                 }
             }
+            CheckForSmallUpdate();
         }
 
         private void MoveAndRotate(float time)
@@ -179,17 +190,6 @@ namespace Server.Model.Extensions.UnitExts
                 _currentWaypoint++;
 
             MoveTo(_position + dir.normalized * step);
-        }
-
-        private void MoveForward(float speed)
-        {
-            MoveTo(_position + Forward * speed);
-
-            ServerUnit serverUnit = entity as ServerUnit;
-            if (serverUnit != null)
-            {
-                serverUnit.Combat.ReduceEnergy(speed * 0.3f);
-            }
         }
 
         public Vector3 Forward
@@ -207,13 +207,12 @@ namespace Server.Model.Extensions.UnitExts
             Position = newPosition;
         }
 
-
         public void WalkTo(Vector3 newPosition, System.Action<int, string> _onArrive, int unitId, string action)
         {
-            WalkTo(newPosition, () => _onArrive(unitId, action));
+            WalkTo(newPosition, () => _onArrive(unitId, action), null);
         }
 
-        public void WalkTo(Vector3 newPosition, System.Action _onArrive)
+        public void WalkTo(Vector3 newPosition, Action _onArrive, Action _onInterupt = null)
         {
             if (!_lookingForPath)
             {
@@ -226,19 +225,16 @@ namespace Server.Model.Extensions.UnitExts
 
                 destination = newPosition;
                 OnArrive = _onArrive;
+                OnInterrupt = _onInterupt;
                 _seeker.StartPath(_position, destination, OnPathWasFound);
                 _lookingForPath = true;
-
-
             }
         }
 
         public void WalkWay(Vector3 direction)
         {
-            WalkSpeed = direction.magnitude;
             WalkTo(_position + direction, null);
         }
-
 
         public void RotateWay(Vector3 direcionVector)
         {
@@ -252,6 +248,8 @@ namespace Server.Model.Extensions.UnitExts
             Teleported = true;
             _wasUpdate = true;
             _path = null;
+            if (OnInterrupt != null)
+                OnInterrupt();
         }
 
         public bool Teleported { get; private set; }
@@ -269,24 +267,21 @@ namespace Server.Model.Extensions.UnitExts
                 _currentWaypoint = 1;
                 _path = path;
             }
-            else
-            {
-                Debug.LogError("Error finding path: " + path.errorLog);
-            }
         }
 
         private void OnPathWasFoundPush(Path path)
         {
-            if (_pushAction != null)
-                _pushAction();
-            _pushAction = null;
-            if (!path.error)
+            lock(NextMovements)
+            NextMovements.AddLast(() =>
             {
-                if (path.GetTotalLength() < 5f)
-                    MoveTo(path.vectorPath.Last());
-            }
-            else
-                Debug.LogError("Error finding path: " + path.errorLog);
+                if (!path.error)
+                    if (path.GetTotalLength() < _pushLenght * 2f)
+                        MoveTo(path.vectorPath.Last());
+                if (_pushAction != null)
+                    _pushAction();
+                _pushAction = null;
+                _pushLenght = -1;
+            });
         }
 
         protected override void OnExtensionWasAdded()
@@ -329,44 +324,32 @@ namespace Server.Model.Extensions.UnitExts
 
             Teleported = false;
             _parentUpdate = false;
-
             _correctionWasSent = Time.time;
             _lastPositionSent = _position;
         }
-        #endregion StateSerialization
-
         //Update flag
         public override byte UpdateFlag()
         {
             return 0x01;
         }
+        #endregion StateSerialization
 
-        /// <summary>
-        /// Push the unit to direction. This function is safe so this unit wont get pushed away int non walkable terrain.
-        /// </summary>
-        /// <param name="vector2">direction and its strenght</param>
         public void PushFromCollision(Vector3 strenght, ServerUnit secondUnit)
         {
-            if (Unit is Plant && secondUnit is Plant)
-                Teleport(_position + new Vector3(strenght.x, 0, strenght.z));
-            MoveTo(_position + new Vector3(strenght.x, 0, strenght.z));
-            _path = null;
+            Push(strenght, strenght.magnitude);
         }
 
-        public void PushForward(float strenght)
-        {
-            Push(Forward, strenght, null);
-        }
-
-
-        public void PushForward(float strenght, Action action)
+        public void PushForward(float strenght, Action action = null)
         {
             Push(Forward, strenght, action);
         }
 
-        public void Push(Vector3 vector3, float strenght, Action action)
+        public void Push(Vector3 vector3, float strenght, Action action = null)
         {
             _pushAction = action;
+            _pushLenght = strenght;
+            if (_pushLenght > 0.7f)
+                DiscardPath();
             _seeker.StartPath(_position, _position + vector3 * strenght, OnPathWasFoundPush);
         }
 
@@ -386,8 +369,11 @@ namespace Server.Model.Extensions.UnitExts
         public override void Deserialize(JSONObject j)
         {
             JSONObject movement = j.GetField("movement");
-
-            Teleport(new Vector3(float.Parse(movement.GetField("x").str), float.Parse(movement.GetField("y").str), float.Parse(movement.GetField("z").str)));
+            Vector3 pos = new Vector3(float.Parse(movement.GetField("x").str), float.Parse(movement.GetField("y").str),
+                                      float.Parse(movement.GetField("z").str));
+            if(pos.x < 0 || pos.z < 0)
+                pos = new Vector3(512,12,512);
+            Teleport(pos);
             Rotation = float.Parse(movement.GetField("rot").str);
         }
 
@@ -399,6 +385,8 @@ namespace Server.Model.Extensions.UnitExts
         public void DiscardPath()
         {
             _path = null;
+            if (OnInterrupt != null)
+                OnInterrupt();
         }
     }
 }

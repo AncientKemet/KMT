@@ -26,9 +26,8 @@ namespace Server.Servers
             base.StartServer();
             socket = CreateServerSocket(NetworkConfig.I.WorldServerPort);
             RemoveServerFromPublicList();
-            StartCoroutine(SEase.Action(AddServerToPublicList
-
-    , -1, 3f));
+            StartCoroutine(SEase.Action(AddServerToPublicList, -1, 3f));
+            StartCoroutine(SEase.Action(World.ScanGraph, -1, 3f));
             Debug.Log("WorldServer running.");
         }
         

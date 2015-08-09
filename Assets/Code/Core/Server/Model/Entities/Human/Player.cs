@@ -1,3 +1,4 @@
+using Code.Libaries.Net.Packets.ForServer;
 using Server.Model.Content.Spawns;
 using Server.Model.ContentHandling;
 using Server.Servers;
@@ -88,6 +89,7 @@ namespace Server.Model.Entities.Human
             Movement.Teleport(ServerSpawnManager.Instance(worldServer.World).PlayerSpawns.Find(spawn => spawn.type == PlayerSpawn.Type.Default).transform.position);
             worldServer.World.AddEntity(this);
             ClientUi.CreateCharacterInterface.Opened = true;
+            Combat.Fraction = Fraction.Friend;
 
             /*Movement.Teleport(new Vector3(512, 10, 512));
             ClientUi.Open(InterfaceType.ActionBars);
@@ -98,6 +100,16 @@ namespace Server.Model.Entities.Human
             ClientUi.Open(InterfaceType.UnitSelectionInterface);*/
             
             PlayerFeed.AddFeed(this, "Joined Ancient Kemet", "I've logged in to Ancient Kemet for the first time!", PlayerFeed.FeedRarity.Normal);
+        }
+
+        public void SendGameMessage(string m)
+        {
+            ChatPacket p = new ChatPacket();
+
+            p.type = ChatPacket.ChatType.GAME;
+            p.text = m;
+
+            Client.ConnectionHandler.SendPacket(p);
         }
     }
 }

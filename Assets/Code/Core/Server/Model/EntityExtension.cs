@@ -37,6 +37,8 @@ namespace Server.Model
         public virtual void Deserialize(JSONObject j)
         {
         }
+
+        public virtual int Priority { get { return 1; } }
     }
 }
 #endif

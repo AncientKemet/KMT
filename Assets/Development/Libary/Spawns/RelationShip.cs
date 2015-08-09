@@ -12,6 +12,7 @@ public class RelationShip : MonoBehaviour
     private PrefabInstance Other;
 
     [SerializeField] private int Id = -1;
+    [SerializeField]
     private ServerUnit _unit;
     public ServerUnit Unit
     {
@@ -20,11 +21,9 @@ public class RelationShip : MonoBehaviour
             if (_unit == null)
             if (Application.isPlaying)
                 if (!ServerSingleton.IsNull &&
-                    ServerSingleton.Instance.GetComponent<WorldServer>() != null &&
-                    ServerSingleton.Instance.GetComponent<WorldServer>().World != null &&
-                    ServerSingleton.Instance.GetComponent<WorldServer>().World.Units.Count > Id &&
-                    ServerSingleton.Instance.GetComponent<WorldServer>().World.Units[Id + GlobalConstants.Instance.STATIC_UNIT_OFFSET] != null)
-                    _unit = ServerSingleton.Instance.GetComponent<WorldServer>().World.Units[Id + GlobalConstants.Instance.STATIC_UNIT_OFFSET];
+                    ServerSingleton.Instance.GetComponent<WorldServer>().World._entities[Id + GlobalConstants.Instance.STATIC_UNIT_OFFSET] != null)
+                    _unit = ServerSingleton.Instance.GetComponent<WorldServer>().World._entities[Id + GlobalConstants.Instance.STATIC_UNIT_OFFSET] as ServerUnit;
+            
             return _unit;
         }
     }

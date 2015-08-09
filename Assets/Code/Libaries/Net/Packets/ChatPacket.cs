@@ -22,7 +22,7 @@ namespace Code.Libaries.Net.Packets.ForServer
         }
 
         public ChatType type;
-        public int FROM_SERVER_UnitID;
+        public ushort FROM_SERVER_UnitID;
         public string text;
         public string User { get; set; }
 

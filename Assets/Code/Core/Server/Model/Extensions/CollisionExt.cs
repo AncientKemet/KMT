@@ -14,19 +14,16 @@ namespace Server.Model.Extensions
 	    public override void Progress(float time)
         {
             Vector2 pos1 = new Vector2(unit.Movement.Position.x, unit.Movement.Position.z);
-            foreach (var o in unit.IsStatic() ? unit.CurrentBranch.StaticObjectsVisible : unit.CurrentBranch.StaticObjectsVisible)
+            foreach (var o in unit.IsStatic() ? unit.CurrentBranch.ActiveObjectsVisible : unit.CurrentBranch.ActiveObjectsVisible)
 	        {
 	            ServerUnit u = o as ServerUnit;
                 if(u != unit )
 	            if (u != null)
 	            {
-
                     CollisionExt ext = u.CollisionExt;
 	                if (ext != null)
 	                {
-                        
                         Vector2 pos2 = new Vector2(u.Movement.Position.x, u.Movement.Position.z);
-
                         if (Vector2.Distance(pos1, pos2) < u.Display.Size / 2f + unit.Display.Size / 2f + (unit.IsStatic() ? 1.5f : 0))
 	                    {
 	                        Vector3 vec1 = (pos1 - pos2);

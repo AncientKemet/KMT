@@ -1,4 +1,5 @@
-
+using System;
+using Development.Libary.Spells.Codes;
 #if SERVER
 using Libaries.Net.Packets.ForClient;
 
@@ -16,6 +17,9 @@ namespace Server.Model.Extensions.UnitExts
 
         /// <summary>
         /// List of spells. The first four will be placed into players action bars.
+        /// 
+        /// 5 = rest spell
+        /// 6 = crafting spell
         /// </summary>
         private readonly List<Spell> _spells = new List<Spell>(8);
 
@@ -23,9 +27,10 @@ namespace Server.Model.Extensions.UnitExts
         private float _currentSpellTime;
         private float _globalCooldown = 1f;
         private int _startQueuedSpell = -1;
+        private float _craftingSpeedModifier = 1f;
 
-        private bool _forceFinish = true;
-
+        private bool _forceFinish = false;
+        
         /// <summary>
         /// 
         /// </summary>
@@ -47,12 +52,25 @@ namespace Server.Model.Extensions.UnitExts
             }
             if (CurrentCastingSpell != null)
             {
-                if (CurrentCastingSpell.HasEnergyCost)
+                if (CurrentCastingSpell is CraftingSpell)
                 {
-                    Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost);
+                    _currentSpellTime += time * _craftingSpeedModifier;
+                    CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
+
+                    if (CurrentCastStrenght >= 0.99f)
+                    {
+                        FinishCrafting();
+                    }
                 }
-                _currentSpellTime += time * (1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
-                CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
+                else
+                {
+                    if (CurrentCastingSpell.HasEnergyCost)
+                    {
+                        Unit.Combat.ReduceEnergy(time*CurrentCastingSpell.ChargeEnergyCost);
+                    }
+                    _currentSpellTime += time*(1f + (Unit.Attributes[UnitAttributeProperty.ChargeSpeed]));
+                    CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
+                }
 
 
                 //If the unit is player we'll send them direct Spell strenght Update packet.
@@ -66,6 +84,15 @@ namespace Server.Model.Extensions.UnitExts
                     packet.Strenght = CurrentCastStrenght;
 
                     p.Client.ConnectionHandler.SendPacket(packet);
+                }
+
+                if (CurrentCastingSpell is CraftingSpell)
+                {
+                    if (CurrentCastStrenght >= 0.99f)
+                    {
+                        FinishSpell(_currentCastingSpellId);
+                        FinishCrafting();
+                    }
                 }
 
                 if (_forceFinish)
@@ -185,6 +212,9 @@ namespace Server.Model.Extensions.UnitExts
 
                         p.Client.ConnectionHandler.SendPacket(packet);
                     }
+
+                    _currentSpellTime = 0;
+                    _currentCastingSpellId = -1;
                 }
         }
 
@@ -253,6 +283,45 @@ namespace Server.Model.Extensions.UnitExts
                     EquipSpell(spells[i], i);
             }
         }
+
+        #region Crafting and crafting spells
+
+        private Action _onFinishCraftinAction;
+
+        //This is being called whenever the crafting should be interrupted
+        public void CraftInterupt()
+        {
+            if(CurrentCastingSpell != null)
+            if (CurrentCastingSpell is CraftingSpell)
+            {
+                CancelCurrentSpell();
+                _onFinishCraftinAction = null;
+            }
+        }
+
+        public void StartCrafting(ItemRecipe itemRecipe, Action OnFinish)
+        {
+            if(CurrentCastingSpell != null)
+                CancelCurrentSpell();
+            EquipSpell(itemRecipe.CraftingSpell, 6);
+            StartSpell(6);
+            _craftingSpeedModifier = 1f/itemRecipe.CraftTime;
+            _onFinishCraftinAction = OnFinish;
+        }
+
+        public void FinishCrafting()
+        {
+            if (CurrentCastingSpell is CraftingSpell)
+            {
+                if (_onFinishCraftinAction != null)
+                {
+                    _onFinishCraftinAction();
+                    _onFinishCraftinAction = null;
+                }
+            }
+        }
+
+        #endregion
     }
 }
 #endif

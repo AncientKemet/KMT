@@ -1,7 +1,5 @@
 D:\KMT\Temp\bin\Debug\Assembly-CSharp-firstpass.dll
 D:\KMT\Temp\bin\Debug\Assembly-CSharp-firstpass.pdb
-D:\KMT\Temp\bin\Debug\Assembly-CSharp-firstpass.dll.CodeAnalysisLog.xml
-D:\KMT\Temp\bin\Debug\Assembly-CSharp-firstpass.dll.lastcodeanalysissucceeded
 D:\KMT\Temp\bin\Debug\Parse.Unity.dll
 D:\KMT\Temp\bin\Debug\Pathfinding.ClipperLib.dll
 D:\KMT\Temp\bin\Debug\Pathfinding.Ionic.Zip.Reduced.dll
@@ -19,3 +17,4 @@ D:\KMT\Temp\bin\Debug\Unity.CecilTools.dll
 D:\KMT\obj\Debug\Assembly-CSharp-firstpass-vs.csprojResolveAssemblyReference.cache
 D:\KMT\obj\Debug\Assembly-CSharp-firstpass.dll
 D:\KMT\obj\Debug\Assembly-CSharp-firstpass.pdb
+D:\KMT\Temp\bin\Debug\ChatterBotAPI.dll

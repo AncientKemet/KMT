@@ -83,8 +83,6 @@ namespace Client.UI.Interfaces.Profile
                     Attributes.Add(att.Property, att);
                 }
             }
-            if(property == UnitAttributeProperty.DamageToAnimal || property == UnitAttributeProperty.DamageToAnimal || property == UnitAttributeProperty.DamageToTreePalm || property == UnitAttributeProperty.DamageToShield || property == UnitAttributeProperty.DamageToMineral || property == UnitAttributeProperty.Mobility)
-                return;
             try
             {
                 string formatedValue = UnitAttributePropertySerializable.GetLabeledString(property, f);

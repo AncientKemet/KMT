@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Code.Code.Libaries.Net;
 using Libaries.Net.Packets.ForClient;
 using Server.Model.Entities;
-using Server.Model.Entities.Animals;
+
 using Server.Model.Entities.Human;
 using Server.Model.Entities.Items;
 using UnityEngine;
@@ -60,6 +60,7 @@ namespace Server.Model.Extensions.UnitExts
         {
             base.OnExtensionWasAdded();
             _unit = entity as ServerUnit;
+            AddAction("Target");
         }
 
         /// <summary>
@@ -73,6 +74,12 @@ namespace Server.Model.Extensions.UnitExts
             ServerUnit selectedUnit = _unit.CurrentWorld[unitId];
             if (selectedUnit == null)
                 return;
+
+            if (actionName == "Target")
+            {
+                _unit.Focus.FocusedUnit = selectedUnit;
+                return;
+            }
 
             float distance = Vector3.Distance(_unit.Movement.Position, selectedUnit.Movement.Position);
             float maxDistance = selectedUnit.Display == null
@@ -175,20 +182,6 @@ namespace Server.Model.Extensions.UnitExts
                     Player p = fromUnit as Player;
                     p.ClientUi.ProfileInterface.Open(_unit, ProfileInterfaceUpdatePacket.PacketTab.Main);
                     p.ClientUi.ProfileInterface.Opened = true;
-                }
-                return;
-            }
-            #endregion
-
-            #region Animal-Eating
-            else if (actionName == "Animal-Eating")
-            {
-                Animal a = fromUnit as Animal;
-                a.Hunger -= 20f;
-                _unit.Display.Size -= a.Display.Size / 10f;
-                if (_unit.Display.Size < 0.01f)
-                {
-                    _unit.Display.Destroy = true;
                 }
                 return;
             }

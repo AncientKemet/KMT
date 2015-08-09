@@ -2,7 +2,6 @@
 using Server.Model.Content.Spawns;
 
 using Server.Model.Entities;
-using Server.Model.Entities.Animals;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -22,15 +21,7 @@ namespace Server.Model.ContentHandling
         {
             _managedSpawnsUnits.Add(aSpawn);
         }
-
-        public T SpawnAnimal<T>(Vector3 position) where T : Animal
-        {
-            T animal = CreateInstance<T>();
-            animal.Movement.Teleport(position);
-            CurrentWorld.AddEntity(animal);
-            return animal;
-        }
-
+        
         public T Spawn<T>(Vector3 position) where T: ServerUnit
         {
             T unit = CreateInstance<T>();

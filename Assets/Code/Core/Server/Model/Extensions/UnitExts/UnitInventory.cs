@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using Libaries.IO;
+using Server.Model.ContentHandling;
 using Shared.Content.Types;
 #if SERVER
 using Server.Model.Content;
@@ -17,12 +19,6 @@ namespace Server.Model.Extensions.UnitExts
 {
     public class UnitInventory : EntityExtension
     {
-        public enum AccessType
-        {
-            ALL,
-            ONLY_THIS_UNIT
-        }
-
         private int _width = 1;
         private int _height = 1;
 
@@ -32,7 +28,7 @@ namespace Server.Model.Extensions.UnitExts
 
         public Action<ServerUnit> OnWasOpened;
         public Action<ServerUnit> OnWasClosed;
-        
+
         public int Width
         {
             get { return _width; }
@@ -76,7 +72,7 @@ namespace Server.Model.Extensions.UnitExts
                     return null;
                 }
             }
-            set
+            private set
             {
                 _items[index] = value;
                 if (ListeningPlayers.Count > 0)
@@ -96,11 +92,11 @@ namespace Server.Model.Extensions.UnitExts
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
-                    Debug.LogError("Invalid inventory access. [" + x + ", " + y + "] while Width = " + Width + " Height = " + Height);
+                    Debug.LogError("Invalid ArgumentOutOfRangeException. [" + x + ", " + y + "] while Width = " + Width + " Height = " + Height);
                     return null;
                 }
             }
-            set
+            private set
             {
                 _items[y * Width + x] = value;
                 if (ListeningPlayers.Count > 0)
@@ -113,18 +109,18 @@ namespace Server.Model.Extensions.UnitExts
         private void SendUpdateToPlayers(int x, int y)
         {
             var item = this[x, y];
-            foreach (var player in ListeningPlayers)
+            for (int i = 0; i < ListeningPlayers.Count; i++)
             {
-                if (player == null)
+                if (ListeningPlayers[i] == null)
                     continue;
 
-                player.ClientUi.Inventories[Unit.ID, x, y] = item;
+                ListeningPlayers[i].ClientUi.Inventories[Unit.ID, x, y] = item;
             }
         }
 
         private void SendUpdateToPlayers(int index)
         {
-            int y = index/Width;
+            int y = index / Width;
             int x = index - y * Width;
             SendUpdateToPlayers(x, y);
         }
@@ -176,76 +172,91 @@ namespace Server.Model.Extensions.UnitExts
 
             for (int i = 0; i < int.Parse(inventory.GetField("count").str); i++)
             {
-                int id = int.Parse(inventory.GetField("id "+i).str);
-                this[i]=(id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am "+i).str)));
+                int id = int.Parse(inventory.GetField("id " + i).str);
+                this[i] = (id == -1 ? null : new Item.ItemInstance(ContentManager.I.Items[id], int.Parse(inventory.GetField("am " + i).str)));
             }
         }
 
+
         public bool AddItem(Item.ItemInstance item)
         {
-            int nullIndexX = -1;
-            int nullIndexY = -1;
-            for (int y = 0; y < Height; y++)
+            if (item.Item.Stackable)
             {
-                for (int x = 0; x < Width; x++)
+                int max = item.Item.MaxStacks;
+
+                var sameType = _items.FindAll(instance => instance != null && instance.Item == item.Item);
+                var ascending = sameType.OrderBy(instance => instance.Amount);
+                foreach (var instance in ascending)
                 {
-                    var that = this[x, y];
-                    if (that != null)
-                        if (that.Item == item.Item)
-                        {
-                            if (that.Amount < that.Item.MaxStacks)
-                            {
-                                if (item.Amount > that.Item.MaxStacks - that.Amount)
-                                {
-                                    if (HasSpace(1+(item.Amount - that.Item.MaxStacks - that.Amount)/item.Item.MaxStacks))
-                                    {
-                                        item.Amount -= that.Item.MaxStacks - that.Amount;
-                                        that.Amount = that.Item.MaxStacks;
-                                        SendUpdateToPlayers(x, y);
-                                        return AddItem(item);
-                                    }
-                                    return false;
-                                }
-                                else
-                                {
-                                    that.Amount += item.Amount;
-                                    SendUpdateToPlayers(x, y);
-                                    return true;
-                                }
-                            }
-                        }
-                    if (that == null && nullIndexX == -1)
+                    if (item.Amount == 0)
+                        return true;
+                    if (instance.Amount < max)
                     {
-                        nullIndexX = x;
-                        nullIndexY = y;
+                        if (instance.Amount + item.Amount > max)
+                        {
+                            item.Amount -= max - instance.Amount;
+                            instance.Amount = max;
+                        }
+                        else
+                        {
+                            item.Amount = 0;
+                            instance.Amount += item.Amount;
+                        }
+                        SendUpdateToPlayers(_items.IndexOf(instance));
                     }
                 }
             }
-            if (nullIndexX != -1)
+
+            if (item.Amount > 0)
             {
-                this[nullIndexX, nullIndexY] = item;
-                return true;
+                int max = item.Item.MaxStacks;
+
+                while (HasSpace(1) && item.Amount > 0)
+                {
+                    int free = GetFreeIndex();
+                    if (item.Amount > max)
+                    {
+                        this[free] = new Item.ItemInstance(item.Item, max);
+                        item.Amount -= max;
+                    }
+                    else
+                    {
+                        this[free] = new Item.ItemInstance(item.Item, item.Amount);
+                        item.Amount = 0;
+                        return true;
+                    }
+                }
             }
+
             return false;
         }
 
         public bool RemoveItem(Item.ItemInstance item)
         {
-            var ii = _items.Find(instance => instance.Item == item.Item);
-            if (ii != null)
+            var findAll = _items.FindAll(instance => instance != null && instance.Item == item.Item);
+            int AmountRemoved = 0;
+            foreach (var i in findAll)
             {
-                int index = _items.IndexOf(ii);
-                if (ii.Amount == item.Amount)
+
+                int index = _items.IndexOf(i);
+                if (i.Amount == item.Amount - AmountRemoved)
                 {
+                    AmountRemoved += i.Amount;
                     _items[index] = null;
                     SendUpdateToPlayers(index);
                     return true;
                 }
-                else if(ii.Amount > item.Amount)
+                else if (i.Amount > item.Amount - AmountRemoved)
                 {
-                    ii.Amount -= item.Amount;
+                    i.Amount -= item.Amount;
                     SendUpdateToPlayers(index);
                     return true;
+                }
+                else
+                {
+                    AmountRemoved += i.Amount;
+                    _items[index] = null;
+                    SendUpdateToPlayers(index);
                 }
             }
             return false;
@@ -256,12 +267,17 @@ namespace Server.Model.Extensions.UnitExts
             return GetSpace() >= amount;
         }
 
+        public bool HasSpace(Item.ItemInstance i)
+        {
+            return GetSpace() >= SpaceRequiredFor(i);
+        }
+
         public int GetSpace()
         {
             int space = Width * Height;
-            foreach (var item in _items)
+            for (int i = 0; i < _items.Count; i++)
             {
-                if (item != null)
+                if (_items[i] != null)
                 {
                     space--;
                 }
@@ -271,15 +287,18 @@ namespace Server.Model.Extensions.UnitExts
 
         public void OnInterfaceEvent(Player player, UIInterfaceEvent e)
         {
+
             if (Unit.Access == null || Unit.Access.GetAccessFor(player).Take_From_Inventory)
             {
+                if (e.Action == "Open craft")
+                {
+                    player.ClientUi.CraftingInterface.Open(this);
+                    return;
+                }
+
                 int itemPtr = e.controlID;
-
-                int x = itemPtr - (int)(itemPtr / Height) * Height;
-                int y = itemPtr / Height;
-
-                Item.ItemInstance selectedItem = this[x, y];
-                Debug.Log("action:" + e.Action + " x :" + x + " y: " + y + " item: " + selectedItem);
+                Item.ItemInstance selectedItem = this[itemPtr];
+                Debug.Log("action:" + e.Action + " item: " + selectedItem);
 
                 if (selectedItem == null)
                     return;
@@ -292,9 +311,9 @@ namespace Server.Model.Extensions.UnitExts
                     droppedItem.Item = selectedItem;
                     player.CurrentWorld.AddEntity(droppedItem);
 
-                    this[x, y] = null;
+                    this[itemPtr] = null;
                 }
-
+                
                 if (e.Action == "Equip")
                 {
                     if (selectedItem.Item.EQ != null)
@@ -310,7 +329,7 @@ namespace Server.Model.Extensions.UnitExts
                         if (equipment.EquipItem(droppedItem))
                         {
                             player.Anim.SetDefaults();
-                            this[x, y] = null;
+                            this[itemPtr] = null;
                         }
                     }
                 }
@@ -319,10 +338,8 @@ namespace Server.Model.Extensions.UnitExts
             {
                 Debug.LogError("Player has no access.");
             }
-
         }
-
-
+        
         public void MoveItem(int index, int targetIndex, UnitInventory inventory)
         {
             if (_items[index] != null && inventory._items[targetIndex] == null)
@@ -342,31 +359,6 @@ namespace Server.Model.Extensions.UnitExts
             return _items.AsReadOnly();
         }
 
-        public int AmountOfItemsPossibleToBePutIn(Item.ItemInstance i)
-        {
-            int r = 0;
-            if (i.Item.Stackable)
-            {
-                foreach (var item in _items)
-                {
-                    if (item.Item == i.Item)
-                    {
-                        if (item.Amount < item.Item.MaxStacks)
-                        {
-                            r += item.Item.MaxStacks - item.Amount;
-                        }
-                    }
-                }
-                r += GetSpace()*i.Item.MaxStacks;
-            }
-            else
-            {
-                r += GetSpace();
-            }
-
-            return r;
-        }
-
         public int GetCoinValue()
         {
             int r = 0;
@@ -375,7 +367,7 @@ namespace Server.Model.Extensions.UnitExts
                 int id = item.Item.InContentManagerIndex;
                 if (id >= 0 && id <= 6)
                 {
-                    r += item.Item.Value*item.Amount;
+                    r += item.Item.Value * item.Amount;
                 }
             }
             return r;
@@ -383,11 +375,10 @@ namespace Server.Model.Extensions.UnitExts
 
         public void RefreshFull()
         {
-            for (int i = 0; i < Width*Height; i++)
+            for (int i = 0; i < Width * Height; i++)
             {
                 SendUpdateToPlayers(i);
             }
-
         }
 
         public void Clear()
@@ -395,6 +386,44 @@ namespace Server.Model.Extensions.UnitExts
             RecreateInventory();
             RefreshFull();
         }
+
+        public bool HasItem(Item.ItemInstance item)
+        {
+            var findAll = _items.FindAll(instance => instance != null && instance.Item == item.Item);
+            int amount = findAll.Sum(i => i.Amount);
+            return amount >= item.Amount;
+        }
+
+        public int SpaceFreedAfterRemoving(Item.ItemInstance item)
+        {
+            var findAll = _items.FindAll(instance => instance != null && instance.Item == item.Item);
+            int amount = findAll.Sum(i => i.Amount);
+            if (amount < item.Amount)
+                return 0;
+            return item.Amount / item.Item.MaxStacks + item.Amount % item.Item.MaxStacks == 0 ? 0 : 1;
+        }
+
+        public int SpaceRequiredFor(Item.ItemInstance item)
+        {
+            if (item.Item.Stackable)
+            {
+                int amount = item.Amount;
+                var findAll = _items.FindAll(instance => instance != null && instance.Item == item.Item);
+                foreach (var instance in findAll)
+                {
+                    if (instance.Amount < instance.Item.MaxStacks)
+                    {
+                        amount -= instance.Item.MaxStacks - instance.Amount;
+                    }
+                }
+                return amount / item.Item.MaxStacks + amount % item.Item.MaxStacks == 0 ? 0 : 1;
+            }
+            else
+            {
+                return item.Amount;
+            }
+        }
+
     }
 }
 #endif

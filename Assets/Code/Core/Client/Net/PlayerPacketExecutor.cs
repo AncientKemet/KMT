@@ -43,6 +43,7 @@ namespace Client.Net
 
                 PlayerUnit.MyPlayerUnit = UnitManager.Instance[p.myUnitID];
                 PlayerUnit.MyPlayerUnit.transform.position = p.Position;
+                Camera.main.transform.position = p.Position + Vector3.up*15f;
 
                 /*UnitSelectionInterface.I.Show();
                 ChatPanel.I.Show();
@@ -138,6 +139,14 @@ namespace Client.Net
                 else
                 {
                     ChatPanel.I.AddMessage(p);
+                    if (p.type == ChatPacket.ChatType.Public)
+                    {
+                        var unit = UnitManager.Instance[p.FROM_SERVER_UnitID];
+                        if (unit != null)
+                        {
+                            Chatbubble.Create(unit, p.text);
+                        }
+                    }
                 }
             }
             else if (packet is LoginResponsePacket)

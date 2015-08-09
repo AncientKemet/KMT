@@ -10,13 +10,10 @@ namespace Libaries.Net.Packets.ForClient
     {
         public float Face { get; set; }
 
-        public const float DistanceTo256Ratio = 256f;
+        public const float floatPrecision = 500f;
 
-        public int UnitID { get; set; }
-
-        public BitArray Mask { get; set; }
-
-
+        public ushort UnitID { get; set; }
+        
         public override int Port
         {
             get { return NetworkConfig.I.WorldUnprecieseMovmentPort; }
@@ -24,29 +21,25 @@ namespace Libaries.Net.Packets.ForClient
 
         public override int Size
         {
-            get { return 7; }
+            get { return 10; }
         }
 
         public Vector3 Difference { get; set; }
 
         public override void Deserialize(ByteStream b)
         {
-            int IdMask = b.GetShort();
-            Mask = b.GetIdMask2BMASK(IdMask);
-            UnitID = b.GetIdMask2BID(IdMask);
+            UnitID = b.GetUnsignedShort();
             Face = b.GetAngle2B();
-
-            sbyte x = (sbyte) b.GetByte(), y = (sbyte) b.GetByte(), z = (sbyte) b.GetByte();
-
-            Difference = new Vector3((float)x / DistanceTo256Ratio, (float)y / DistanceTo256Ratio, (float)z / DistanceTo256Ratio);
+            sbyte x = (sbyte) b.GetShort(), y = (sbyte) b.GetShort(), z = (sbyte) b.GetShort();
+            Difference = new Vector3((float)x / floatPrecision, (float)y / floatPrecision, (float)z / floatPrecision);
         }
         public override void Serialize(ByteStream b)
         {
-            b.AddIdMask2B(UnitID, Mask);
+            b.AddShort(UnitID);
             b.AddAngle2B(Face);
-                b.AddByte((int)(Difference.x * DistanceTo256Ratio));
-                b.AddByte((int)(Difference.y * DistanceTo256Ratio));
-                b.AddByte((int)(Difference.z * DistanceTo256Ratio));
+                b.AddShort((int)(Difference.x * floatPrecision));
+                b.AddShort((int)(Difference.y * floatPrecision));
+                b.AddShort((int)(Difference.z * floatPrecision));
         }
 
         public override void Execute()
@@ -54,6 +47,10 @@ namespace Libaries.Net.Packets.ForClient
             if (UnitManager.Instance.HasUnit(UnitID))
             {
                 UnitManager.Instance[UnitID].OnUnprecieseMovement(this);
+            }
+            else
+            {
+                Debug.LogError("Broken UDPUnprecieseMovement "+UnitID);
             }
         }
 

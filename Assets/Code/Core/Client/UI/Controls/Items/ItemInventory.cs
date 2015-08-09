@@ -157,5 +157,9 @@ namespace Code.Core.Client.UI.Controls.Items
             get { return buttons.AsReadOnly(); }
         }
 
+        public ItemButton this[int i]
+        {
+            get { return buttons[i]; }
+        }
     }
 }

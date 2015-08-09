@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Code.Core.Shared.Content;
 using Code.Libaries.Generic.Managers;
 using Server.Model.Content.Spawns;
@@ -122,18 +123,60 @@ namespace Assets.Editor
                             if (item != null)
                             {
                                 EditorUtility.SetDirty(item);
+                                GUILayout.BeginVertical(GUILayout.MaxWidth(120));
                                 GUILayout.Label("[" + item.InContentManagerIndex + "]");
-
-                                if (GUILayout.Button("Select", GUILayout.MaxWidth(60)))
+                                GUILayout.BeginHorizontal();
+                                if (GUILayout.Button("Sel", GUILayout.MaxWidth(80)))
                                 {
                                     _selected = item;
                                     Selection.activeGameObject = item.gameObject;
                                 }
-                                item.name = GUILayout.TextField(item.name);
-
+                                if (GUILayout.Button("Dup", GUILayout.MaxWidth(80)))
+                                {
+                                    Duplicate(tab, item);
+                                }
+                                if (GUILayout.Button("Del", GUILayout.MaxWidth(80)))
+                                {
+                                    Delete(tab, item);
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.EndVertical();
+                                    continue;
+                                }
+                                GUILayout.EndHorizontal();
+                                item.name = GUILayout.TextField(item.name, GUILayout.MaxWidth(120));
+                                GUILayout.EndVertical();
+                                #region Items
                                 if (tab == TabType.Items)
-                                    GUILayout.Label(((Item)item).Icon, GUILayout.MaxWidth(64), GUILayout.MaxHeight(64));
+                                {
+                                    var it = (Item) item;
+                                    GUILayout.BeginVertical();
+                                    GUILayout.Label(((Item) item).Icon, GUILayout.MaxWidth(64), GUILayout.MaxHeight(64));
+                                    if (GUILayout.Button("Icon", GUILayout.MaxWidth(64)))
+                                        ((Item)item).CreateIcon();
+                                    GUILayout.EndVertical();
 
+                                    GUILayout.BeginVertical(GUILayout.MaxWidth(90));
+                                    {
+                                        GUILayout.Label("Stacks");
+                                        it.MaxStacks = EditorGUILayout.IntField(it.MaxStacks);
+                                    }
+                                    GUILayout.EndVertical();
+
+                                    if (it.EQ != null)
+                                    {
+                                        GUILayout.BeginVertical(GUILayout.MaxWidth(90));
+                                        {
+                                            it.EQ.Class = (Class)EditorGUILayout.EnumPopup(it.EQ.Class);
+                                            it.EQ.Role = (Role)EditorGUILayout.EnumPopup(it.EQ.Role);
+                                       
+                                            GUILayout.Label("Required level");
+                                            it.EQ.RequiredLevel = EditorGUILayout.IntField(it.EQ.RequiredLevel);
+                                        }
+                                        GUILayout.EndVertical();
+                                    }
+                                }
+                                #endregion
+                                #region RECIPES
                                 if (tab == TabType.Recipes)
                                 {
                                     var recipe = ((ItemRecipe)item);
@@ -141,7 +184,7 @@ namespace Assets.Editor
                                     {
                                         //level requirements
                                         {
-                                            recipe._foldOutRequirements = EditorGUILayout.Foldout(recipe._foldOutRequirements,"Requirements");
+                                            recipe._foldOutRequirements = EditorGUILayout.Foldout(recipe._foldOutRequirements, "Requirements");
                                             if (recipe._foldOutRequirements)
                                             {
                                                 GUILayout.BeginHorizontal();
@@ -157,9 +200,9 @@ namespace Assets.Editor
                                                     var requirement = recipe.Requirements[req];
                                                     GUILayout.BeginHorizontal();
                                                     requirement.Skill =
-                                                        (Levels.Skills) EditorGUILayout.EnumPopup(requirement.Skill);
+                                                        (Levels.Skills)EditorGUILayout.EnumPopup(requirement.Skill);
                                                     requirement.Val =
-                                                        (byte) Mathf.Max(EditorGUILayout.IntField(requirement.Val), 1);
+                                                        (byte)Mathf.Max(EditorGUILayout.IntField(requirement.Val), 1);
                                                     if (GUILayout.Button("-"))
                                                     {
                                                         recipe.Requirements.Remove(requirement);
@@ -170,7 +213,7 @@ namespace Assets.Editor
                                         }
                                         //xp rewards
                                         {
-                                            recipe._foldOutRewards = EditorGUILayout.Foldout(recipe._foldOutRewards, "Experience gained");
+                                            recipe._foldOutRewards = EditorGUILayout.Foldout(recipe._foldOutRewards, "Experience");
                                             if (recipe._foldOutRewards)
                                             {
                                                 if (GUILayout.Button("Add"))
@@ -183,7 +226,7 @@ namespace Assets.Editor
                                                     GUILayout.BeginHorizontal();
                                                     {
                                                         reward.Skill =
-                                                            (Levels.Skills) EditorGUILayout.EnumPopup(reward.Skill);
+                                                            (Levels.Skills)EditorGUILayout.EnumPopup(reward.Skill);
                                                         reward.Val = Mathf.Max(EditorGUILayout.FloatField(reward.Val),
                                                                                1f);
                                                         if (GUILayout.Button("-"))
@@ -198,75 +241,192 @@ namespace Assets.Editor
                                     }
                                     GUILayout.EndVertical();
 
-                                    GUILayout.BeginVertical("box", GUILayout.MaxWidth(128));
+                                    
+
+                                    int x = 0;
+
+                                    GUILayout.BeginVertical("box");
+                                    GUILayout.BeginHorizontal();
                                     {
-                                        if (recipe.Item1.Item == null)
-                                            recipe.Item1 = new Item.ItemInstance(ContentManager.I.Items[0], 1);
-                                        GUILayout.Label(recipe.Item1.Item.name);
+                                        GUILayout.Label("Craft time: ");
+                                        recipe.CraftTime = EditorGUILayout.Slider(recipe.CraftTime, 0.3f, 60f);
+                                        GUILayout.Label("seconds");
+                                    }
+                                    GUILayout.EndHorizontal();
+                                    recipe._foldOutItemRequirements = EditorGUILayout.Foldout(recipe._foldOutItemRequirements, "Items required");
+                                    if (recipe._foldOutItemRequirements)
+                                    {
                                         GUILayout.BeginHorizontal();
-                                        GUILayout.Label("X");
-                                        recipe.Item1.Amount = EditorGUILayout.IntField(recipe.Item1.Amount);
+                                        if (GUILayout.Button("Add"))
+                                        {
+                                            recipe.ItemRequirements.Add(new ItemRecipe.ItemRequirement()
+                                            {
+                                                IsConsumed = false,
+                                                Item = new Item.ItemInstance(ContentManager.I.Items[0], 1)
+                                            });
+                                        }
                                         GUILayout.EndHorizontal();
-                                        GUILayout.BeginHorizontal();
-                                        GUILayout.Label("con.");
-                                        recipe.isConsumed1 = EditorGUILayout.Toggle(recipe.isConsumed1);
-                                        GUILayout.EndHorizontal();
+                                        for (int id = 0; id < recipe.ItemRequirements.Count; id ++)
+                                        {
+                                            var itemRequirement = recipe.ItemRequirements[id];
+                                            if (x == 0)
+                                                GUILayout.BeginHorizontal();
+                                            {
+                                                GUILayout.BeginVertical("box", GUILayout.MaxWidth(150));
+                                                {
+                                                    if (itemRequirement.Item.Item == null)
+                                                        itemRequirement.Item =
+                                                            new Item.ItemInstance(ContentManager.I.Items[0], 1);
+                                                    GUILayout.BeginHorizontal();
+                                                    if (GUILayout.Button("X"))
+                                                    {
+                                                        recipe.ItemRequirements.Remove(itemRequirement);
+                                                        if (id == 0)
+                                                        {
+                                                            GUILayout.EndHorizontal();
+                                                            GUILayout.EndVertical();
+                                                            continue;
+                                                        }
+                                                        id --;
+                                                        itemRequirement = recipe.ItemRequirements[id];
+                                                    }
+                                                    GUILayout.Label(itemRequirement.Item.Item.name);
+                                                    GUILayout.EndHorizontal();
+                                                    GUILayout.BeginHorizontal();
+                                                    itemRequirement.Item.Amount =
+                                                        Mathf.Clamp(
+                                                            EditorGUILayout.IntField(itemRequirement.Item.Amount), 0,
+                                                            999);
+                                                    GUILayout.EndHorizontal();
+                                                    GUILayout.BeginHorizontal();
+                                                    GUILayout.Label("C.");
+                                                    itemRequirement.IsConsumed =
+                                                        EditorGUILayout.Toggle(itemRequirement.IsConsumed);
+                                                    if (GUILayout.Button(itemRequirement.Item.Item.Icon,
+                                                                         GUILayout.MaxWidth(50),
+                                                                         GUILayout.MaxHeight(50)))
+                                                    {
+                                                        ItemRecipe.ItemRequirement requirement = itemRequirement;
+                                                        KemetContentItemPopup.DoPickItem(ContentManager.I.Items,
+                                                                                         contentItem =>
+                                                                                         {
+                                                                                             requirement.Item =
+                                                                                                 new Item.ItemInstance(
+                                                                                                     contentItem as Item,
+                                                                                                     requirement.Item
+                                                                                                         .Amount);
+                                                                                         });
+                                                    }
+                                                    GUILayout.EndHorizontal();
+                                                }
+                                                GUILayout.EndVertical();
+                                            }
+                                            if (x == 3)
+                                            {
+                                                GUILayout.EndHorizontal();
+                                                x = 0;
+                                            }
+                                            else
+                                                x++;
+                                        }
+                                        if (x != 0)
+                                            GUILayout.EndHorizontal();
                                     }
                                     GUILayout.EndVertical();
-                                    GUILayout.Label(recipe.Item1.Item.Icon, GUILayout.MaxWidth(64), GUILayout.MaxHeight(64));
-                                    GUILayout.Label("+");
-                                    GUILayout.BeginVertical("box", GUILayout.MaxWidth(128));
-                                    {
-                                        if (recipe.Item2.Item == null)
-                                            recipe.Item2 = new Item.ItemInstance(ContentManager.I.Items[0], 1);
-                                        GUILayout.Label(recipe.Item2.Item.name);
-                                        GUILayout.BeginHorizontal();
-                                        GUILayout.Label("X");
-                                        recipe.Item2.Amount = EditorGUILayout.IntField(recipe.Item2.Amount);
-                                        GUILayout.EndHorizontal();
-                                        GUILayout.BeginHorizontal();
-                                        GUILayout.Label("con.");
-                                        recipe.isConsumed2 = EditorGUILayout.Toggle(recipe.isConsumed2);
-                                        GUILayout.EndHorizontal();
-                                    }
-                                    GUILayout.EndVertical();
-                                    GUILayout.Label(recipe.Item2.Item.Icon, GUILayout.MaxWidth(64), GUILayout.MaxHeight(64));
-                                    GUILayout.Label("=");
-                                    GUILayout.BeginVertical("box", GUILayout.MaxWidth(128));
+
+                                    ///result
+                                    GUILayout.BeginVertical("box", GUILayout.MaxWidth(90));
                                     {
                                         if (recipe.Result.Item == null)
                                             recipe.Result = new Item.ItemInstance(ContentManager.I.Items[0], 1);
                                         //item result
+                                        GUILayout.Label("Result");
                                         GUILayout.Label(recipe.Result.Item.name);
-                                        GUILayout.BeginHorizontal();
-                                        GUILayout.Label("X");
-                                        recipe.Result.Amount = EditorGUILayout.IntField(recipe.Result.Amount);
-                                        GUILayout.EndHorizontal();
+                                        recipe.Result.Amount = Mathf.Clamp(EditorGUILayout.IntField(recipe.Result.Amount), 1, 999);
+                                        if (GUILayout.Button(recipe.Result.Item.Icon, GUILayout.MaxWidth(50),
+                                                                 GUILayout.MaxHeight(50)))
+                                        {
+                                            KemetContentItemPopup.DoPickItem(ContentManager.I.Items,
+                                                                             contentItem =>
+                                                                             {
+                                                                                 recipe.Result =
+                                                                                     new Item.ItemInstance(
+                                                                                         contentItem as Item,
+                                                                                         recipe.Result.Amount);
+                                                                             });
+                                        }
                                     }
                                     GUILayout.EndVertical();
-                                    GUILayout.Label(recipe.Result.Item.Icon, GUILayout.MaxWidth(64), GUILayout.MaxHeight(64));
+                                    //Side products
+                                    GUILayout.BeginVertical("box");
+                                    x = 0;
+                                    recipe._foldOutSideProducts = EditorGUILayout.Foldout(recipe._foldOutSideProducts, "Side products");
+                                    if (recipe._foldOutSideProducts)
+                                    {
+                                        GUILayout.BeginHorizontal();
+                                        if (GUILayout.Button("Add"))
+                                        {
+                                            recipe.SideProducts.Add(new Item.ItemInstance(ContentManager.I.Items[0], 1));
+                                        }
+                                        GUILayout.EndHorizontal();
+                                        for (int id = 0; id < recipe.SideProducts.Count; id++)
+                                        {
+                                            var sideProduct = recipe.SideProducts[id];
+                                            if (x == 0)
+                                                GUILayout.BeginHorizontal();
+                                            {
+                                                GUILayout.BeginVertical("box", GUILayout.MaxWidth(150));
+                                                {
+                                                    GUILayout.BeginHorizontal();
+                                                    if (GUILayout.Button("X"))
+                                                    {
+                                                        recipe.SideProducts.Remove(sideProduct);
+                                                        if (id == 0)
+                                                        {
+                                                            GUILayout.EndHorizontal();
+                                                            GUILayout.EndVertical();
+                                                            continue;
+                                                        }
+                                                        id--;
+                                                        sideProduct = recipe.SideProducts[id];
+                                                    }
+                                                    GUILayout.Label(sideProduct.Item.name);
+                                                    GUILayout.EndHorizontal();
+                                                    GUILayout.BeginHorizontal();
+                                                    sideProduct.Amount =
+                                                        Mathf.Clamp(
+                                                            EditorGUILayout.IntField(sideProduct.Amount), 0,
+                                                            999);
+                                                    GUILayout.EndHorizontal();
+                                                    
+                                                    if (GUILayout.Button(sideProduct.Item.Icon,
+                                                                         GUILayout.MaxWidth(50),
+                                                                         GUILayout.MaxHeight(50)))
+                                                    {
+                                                        Item.ItemInstance instance = sideProduct;
+                                                        KemetContentItemPopup.DoPickItem(ContentManager.I.Items,
+                                                                                         contentItem =>
+                                                                                         {
+                                                                                             instance.Item = contentItem as Item;
+                                                                                         });
+                                                    }
+                                                }
+                                                GUILayout.EndVertical();
+                                            }
+                                            if (x == 3)
+                                            {
+                                                GUILayout.EndHorizontal();
+                                                x = 0;
+                                            }
+                                            else
+                                                x++;
+                                        }
+                                        if (x != 0)
+                                            GUILayout.EndHorizontal();
+                                    }
+                                    GUILayout.EndVertical();
                                 }
-
-                                if (tab == TabType.Items)
-                                    if (GUILayout.Button("Icon", GUILayout.MaxWidth(60)))
-                                        ((Item)item).CreateIcon();
-
-                                /*if (GUILayout.Button("Clone", GUILayout.MaxWidth(60)))
-                                {
-                                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(item.gameObject),
-                                                            "Assets/Development/Libary/" + tab + "/" + item.gameObject.name + "(clone).prefab");
-                                    AssetDatabase.ImportAsset("Assets/Development/Libary/" + tab + "/" + item.gameObject.name + "(clone).prefab");
-                                    AssetDatabase.Refresh();
-                                    Scan(tab);
-                                }*/
-                                /*if (GUILayout.Button("Recreate", GUILayout.MaxWidth(60)))
-                                {
-                                    AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(item.gameObject),
-                                                            "Assets/Development/Libary/"+tab+"/" + item.gameObject.name + ".prefab");
-                                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(item.gameObject));
-                                    AssetDatabase.Refresh();
-                                    Scan(tab);
-                                }*/
+#endregion
                             }
                         }
                         GUILayout.EndHorizontal();
@@ -279,6 +439,25 @@ namespace Assets.Editor
 
             GUILayout.EndHorizontal();
             EditorUtility.SetDirty(ContentManager.I);
+        }
+
+        private static void Delete(TabType tabType, ContentItem item)
+        {
+            string mainPath = "Assets/Development/Libary/" + tabType.ToString() + "/";
+            AssetDatabase.DeleteAsset(mainPath + item.name + ".prefab");
+            var list = GetContentList(tabType);
+            for (int i = 0; i < 100; i++)
+            {
+                list.Remove(null);
+            }
+            EditorUtility.SetDirty(ContentManager.I);
+        }
+
+        private static void Duplicate(TabType tabType, ContentItem item)
+        {
+            string mainPath = "Assets/Development/Libary/" + tabType.ToString() + "/";
+            PrefabUtility.CreatePrefab(mainPath + item.name + "(2).prefab", item.gameObject);
+            Scan(tabType);
         }
 
         private static void Scan(TabType tabType)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Code.Core.Client.Settings;
 using Server.Servers;
 #if SERVER
@@ -133,10 +134,12 @@ namespace Server.Model
             _entities = new List<WorldEntity>(new WorldEntity[GlobalConstants.Instance.MAX_UNIT_AMOUNT]);
             Units = new List<ServerUnit>();
             Players = new List<Player>();
-            Tree = new QuadTree(7, Vector2.zero, Vector2.one * 1024);
+            
 
             Map = KemetMap.GetMap("1");
             Map.transform.parent = transform;
+            MapQuadTree mapQuadTree = Map.GetComponent<MapQuadTree>();
+            Tree = new QuadTree(mapQuadTree._divisions, mapQuadTree._position, mapQuadTree._size);
         }
 
         #endregion
@@ -168,6 +171,28 @@ namespace Server.Model
                     player.Client.UserAccount.SaveAccount();
                     player.Client.UserAccount.SaveUnit(player);
                 }
+            }
+        }
+
+        public void ScanGraph()
+        {
+            StartCoroutine(_ScanGraph());
+        }
+
+        private IEnumerator _ScanGraph()
+        {
+            Map.GetComponent<MapQuadTree>().enabled = false;
+            foreach (var i in Map.GetComponentsInChildren<MapQuadTree>(true))
+            {
+                i.gameObject.SetActive(true);
+                i.enabled = false;
+            }
+            yield return new WaitForEndOfFrame();
+            Tree.Scan();
+            yield return new WaitForEndOfFrame();
+            foreach (var i in Map.GetComponentsInChildren<MapQuadTree>(true))
+            {
+                i.enabled = true;
             }
         }
     }

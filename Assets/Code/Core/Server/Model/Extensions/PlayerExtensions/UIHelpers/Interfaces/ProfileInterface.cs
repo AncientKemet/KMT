@@ -195,9 +195,12 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                         {
                             var ii = new Item.ItemInstance(inventory[index].Item, amount);
 
-                            if (inventory.RemoveItem(ii))
+                            if (ui.Player.Inventory.HasSpace(ii))
                             {
-                                ui.Player.Inventory.AddItem(ii);
+                                if (inventory.RemoveItem(ii))
+                                {
+                                    ui.Player.Inventory.AddItem(ii);
+                                }
                             }
                         }
                     }
@@ -213,6 +216,10 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers.Interfaces
                     var amount = int.Parse(action.Split(' ')[1]);
                     if (shop != null)
                     {
+                    }
+                    else
+                    {
+                        player.SendGameMessage("Invalid shop, report this bug please.");
                     }
                 }
             }

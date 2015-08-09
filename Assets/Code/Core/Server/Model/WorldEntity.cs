@@ -1,3 +1,4 @@
+using System.Linq;
 #if SERVER
 using Server.Model.Content;
 
@@ -31,7 +32,7 @@ namespace Server.Model
             set { _id = value; }
         }
 
-        private Dictionary<Type, EntityExtension> extensions = new Dictionary<Type, EntityExtension>();
+        private SortedDictionary<Type, EntityExtension> extensions = new SortedDictionary<Type, EntityExtension>();
 
         [SerializeField]
         private ushort _id;
@@ -60,6 +61,7 @@ namespace Server.Model
             {
                 T extension = gameObject.AddComponent<T>();
                 extensions[extension.GetType()] = extension;
+                
                 if (extension is CollisionExt)
                 {
                     _collisionExt = extension as CollisionExt;
@@ -81,11 +83,6 @@ namespace Server.Model
 
         public virtual void Progress(float time)
         {
-            /*if (_currentWorld.LAST_TICK < _last_world_tick + (int) GetPrioritization())
-            {
-                return;
-            }*/
-
             _last_world_tick = _currentWorld.LAST_TICK;
             foreach (var extension in extensions.Values)
             {

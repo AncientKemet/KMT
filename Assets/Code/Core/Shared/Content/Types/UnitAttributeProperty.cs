@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Code.Libaries.Generic.Managers;
 using UnityEngine;
 
@@ -6,28 +7,23 @@ namespace Shared.Content.Types
 {
     public enum UnitAttributeProperty
     {
-        PhysicalDamage,
-        MagicalDamage,
-        Armor,
-        MagicResist,
-        Health,
-        HealthRegen,
-        Energy,
-        EnergyRegen,
-        MovementSpeed,
-        Mobility,
-        ChargeSpeed,
-        CriticalDamage,
-        CriticalArea,
-        DamageToTreePalm,
-        DamageToShield,
-        DamageToAnimal,
-        DamageToMineral,
-        WeaponReach,
-        ArmorPenetration,
-        MagicResistPenetration,
-        Offence,
-        Toughtness
+        PhysicalDamage = 0,
+        MagicalDamage=1,
+        Armor=2,
+        MagicResist=3,
+        Health=4,
+        HealthRegen=5,
+        Energy=6,
+        EnergyRegen = 7,
+        MovementSpeed = 8,
+        ChargeSpeed = 10,
+        CriticalDamage = 11,
+        CriticalArea = 12,
+        WeaponReach = 13,
+        ArmorPenetration = 14,
+        MagicResistPenetration = 15,
+        Offence = 125,
+        Toughtness = 126
     }
 
     [Serializable]
@@ -68,30 +64,27 @@ namespace Shared.Content.Types
 
         public static string GetLabeledString(UnitAttributeProperty property, float f)
         {
-            float val = f;
-            string addition = "";
+            string s;
             switch (property)
             {
-
                 case UnitAttributeProperty.Health:
                 case UnitAttributeProperty.Energy:
                 case UnitAttributeProperty.Toughtness:
+                    s = f.ToString("##.#");
                     break;
                 case UnitAttributeProperty.WeaponReach:
-                    addition = "m";
+                    s = f.ToString("#.# 'm'");
                     break;
                 case UnitAttributeProperty.HealthRegen:
                 case UnitAttributeProperty.EnergyRegen:
                 case UnitAttributeProperty.Offence:
-                    addition = "/s";
+                    s = f.ToString("##.## '/s'");
                     break;
                 default:
-                    val *= 100f;
-                    addition = "%";
+                    s = (f * 100f).ToString("##.# '%'");
                     break;
-                    
             }
-            return val + addition;
+            return (f > 0 ? "+": "")+s;
         }
     }
 }

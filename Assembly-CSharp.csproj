@@ -87,6 +87,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\InterfaceAnchor.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\InterfaceType.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\ActionBars.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Crafting\CraftingInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\CreateCharacter\ColorButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\CreateCharacter\EyeButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\CreateCharacter\EyePanel.cs" />
@@ -114,6 +115,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Lobby\PreferencesPage.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Lobby\WorldSelectButton.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LoginInterface.cs" />
+     <Compile Include="Assets\Code\Core\Client\UI\Interfaces\Looting\LootingInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRight.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\InventoryInterface.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\Interfaces\LowerRightFaces\LowerRightBase.cs" />
@@ -150,6 +152,7 @@
      <Compile Include="Assets\Code\Core\Client\UI\Unit2D.cs" />
      <Compile Include="Assets\Code\Core\Client\UI\UnscaledCamera.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\ASpellRadius.cs" />
+     <Compile Include="Assets\Code\Core\Client\Units\Chatbubble.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Face.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Managed\UnitFactory.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\Managed\UnitManager.cs" />
@@ -179,14 +182,17 @@
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\Player\PlayerFeed.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\ServerSpawnManager.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\ContentHandling\UserAccount.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Animal.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Birds\Bird.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Animals\Birds\Chicken.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Groups\PlayerParty.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Groups\UnitGroup.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Human.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Mythical\Zombie.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\NPC.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Behaviours\DefaultNpcBehaviour.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Job.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Guard.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Idle.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Troll.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\WalkJob.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\aNpcBehaviour.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Player.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Items\DroppedItem.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\SEase.cs" />
@@ -196,7 +202,6 @@
      <Compile Include="Assets\Code\Core\Server\Model\Entities\StaticObjects\Plant.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\StaticObjects\Tree.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\EntityExtension.cs" />
-     <Compile Include="Assets\Code\Core\Server\Model\Extensions\AnimalExtensions\AnimalMovement.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\CollisionExt.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\Frames.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\PlayerCrafting.cs" />
@@ -207,6 +212,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\ClientUI.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\AInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\ClientInventoryInterface.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\CraftingInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\CreateCharacterInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\LobbyInterface.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Extensions\PlayerExtensions\UIHelpers\Interfaces\LoginInterface.cs" />
@@ -241,12 +247,10 @@
      <Compile Include="Assets\Code\Core\Shared\Content\ContentItem.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Buff.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Item.cs" />
+     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\Class.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\EquipmentItem.cs" />
-     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemInUI.cs" />
-     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemMaterials.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemRigid.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\ItemWithInventory.cs" />
-     <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\Weapon.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemRecipe.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Spell.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\UnitAttributeProperty.cs" />
@@ -260,6 +264,7 @@
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\Heal.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Combat\HealthChange.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\ExperienceReward.cs" />
+     <Compile Include="Assets\Code\Core\Shared\SharedTypes\Fraction.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\Level.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\LevelRequirement.cs" />
      <Compile Include="Assets\Code\Core\Shared\SharedTypes\MinimapEvent.cs" />
@@ -375,8 +380,8 @@
      <Compile Include="Assets\Code\Libaries\Generic\LilSingleton.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\Managers\ContentManager.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\Managers\HumanModelConfig.cs" />
+     <Compile Include="Assets\Code\Libaries\Generic\Managers\ItemBalance.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\Managers\UIContentManager.cs" />
-     <Compile Include="Assets\Code\Libaries\Generic\Managers\WeaponBalance.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\Monosingleton.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\SIAsset.cs" />
      <Compile Include="Assets\Code\Libaries\Generic\Singleton.cs" />
@@ -415,6 +420,7 @@
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForClient\UnitUpdatePacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\AccountPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\CharacterChangePacket.cs" />
+     <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\CraftingPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\InputEvent.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\ItemDragPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\SecuredDataPacket.cs" />
@@ -505,6 +511,7 @@
      <Compile Include="Assets\Development\Libary\Spawns\PrefabInstance.cs" />
      <Compile Include="Assets\Development\Libary\Spawns\RelationShip.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\BlockSpell.cs" />
+     <Compile Include="Assets\Development\Libary\Spells\Codes\CraftingSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\MeleeSpell.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\OffHandCharge.cs" />
      <Compile Include="Assets\Development\Libary\Spells\Codes\RangeSpell.cs" />
@@ -782,6 +789,7 @@
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\EdgeDetectNormals.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Reflect-ParallaxSpec.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Cubemaps\CubeBlurOdd.shader" />
+     <None Include="Assets\ReferencedData\Client\UI\Fonts\Ancient-small.fnt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\PrepareSunShaftsBlur.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionBark.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\Blend.shader" />

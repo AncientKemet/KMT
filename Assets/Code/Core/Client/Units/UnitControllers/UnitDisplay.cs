@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Client.Net;
 using Code.Core.Client.Units.Managed;
 using Code.Libaries.GameObjects;
 using Code.Libaries.Generic.Managers;
@@ -183,7 +184,7 @@ namespace Client.Units.UnitControllers
                     }
                 _actionAnimation = value;
 
-                StartCoroutine(RunAcionAnimation(value));
+                ClientCommunicator.Instance.StartCoroutine(RunAcionAnimation(value));
 
             }
         }
@@ -366,6 +367,7 @@ namespace Client.Units.UnitControllers
 
             model.transform.parent = transform;
             model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
 
             NeckBone = TransformHelper.FindTraverseChildren("Neck", model.Visual.transform);
             BodyBone = TransformHelper.FindTraverseChildren("Body", model.Visual.transform);
@@ -565,8 +567,7 @@ namespace Client.Units.UnitControllers
 
                 try
                 {
-                    _chest.mainTexture =
-                        ContentManager.I.Items[ChestId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
+                    _chest.mainTexture = ContentManager.I.Items[ChestId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
                 }
                 catch (ArgumentOutOfRangeException)
                 {

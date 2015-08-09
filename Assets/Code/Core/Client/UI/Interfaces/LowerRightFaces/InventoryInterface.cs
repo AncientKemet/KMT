@@ -24,8 +24,6 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
 
         public ItemInventory Inventory;
         
-        private static ItemButton UseItemButton;
-
         public State CurrentState
         {
             get { return _state; }
@@ -96,20 +94,7 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
                     _itemButton.Button.AddAction(new RightClickAction("Drop"));
                     foreach (var action in itemInstance.Item.ActionsStrings)
                         _itemButton.Button.AddAction(new RightClickAction(action));
-                    
-
-                    _itemButton.Button.AddAction(new RightClickAction("Use", () =>
-                    {
-                        if (UseItemButton == null)
-                        {
-                            UseItemButton = _itemButton;
-                        }
-                        else
-                        {
-                            UseItemButton = null;
-                        }
-                    }));
-                    
+                   
                     if (itemInstance.Item.EQ != null)
                         _itemButton.Button.AddAction(new RightClickAction("Equip"));
                 }
@@ -128,13 +113,7 @@ namespace Code.Core.Client.UI.Interfaces.LowerRightFaces
                 
             };
         }
-
-        void OnGUI()
-        {
-            if (ItemDragManager.IndragButton == null && UseItemButton != null && UseItemButton.Item != null)
-                GUI.DrawTexture(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 50,50), UseItemButton.Item.Icon);
-        }
-
+        
         protected virtual void Update()
         {
             if(_state >= State.HalfVisible)

@@ -198,14 +198,6 @@ namespace Server.Model.Extensions.UnitExts
             {
                 Add(attribute.Property, attribute.Value);
             }
-            if (item is Weapon)
-            {
-                Weapon w = item as Weapon;
-                foreach (var attribute in w.Secondary)
-                {
-                    Add(attribute.Property, attribute.Value);
-                }
-            }
         }
 
         public void RemoveStats(EquipmentItem item)
@@ -213,14 +205,6 @@ namespace Server.Model.Extensions.UnitExts
             foreach (var attribute in item.Attributes)
             {
                 Remove(attribute.Property, attribute.Value);
-            }
-            if (item is Weapon)
-            {
-                Weapon w = item as Weapon;
-                foreach (var attribute in w.Secondary)
-                {
-                    Remove(attribute.Property, attribute.Value);
-                }
             }
         }
 

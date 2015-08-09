@@ -9,6 +9,7 @@ using Client.Units;
 using Code.Core.Shared.Content;
 using Code.Core.Shared.Content.Types.ItemExtensions;
 using Code.Libaries.Generic.Managers;
+using Shared.Content.Types.ItemExtensions;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,7 +22,6 @@ namespace Shared.Content.Types
     {
         [Multiline(5)]
         public string Description = "";
-        public string Subtitle = "";
         
         public string[] ActionsStrings;
 
@@ -31,7 +31,7 @@ namespace Shared.Content.Types
         public bool Tradable = true;
         [Range(1, 1000000)] public int Value = 1;
         
-        public bool Stackable = false;
+        public bool Stackable { get { return MaxStacks > 1; } }
 
         public int MaxStacks = 1;
 
@@ -81,17 +81,17 @@ namespace Shared.Content.Types
         public string GetDescribtion()
         {
             string s = "";
-
-
-
-            if(EQ != null)
-            foreach (var attribute in EQ.Attributes)
+            if (EQ != null)
             {
-                s +=UnitAttributePropertySerializable.GetLabeledString(attribute.Property, attribute.Value) + " " +
-                    UnitAttributePropertySerializable.GetLabeledString(attribute.Property)+"\n";
+                s += EQ.Class + (EQ.Role == Role.NONE ? "" : " -> " + EQ.Role.ToString().Replace('_', ' ')) + "\n\n";
+                foreach (var attribute in EQ.Attributes)
+                {
+                    s += UnitAttributePropertySerializable.GetLabeledString(attribute.Property, attribute.Value) + " " +
+                         UnitAttributePropertySerializable.GetLabeledString(attribute.Property) + " ^CFFFFFFFF\n";
+                }
             }
 
-            return Description + "\n" + s;
+            return Description + "\n" + s+" ";
         }
 
         public EquipmentItem EQ
@@ -115,7 +115,10 @@ namespace Shared.Content.Types
             public Item Item
             {
                 get { return _item; }
-                private set { _item = value; }
+#if !UNITY_EDITOR
+                private
+#endif          
+                set { _item = value; }
             }
 
             public int Amount

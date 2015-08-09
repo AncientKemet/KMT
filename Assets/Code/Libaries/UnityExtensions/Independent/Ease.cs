@@ -10,8 +10,11 @@ namespace Libaries.UnityExtensions.Independent
             InOut
         }
 
-        public static IEnumerator Vector(Vector3 start, Vector3 end, System.Action<Vector3> onUpdate, System.Action onFinish= null, float time= 0.3f)
+        public static IEnumerator Vector(Vector3 start, Vector3 end, System.Action<Vector3> onUpdate, System.Action onFinish = null, float time = 0.3f, float delay = -1f)
         {
+            if (delay > 0)
+                yield return new WaitForSeconds(delay);
+
             float startTime = Time.realtimeSinceStartup;
 
             float t = 0.001f;
@@ -49,7 +52,7 @@ namespace Libaries.UnityExtensions.Independent
                     //start.rotation = Quaternion.Lerp(start.rotation, end.rotation, Mathf.Min((t / time), 1f));
                 }
             }
-            
+
             start.position = end.position;
             //start.rotation = end.rotation;
 

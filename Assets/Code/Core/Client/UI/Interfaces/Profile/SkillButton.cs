@@ -7,8 +7,8 @@ namespace Client.UI.Interfaces.Profile
     public class SkillButton : InterfaceButton
     {
 
-        [SerializeField] private tk2dTextMesh _XpLabel;
         [SerializeField] private tk2dTextMesh _textMesh;
+        [SerializeField] private tk2dSlicedSprite _backGround;
         public Levels.Skills type;
 
         private int _level;
@@ -30,12 +30,13 @@ namespace Client.UI.Interfaces.Profile
             base.Start();
             OnMouseIn += () =>
             {
-                DescriptionInterface.I.Show(type.ToString()+" [ "+Level+" ]","Click to view details.");
-                _XpLabel.text = "Current: "+(Levels.GetExperience(_level+1) - RemainingExp)+" xp.\nNext: "+Levels.GetExperience(_level+1)+" xp.\nRequired: "+RemainingExp+" xp.";
+                DescriptionInterface.I.Show(type.ToString()+" [ "+Level+" ]","Click to view details.", "Current: "+(Levels.GetExperience(_level+1) - RemainingExp)+" xp.\nNext: "+Levels.GetExperience(_level+1)+" xp.\nRequired: "+RemainingExp+" xp.");
+                _backGround.color = Color.white;
             };
             OnMouseOff += () =>
             {
-                _XpLabel.text = "";
+                _backGround.color = new Color(.67f, .67f, .67f);
+                DescriptionInterface.I.Hide();
             };
         }
     }

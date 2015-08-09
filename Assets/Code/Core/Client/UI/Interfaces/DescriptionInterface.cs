@@ -51,6 +51,11 @@ namespace Client.UI.Interfaces
         }
 
 
+        void Update()
+        {
+            FitViewport();
+        }
+
         private void FitViewport()
         {
             //Convert background sprite size to viewport size

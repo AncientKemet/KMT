@@ -25,6 +25,7 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
         private LobbyInterface _lobby;
         private ProfileInterface _profileInterface;
         private CreateCharacterInterface _createCharacterInterface;
+        private CraftingInterface _craftingInterface;
 
         public Player Player { get { return Client.Player; } }
 
@@ -36,6 +37,11 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
         public ProfileInterface ProfileInterface
         {
             get { return _profileInterface ?? (_profileInterface = new ProfileInterface(this)); }
+        }
+
+        public CraftingInterface CraftingInterface
+        {
+            get { return _craftingInterface ?? (_craftingInterface = new CraftingInterface(this)); }
         }
 
         public LobbyInterface Lobby
@@ -95,6 +101,11 @@ namespace Server.Model.Extensions.PlayerExtensions.UIHelpers
             if (e.interfaceId == InterfaceType.CreateCharacterInterface)
             {
                 CreateCharacterInterface.OnEvent(e.Action, e.controlID);
+                return;
+            }
+            if (e.interfaceId == InterfaceType.Crafting)
+            {
+                CraftingInterface.OnEvent(e.Action, e.controlID);
                 return;
             }
 

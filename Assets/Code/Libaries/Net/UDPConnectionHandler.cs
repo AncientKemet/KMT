@@ -54,30 +54,19 @@ namespace Libaries.Net
                 return;
             }
             int available = listener.Available;
-            if (available > 0)
+            if (available > 0 && available % _packetSize == 0)
             {
-                for (int i = 0; i < MAX_PACKETS_PROCEED_AT_ONCE; i++)
+                byte[] bytes = listener.Receive(ref ep);
+
+                BytesRecieved += bytes.Length;
+
+                ByteStream _in = new ByteStream(bytes);
+                _in.Offset = 0;
+                for (int i = 0; _in.Offset < _in.Length + 1 - _packetSize; i++)
                 {
-                    if (available > _packetSize)
-                    {
-                        byte[] bytes = listener.Receive(ref groupEP);
-                        available -= bytes.Length;
-                        
-                        BytesRecieved += bytes.Length;
-
-                        ByteStream _in = new ByteStream(bytes);
-                        _in.Offset = 0;
-
-                        while (_in.Offset < bytes.Length+1 - _packetSize)
-                        {
-                            DatagramPacket packet = PacketManager.UDPPacketForPort(port);
-
-                            packet.Deserialize(_in);
-
-                            packet.Execute();
-                        }
-                    }
-                    
+                    DatagramPacket packet = PacketManager.UDPPacketForPort(port);
+                    packet.Deserialize(_in);
+                    packet.Execute();
                 }
             }
         }

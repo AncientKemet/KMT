@@ -51,7 +51,7 @@ namespace Client.Units.SpellRadiuses
             Crit.orthographicSize = (_range * _criticalArea) * OneSize;
 
             Normal.transform.localPosition = new Vector3(0, 0, Strenght * 2);
-            Crit.transform.localPosition = new Vector3(0, 0, _range - (_range * _criticalArea) + Strenght * 2);
+            Crit.transform.localPosition = new Vector3(0, 0, _range - (_range * _criticalArea) + Strenght / 2);
         }
     }
 }

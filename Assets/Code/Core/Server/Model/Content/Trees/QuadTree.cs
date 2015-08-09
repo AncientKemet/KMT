@@ -1,3 +1,4 @@
+using System;
 #if SERVER
 using System.Collections.Generic;
 using Server.Model.Entities;
@@ -14,7 +15,7 @@ namespace Code.Libaries.Generic.Trees
 
         private int _divisions = 0;
         private bool _isDivided = false;
-        private bool _wasInitialized = false;
+        private bool _wasScanned = false;
         private QuadTree[] children = null;
         private QuadTree parent = null;
         //Objects that can move
@@ -484,7 +485,9 @@ namespace Code.Libaries.Generic.Trees
                 List<KeyValuePair<QuadTree, IQuadTreeObject>> objectsToRemove = new List<KeyValuePair<QuadTree, IQuadTreeObject>>();
                 foreach (var item in _activeObjects)
                 {
-                    if (item != null)
+                    if (item == null)
+                        objectsToRemove.Add(new KeyValuePair<QuadTree, IQuadTreeObject>(null, item));
+                    else
                     {
                         Vector2 change = item.PositionChange();
                         if (change != Vector2.zero)
@@ -587,6 +590,7 @@ namespace Code.Libaries.Generic.Trees
                             _staticObjects.Remove(item.Value);
                         else
                             _activeObjects.Remove(item.Value);
+                        if(item.Key != null)
                         item.Key.AddObject(item.Value);
                         AmountOfObjectsChange(-1);
                     }
@@ -610,10 +614,6 @@ namespace Code.Libaries.Generic.Trees
         {
             if (!_isDivided)
             {
-                if (!_wasInitialized)
-                {
-                    Initalize();
-                }
                 if (o.IsStatic())
                     _staticObjects.AddFirst(o);
                 else
@@ -716,34 +716,34 @@ namespace Code.Libaries.Generic.Trees
                     t.AddObject(o);
                 else
                 {
-                    Debug.LogError("Failed to find sub tree for DirecionVector: "+ o.GetPosition());
+                    Debug.LogError("Failed to find sub tree for DirecionVector: "+ o.GetPosition() + " object: "+o.ToString());
                 }
             }
         }
 
-        /// <summary>
-        /// Is ran whenever this branch has some kind of idea, like its actually used.
-        /// </summary>
-        private void Initalize()
+        public void Scan()
         {
-            _wasInitialized = true;
-            /*AstarPath astarPath = AstarPath.Instance;
-            //on erro rescan the astar
-            Bounds bounds = new Bounds();
+            AstarPath astarPath = AstarPath.Instance;
+            if (astarPath != null)
+            {
+                Bounds bounds = new Bounds();
 
-            bounds.center = new Vector3(Center.x, 0, Center.y);
-            bounds.size = new Vector3(Size.x, 50, Size.y);
+                bounds.center = new Vector3(Center.x, 0, Center.y);
+                bounds.size = new Vector3(Size.x, 50, Size.y);
 
-            astarPath.UpdateGraphs(bounds);*/
+                astarPath.Scan();
+                _wasScanned = true;
+                Debug.Log("initialized quad tree");
+            }
+            else
+            {
+                throw new Exception("Missing AstarPath.Instance");
+            }
         }
 
         private void SendObjectBecameVisibleToLocals(IQuadTreeObject o)
         {
-            if (!_wasInitialized)
-            {
-                Initalize();
-            }
-            foreach (var treeObject in _activeObjects)
+           foreach (var treeObject in _activeObjects)
             {
                 ServerUnit unit = treeObject as ServerUnit;
                 if (unit != null)

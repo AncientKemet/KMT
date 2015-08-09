@@ -17,8 +17,7 @@ namespace Client.Enviroment
         [SerializeField]
         private bool _build = false;
         [SerializeField]
-        [Range(1, 8)]
-        private int _divisions = 0;
+        [Range(1, 8)] public int _divisions = 0;
         private bool _wasInitialized = false;
         [SerializeField]
         private MapQuadTree[] children = null;
@@ -26,10 +25,8 @@ namespace Client.Enviroment
         private MapQuadTree parent = null;
         [SerializeField]
         private LinkedList<PrefabInstance> _objects;
-        [SerializeField]
-        private Vector2 _position;
-        [SerializeField]
-        private Vector2 _size;
+        [SerializeField] public Vector2 _position;
+        [SerializeField] public Vector2 _size;
         private MapQuadTree _root = null;
         private MapQuadTree _north = null;
         private List<PrefabInstance> _objectsVisible = null;
@@ -336,6 +333,7 @@ namespace Client.Enviroment
             }
             else //In play mode we only look for playerunits
             {
+                if (!IsDivided || Root == this)
                 for (int i = 0; i < transform.childCount; i++)
                 {
                     var child = transform.GetChild(i);
@@ -344,11 +342,11 @@ namespace Client.Enviroment
                     if (unit != null)
                     {
                         Vector2 pos = new Vector2(unit.transform.position.x, unit.transform.position.z);
-                        if (IsDivided)
+                        if (Root == this)
                         {
                             unit.transform.parent = Root.GetTreeFor(pos).transform;
                         }
-                        else
+                        else if(!IsDivided)
                         {
                             if (!ContainsPoint(pos))
                             {
@@ -385,11 +383,14 @@ namespace Client.Enviroment
                                                      SceneView.lastActiveSceneView.camera.transform.position.z);
                         positions.Add(camera);
 
-                        for (int x = -2; x < 2; x++)
-                            for (int y = -2; y < 2; y++)
+                        for (int x = -1; x < 2; x++)
+                            for (int y = -1; y < 2; y++)
                             {
-                                float step = Root._size.x / Root._divisions / 12f;
-                                Vector2 vec = new Vector2(x * step, y * step);
+                                if(y == 0 && x == 0)
+                                    continue;
+                                float stepx = Root._size.x / 32;
+                                float stepz = Root._size.y / 32;
+                                var vec = new Vector2(x * stepx, y * stepz);
                                 positions.Add(camera + vec);
                             }
 
@@ -410,11 +411,12 @@ namespace Client.Enviroment
                                                      Camera.main.transform.position.z);
                         positions.Add(camera);
 
-                        for (int x = -2; x < 2; x++)
-                            for (int y = -2; y < 2; y++)
+                        for (int x = -1; x < 2; x++)
+                            for (int y = -1; y < 2; y++)
                             {
-                                float step = Root._size.x / Root._divisions / 12f;
-                                Vector2 vec = new Vector2(x * step, y * step);
+                                float stepx = Root._size.x / 32;
+                                float stepz = Root._size.y / 32;
+                                var vec = new Vector2(x * stepx, y * stepz);
                                 positions.Add(camera + vec);
                             }
 

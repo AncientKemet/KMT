@@ -39,7 +39,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_body == null)
                     return null;
-                return _body.Item.Item.EQ; ;
+                return _body.Item.Item.EQ;
             }
         }
 
@@ -49,7 +49,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_legs == null)
                     return null;
-                return _legs.Item.Item.EQ; ;
+                return _legs.Item.Item.EQ;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_boots == null)
                     return null;
-                return _boots.Item.Item.EQ; ;
+                return _boots.Item.Item.EQ;
             }
         }
 
@@ -69,7 +69,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_mainHand == null)
                     return null;
-                return _mainHand.Item.Item.EQ; ;
+                return _mainHand.Item.Item.EQ;
             }
         }
 
@@ -79,7 +79,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (_offHand == null)
                     return null;
-                return _offHand.Item.Item.EQ; ;
+                return _offHand.Item.Item.EQ;
             }
         }
 
@@ -129,9 +129,6 @@ namespace Server.Model.Extensions.UnitExts
                 case EquipmentItem.Type.OffHand:
                     _EquipItemSafe(null, ref _offHand);
                     break;
-                case EquipmentItem.Type.TwoHand:
-                    _EquipItemSafe(null, ref _mainHand);
-                    break;
             }
         }
 
@@ -157,32 +154,28 @@ namespace Server.Model.Extensions.UnitExts
                 case EquipmentItem.Type.OffHand:
                     _EquipItemSafe(null, ref _offHand, false);
                     break;
-                case EquipmentItem.Type.TwoHand:
-                    _EquipItemSafe(null, ref _mainHand, false);
-                    break;
             }
         }
 
         public bool EquipItem(DroppedItem unit)
         {
             EquipmentItem item = unit == null ? null : unit.Item.Item.EQ;
-            switch (item.EquipType)
-            {
-                case EquipmentItem.Type.Helm:
-                    return _EquipItemSafe(unit, ref _head);
-                case EquipmentItem.Type.Boots:
-                    return _EquipItemSafe(unit, ref _boots);
-                case EquipmentItem.Type.Body:
-                    return _EquipItemSafe(unit, ref _body);
-                case EquipmentItem.Type.Legs:
-                    return _EquipItemSafe(unit, ref _legs);
-                case EquipmentItem.Type.MainHand:
-                    return _EquipItemSafe(unit, ref _mainHand);
-                case EquipmentItem.Type.OffHand:
-                    return _EquipItemSafe(unit, ref _offHand);
-                case EquipmentItem.Type.TwoHand:
-                    return _EquipItemSafe(unit, ref _mainHand);
-            }
+            if (item != null)
+                switch (item.EquipType)
+                {
+                    case EquipmentItem.Type.Helm:
+                        return _EquipItemSafe(unit, ref _head);
+                    case EquipmentItem.Type.Boots:
+                        return _EquipItemSafe(unit, ref _boots);
+                    case EquipmentItem.Type.Body:
+                        return _EquipItemSafe(unit, ref _body);
+                    case EquipmentItem.Type.Legs:
+                        return _EquipItemSafe(unit, ref _legs);
+                    case EquipmentItem.Type.MainHand:
+                        return _EquipItemSafe(unit, ref _mainHand);
+                    case EquipmentItem.Type.OffHand:
+                        return _EquipItemSafe(unit, ref _offHand);
+                }
             return false;
         }
 

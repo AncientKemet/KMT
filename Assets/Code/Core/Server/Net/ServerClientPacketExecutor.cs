@@ -138,37 +138,37 @@ namespace Server.Net
                 return;
             }
 
-            if (packet is CharacterChangePacket)
-            {
-                CharacterChangePacket p = packet as CharacterChangePacket;
-                if (client.Player != null)
-                {
-                    if (p.Action == CharacterChangePacket.CharAction.HairType)
-                        client.Player.Display.Hairtype = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.HairColor)
-                        client.Player.Display.HairColor = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.FaceType)
-                        client.Player.Display.FaceType = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.FaceColor)
-                        client.Player.Display.FaceColor = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.SkinColor)
-                        client.Player.Display.SkinColor = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.UnderwearColor)
-                        client.Player.Display.UnderwearColor = p.value;
-
-                    if (p.Action == CharacterChangePacket.CharAction.Gender)
-                        client.Player.Display.ModelID = p.value == 1 ? 0 : 1;
-
-                }
-                return;
-            }
-
             if (client.Server is WorldServer)
+            {
+                if (packet is CharacterChangePacket)
+                {
+                    CharacterChangePacket p = packet as CharacterChangePacket;
+                    if (client.Player != null)
+                    {
+                        if (p.Action == CharacterChangePacket.CharAction.HairType)
+                            client.Player.Display.Hairtype = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.HairColor)
+                            client.Player.Display.HairColor = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.FaceType)
+                            client.Player.Display.FaceType = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.FaceColor)
+                            client.Player.Display.FaceColor = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.SkinColor)
+                            client.Player.Display.SkinColor = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.UnderwearColor)
+                            client.Player.Display.UnderwearColor = p.value;
+
+                        if (p.Action == CharacterChangePacket.CharAction.Gender)
+                            client.Player.Display.ModelID = p.value == 1 ? 0 : 1;
+
+                    }
+                    return;
+                }
                 if (packet is WalkRequestPacket)
                 {
                     WalkRequestPacket update = packet as WalkRequestPacket;
@@ -181,32 +181,28 @@ namespace Server.Net
                         }
                         else // just rotate
                         {
-                            mov.DiscardPath();
                             mov.RotateWay(update.DirecionVector);
+                            mov.DiscardPath();
                         }
                     }
                     return;
                 }
 
-            if (packet is ItemDragPacket)
-            {
-                client.Player.ClientUi.OnItemDrag(packet as ItemDragPacket);
-                return;
-            }
-
-            if (packet is InputEventPacket)
-            {
-                InputEventPacket inputEventPacket = packet as InputEventPacket;
-                client.Player.PlayerInput.AddInput(inputEventPacket.type);
-                return;
-            }
-
-            if (client.Server is WorldServer)
-            {
+                if (packet is ItemDragPacket)
+                {
+                    client.Player.ClientUi.OnItemDrag(packet as ItemDragPacket);
+                    return;
+                }
+                if (packet is InputEventPacket)
+                {
+                    InputEventPacket inputEventPacket = packet as InputEventPacket;
+                    client.Player.PlayerInput.AddInput(inputEventPacket.type);
+                    return;
+                }
                 if (packet is TargetUpdatePacket)
                 {
                     TargetUpdatePacket p = packet as TargetUpdatePacket;
-                    
+
                     if (p.UnitId == -1)
                     {
                         client.Player.Focus.FocusedUnit = null;
@@ -238,11 +234,15 @@ namespace Server.Net
                     }
                     return;
                 }
-
                 if (packet is UnitActionPacket)
                 {
                     UnitActionPacket p = packet as UnitActionPacket;
                     client.Player.Details.DoAction(p.UnitId, p.ActionName);
+                    return;
+                }
+                if (packet is CraftingPacket)
+                {
+                    client.Player.ClientUi.CraftingInterface.OnCraftingPacket(packet as CraftingPacket);
                     return;
                 }
             }

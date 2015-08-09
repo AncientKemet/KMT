@@ -60,6 +60,8 @@ namespace Code.Core.Client.UI.Interfaces
             newLine.text = message;
             newLine.ForceBuild();
 
+            if (MessageContainer.childCount > 9)
+                Destroy(MessageContainer.GetChild(0).gameObject);
             MessageContainer.position += new Vector3(0, newLine.GetEstimatedMeshBoundsForString(message).size.y, 0);
             newLine.transform.parent = MessageContainer;
 
@@ -115,19 +117,19 @@ namespace Code.Core.Client.UI.Interfaces
         {
             if (p.type == ChatPacket.ChatType.GAME)
             {
-                AddMessage(p.text);
+                AddMessage(p.User + ":" + p.text);
             }
             if (p.type == ChatPacket.ChatType.Public)
             {
-                AddMessage(p.text).color = Public.color;
+                AddMessage(p.User + ":" + p.text).color = Public.color;
             }
             if (p.type == ChatPacket.ChatType.Private)
             {
-                AddMessage(p.text).color = Private.color;
+                AddMessage(p.User + ":" + p.text).color = Private.color;
             }
             if (p.type == ChatPacket.ChatType.Party)
             {
-                AddMessage(p.text).color = Party.color;
+                AddMessage(p.User + ":" + p.text).color = Party.color;
             }
         }
 	

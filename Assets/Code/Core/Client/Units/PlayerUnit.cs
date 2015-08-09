@@ -22,44 +22,33 @@ namespace Client.Units
 {
     public class PlayerUnit : Clickable
     {
-        [SerializeField]
-        private int _id = -1;
+        
+        public static PlayerUnit MyPlayerUnit { get; set; }
 
+        [SerializeField]
+        private int _id = -1,_parentId = -1,_parentPlaneId = -1;
         private UnitDisplay _display;
-
-        private bool IsStatic
-        {
-            get { return _isStatic; }
-            set
-            {
-                _isStatic = value;
-                enabled = !value;
-                if (_display != null)
-                    _display.enabled = !value;
-                if (GetComponent<Collider>() != null)
-                    GetComponent<Collider>().enabled = !value;
-            }
-        }
-
-
-        protected Vector3 _movementTargetPosition;
-        protected Vector3 _smoothedTargetPosition;
-        [SerializeField]
-        protected float _targetRotation;
-
-        private Projector _projector;
-        protected float _distanceToTarget;
-        [SerializeField]
-        protected float _visualSpeed = 0.2f;
-
-        private bool _isStatic = true;
-        private int _parentId = -1;
-        private int _parentPlaneId = -1;
-
-        public List<BuffInstance> BuffInstances { get; private set; }
+        private Vector3 _movementTargetPosition, _smoothedTargetPosition;
+        private float _targetRotation, _distanceToTarget, _visualSpeed = 0.2f;
+        private Projector _projector,_fractionProjector;
+        private Item item;
+        private readonly PlayerUnitAttributes _playerUnitAttributes = new PlayerUnitAttributes();
+        private Fraction _fraction;
+        private List<BuffInstance> BuffInstances { get; set; }
         public event Action<BuffInstance> OnBuffWasAdded;
         public event Action<BuffInstance> OnBuffWasRemoved;
-
+        public Fraction Fraction
+        {
+            get { return _fraction; }
+            set
+            {
+                _fraction = value;
+                if(_fractionProjector != null)
+                    Destroy(_fractionProjector.gameObject);
+                if(value != Fraction.Neutral)
+                    _fractionProjector = UnitFactory.Instance.CreateFractionProjector(this);
+            }
+        }
         public ushort Id
         {
             get
@@ -71,9 +60,6 @@ namespace Client.Units
                 _id = value;
             }
         }
-
-        public static PlayerUnit MyPlayerUnit { get; set; }
-
         public string Name
         {
             get { return name; }
@@ -83,19 +69,6 @@ namespace Client.Units
                 gameObject.name = name;
             }
         }
-
-        /// <summary>
-        /// Gets the current movement speed.
-        /// </summary>
-        /// <value>The current movement speed.</value>
-        public float CurrentMovementSpeed
-        {
-            get
-            {
-                return 1f;
-            }
-        }
-
         /// <summary>
         /// Gets or sets the movement target DirecionVector.
         /// The value has to be in parent's local space;
@@ -107,12 +80,7 @@ namespace Client.Units
             {
                 return _movementTargetPosition;
             }
-            set
-            {
-                _movementTargetPosition = value;
-            }
         }
-
         public float VisualSpeed
         {
             get
@@ -120,36 +88,26 @@ namespace Client.Units
                 return _visualSpeed;
             }
         }
-
-        public float TargetRotation
-        {
-            get { return _targetRotation; }
-            set { _targetRotation = value; }
-        }
-
         public UnitDisplay Display
         {
             get { return _display; }
         }
-
         public Projector Projector
         {
             get
             {
                 if (_projector == null)
                 {
-                    _projector = UnitFactory.Instance.CreateProjector(this);
+                    _projector = UnitFactory.Instance.CreateTargetProjector(this);
                     _projector.orthographicSize = 0.66f * transform.localScale.x;
                 }
                 return _projector;
             }
         }
-
         public PlayerUnitAttributes PlayerUnitAttributes
         {
             get { return _playerUnitAttributes; }
         }
-
         public void AddBuff(BuffInstance b)
         {
             if (BuffInstances == null)
@@ -164,7 +122,6 @@ namespace Client.Units
             if (OnBuffWasAdded != null)
                 OnBuffWasAdded(b);
         }
-
         public void RemoveBuff(BuffInstance b)
         {
             if (BuffInstances == null)
@@ -175,7 +132,6 @@ namespace Client.Units
             if (OnBuffWasRemoved != null)
                 OnBuffWasRemoved(b);
         }
-
         protected override void Start()
         {
             base.Start();
@@ -186,12 +142,11 @@ namespace Client.Units
                 _projector.material = Instantiate(_projector.material);
             }
 
-            AddAction(new RightClickAction("Target", delegate { UnitSelectionInterface.I.Unit = this; }));
-
             OnLeftClick += delegate
             {
                 if (Actions != null && Actions.Count >= 1)
-                    Actions[0].Action();
+                    if (Actions[0] != null)
+                        Actions[0].Action();
             };
 
             OnRightClick += () =>
@@ -203,41 +158,37 @@ namespace Client.Units
             OnMouseIn += () => DescriptionInterface.I.Show(Name);
             OnMouseOff += () => DescriptionInterface.I.Hide();
 
-            MovementTargetPosition = transform.position;
+            _movementTargetPosition = transform.position;
         }
-
         protected virtual void Update()
         {
-            if (!_isStatic)
-            {// Process rotation
-               
-                    if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
-                    {
-                        var calculatedRotation = Quaternion.Euler(new Vector3(0, TargetRotation, 0));
-                        calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation,
-                                                             Time.deltaTime*30);
-                        transform.localRotation = calculatedRotation;
-                    }
-                
-            }
 
+            if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
+            {
+                var calculatedRotation = Quaternion.Euler(new Vector3(0, _targetRotation, 0));
+                calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, Time.deltaTime * 30);
+                transform.localRotation = calculatedRotation;
+            }
             if (_parentId != -1)
                 return;
-
             _distanceToTarget = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
-            _visualSpeed = Mathf.Clamp(_distanceToTarget, 0f, CurrentMovementSpeed);
-
+            _visualSpeed = Mathf.Clamp(_distanceToTarget, 0f, 1f);
             _smoothedTargetPosition = Vector3.Lerp(_smoothedTargetPosition, _movementTargetPosition, 1.3f);
-
             Vector3 calculatedPosition = transform.position;
-
             if (_distanceToTarget > 0.017f)
             {// Process DirecionVector
                 calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
                 transform.position = calculatedPosition;
             }
         }
-
+        private void OnDrawGizmos()
+        {
+            if (_parentId == -1)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, MovementTargetPosition);
+            }
+        }
         public void DecodeUnitUpdate(UnitUpdatePacket p)
         {
             ByteStream b = p.SubPacketData;
@@ -260,18 +211,18 @@ namespace Client.Units
                 bool parentUpdate = movementMask[1];
 
                 Vector3 pos = b.GetPosition12B();
-                if (!teleported && !IsStatic)
+                if (!teleported)
                 {
-                    MovementTargetPosition = pos;
+                    _movementTargetPosition = pos;
                 }
                 else
                 {
-                    MovementTargetPosition = pos;
+                    _movementTargetPosition = pos;
                     transform.position = pos;
                 }
 
                 float rotation = b.GetAngle2B();
-                TargetRotation = rotation;
+                _targetRotation = rotation;
 
 
                 if (parentUpdate)
@@ -309,7 +260,7 @@ namespace Client.Units
 
                 bool isItem = displayMask[0];
                 bool wasDestroyed = displayMask[1];
-                IsStatic = displayMask[2];
+                //IsStatic = displayMask[2];
                 bool hasEffects = displayMask[3];
                 bool _hasCharacterCustoms = displayMask[4];
                 bool _visible = displayMask[5];
@@ -353,7 +304,7 @@ namespace Client.Units
                     }
                     catch (ArgumentOutOfRangeException e)
                     {
-                        Debug.LogError("Unexisting item in contentmanager.i.items["+modelId+"]");
+                        Debug.LogError("Unexisting item in contentmanager.i.items[" + modelId + "]");
                         Debug.LogError(e.Message);
                     }
                 }
@@ -379,8 +330,6 @@ namespace Client.Units
                             Debug.Log("null unit id: " + unitID);
                         }
                     }
-                    if (OnBeforeDestroy != null)
-                        OnBeforeDestroy();
                     Destroy(gameObject);
                 }
 
@@ -425,7 +374,7 @@ namespace Client.Units
             {
                 BitArray mask = b.GetBitArray();
 
-                bool _hpUpdate = mask[0], _enUpdate = mask[1], _attributesUpdate = mask[2];
+                bool _hpUpdate = mask[0], _enUpdate = mask[1], _attributesUpdate = mask[2], _fractionUpdate = mask[3];
 
                 if (_hpUpdate)
                     PlayerUnitAttributes.CurrentHealth = b.GetUnsignedShort();
@@ -445,7 +394,10 @@ namespace Client.Units
                         PlayerUnitAttributes.SetAttribute(property, value);
                     }
                 }
-
+                if (_fractionUpdate)
+                {
+                    Fraction = (Fraction)b.GetByte();
+                }
             }
 
             if (animUpdate)
@@ -509,19 +461,17 @@ namespace Client.Units
             }
 
         }
-
         private void JoinParent(int obj)
         {
             JoinParent();
         }
-
         private void JoinParent()
         {
             var parent = UnitManager.Instance[_parentId];
             var plane = _parentPlaneId == -1 ? parent.transform : parent.Display.UnitPrefab.Planes[_parentPlaneId];
 
             gameObject.SetActive(true);
-            StartCoroutine(Ease.Join(
+            ClientCommunicator.Instance.StartCoroutine(Ease.Join(
                 transform,
                 plane,
                 () =>
@@ -530,48 +480,17 @@ namespace Client.Units
                 },
                 0.3f));
 
+
             if (parent.Display.OnModelChange != null)
                 parent.Display.OnModelChange -= JoinParent;
         }
 
-        public static bool GetBit(int byt, int index)
-        {
-            if (index < 0 || index > 7)
-                throw new ArgumentOutOfRangeException();
-
-            int shift = 7 - index;
-
-            // Get a single bit in the proper DirecionVector.
-            var bitMask = (byte)(1 << shift);
-
-            // Mask out the appropriate bit.
-            var masked = (byte)(byt & bitMask);
-
-            // If masked != 0, then the masked out bit is 1.
-            // Otherwise, masked will be 0.
-            return masked != 0;
-        }
-
-        protected void FixYOnTerrain(ref Vector3 position)
-        {
-            var ray = new Ray(position + new Vector3(0, 50, 0), Vector3.down);
-            RaycastHit hit;
-            const int layerMask = 1 << 8;
-            //layerMask = ~layerMask;
-            if (Physics.Raycast(ray, out hit, 100.0f, layerMask))
-            {
-                position.y = hit.point.y;
-            }
-        }
-
         public void OnUnprecieseMovement(UDPUnprecieseMovement p)
         {
-            _movementTargetPosition = _movementTargetPosition + p.Difference;
-            TargetRotation = p.Face;
+            _movementTargetPosition += p.Difference;
+            _targetRotation = p.Face;
         }
 
-        public Action OnBeforeDestroy;
-        private Item item;
-        private readonly PlayerUnitAttributes _playerUnitAttributes = new PlayerUnitAttributes();
+       
     }
 }

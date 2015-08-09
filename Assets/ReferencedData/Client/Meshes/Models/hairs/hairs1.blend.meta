@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: bc6d9f86d5abac64bbbb5a73ecf80f45
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 18
   fileIDToRecycleName:
     100000: hair1
     100002: hair2_
@@ -13,6 +13,9 @@ ModelImporter:
     100014: hlava_pojebana_
     100016: hair5
     100018: hair6
+    100020: Plane
+    100022: Plane_001
+    100024: Amunbob
     400000: hair1
     400002: hair2_
     400004: hair3
@@ -23,6 +26,9 @@ ModelImporter:
     400014: hlava_pojebana_
     400016: hair5
     400018: hair6
+    400020: Plane
+    400022: Plane_001
+    400024: Amunbob
     2300000: hair1
     2300002: hair2_
     2300004: hair3
@@ -32,6 +38,9 @@ ModelImporter:
     2300012: hlava_pojebana_
     2300014: hair5
     2300016: hair6
+    2300018: Plane
+    2300020: Plane_001
+    2300022: Amunbob
     3300000: hair1
     3300002: hair2_
     3300004: hair3
@@ -41,6 +50,9 @@ ModelImporter:
     3300012: hlava_pojebana_
     3300014: hair5
     3300016: hair6
+    3300018: Plane
+    3300020: Plane_001
+    3300022: Amunbob
     4300000: hair4
     4300002: hair3
     4300004: hair1
@@ -49,6 +61,10 @@ ModelImporter:
     4300010: hair2
     4300012: hlava_pojebana_
     4300014: hair6
+    4300016: Plane_001
+    4300018: Plane
+    4300020: hair0
+    4300022: Amunbob
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -78,11 +94,13 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -105,3 +123,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

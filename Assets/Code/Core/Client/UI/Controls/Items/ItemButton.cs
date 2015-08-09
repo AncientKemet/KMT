@@ -79,8 +79,8 @@ namespace Client.UI.Controls.Items
             {
                 Background.color = _onHoverColor;
                 if(Item != null)
-                    DescriptionInterface.I.Show(Item.name+ " [ click to "+Button.Actions[0].Name+" ]",
-                                                string.IsNullOrEmpty(Item.Subtitle) ? null : Item.Subtitle,
+                    DescriptionInterface.I.Show(Item.name,
+                                                "[ click to " + Button.Actions[0].Name + " ]",
                                                 Item.GetDescribtion(), Item.Icon);
             };
 

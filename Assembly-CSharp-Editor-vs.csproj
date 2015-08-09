@@ -164,6 +164,7 @@
      <Compile Include="Assets\Code\Libaries\TK2DROOT\tk2dUI\Editor\Core\tk2dUISpriteAnimatorEditor.cs" />
      <Compile Include="Assets\Code\Libaries\UnityExtensions\Editor\BloodGUI.cs" />
      <Compile Include="Assets\Editor\KemetContentEditor.cs" />
+     <Compile Include="Assets\Editor\KemetContentItemPopup.cs" />
      <Compile Include="Assets\Editor\OldBloodEditor.cs" />
      <Compile Include="Assets\Editor\UnitAttributeEditor.cs" />
      <Compile Include="Assets\Editor\Water (Pro Only)\Water4\GerstnerDisplaceEditor.cs" />
@@ -416,6 +417,7 @@
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\EdgeDetectNormals.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Reflect-ParallaxSpec.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Cubemaps\CubeBlurOdd.shader" />
+     <None Include="Assets\ReferencedData\Client\UI\Fonts\Ancient-small.fnt" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\PrepareSunShaftsBlur.shader" />
      <None Include="Assets\Code\Core\Client\Shaders\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionBark.shader" />
      <None Include="Assets\ReferencedData\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\Blend.shader" />

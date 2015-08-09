@@ -1,3 +1,4 @@
+using Code.Libaries.Net.Packets.ForServer;
 using Libaries.IO;
 #if SERVER
 using System;
@@ -84,16 +85,6 @@ namespace Server.Model.Entities
             if (_updatePacket != null)
             {
                 SendPacketToPlayersAround(_updatePacket);
-            }
-            if (Movement.UnprecieseMovementPacket != null)
-            {
-                foreach (IQuadTreeObject objectAround in CurrentBranch.ActiveObjectsVisible)
-                {
-                    Player playerAround = objectAround as Player;
-                    if (playerAround != null)
-                        playerAround.PlayerUdp.Send(Movement.UnprecieseMovementPacket);
-                }
-                Movement.UnprecieseMovementPacket = null;
             }
 
             base.Progress(time);
@@ -274,6 +265,26 @@ namespace Server.Model.Entities
             {
                 Progress(time);
                 _lastProgressId =  ProgressID;
+            }
+        }
+
+        public void Speak(string message)
+        {
+            ChatPacket p = new ChatPacket();
+
+            p.FROM_SERVER_UnitID = ID;
+            p.type = ChatPacket.ChatType.Public;
+            p.User = name;
+            p.text = message;
+
+            foreach (var e in CurrentBranch.ActiveObjectsVisible)
+            {
+                if (e is Player)
+                {
+                    Player other = e as Player;
+
+                    other.Client.ConnectionHandler.SendPacket(p);
+                }
             }
         }
     }

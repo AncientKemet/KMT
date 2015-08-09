@@ -7,13 +7,6 @@ namespace Code.Core.Client.Controls.Camera
     public class CameraController : MonoSingleton<CameraController>
     {
 
-        public enum CameraType
-        {
-            Cinematic,
-            Locked,
-            Follow
-        }
-
         [SerializeField]
         private GameObject
             _objectToFollow;
@@ -26,9 +19,6 @@ namespace Code.Core.Client.Controls.Camera
         [SerializeField]
         private float
             _rotation;
-        [SerializeField]
-        private CameraType
-            _type;
 
         private Vector3 lastObjectPosition;
         private Vector3 objectLookVector3;
@@ -61,69 +51,24 @@ namespace Code.Core.Client.Controls.Camera
 
         void LateUpdate()
         {
-            if (_objectToFollow == null)
+            if (_objectToFollow == null && PlayerUnit.MyPlayerUnit != null)
             {
-                if (PlayerUnit.MyPlayerUnit != null)
-                    _objectToFollow = PlayerUnit.MyPlayerUnit.gameObject;
-
-                if (_type == CameraType.Follow)
-                {
-                    transform.parent = _objectToFollow.transform;
-                }
+                _objectToFollow = PlayerUnit.MyPlayerUnit.gameObject;
+                lastObjectPosition = _objectToFollow.transform.position;
             }
-
-            Vector3 lookAtOffset = Vector3.zero;
-
             if (_objectToFollow != null)
             {
                 Vector3 objectPos = _objectToFollow.transform.position;
 
-                if (lastObjectPosition == Vector3.zero)
-                    lastObjectPosition = objectPos;
-                
-                //CINEMATIC CAMERA
-                if (_type == CameraType.Cinematic)
-                {
-                    Vector3 positionAboveObject = objectPos;
-                    positionAboveObject.y += CameraY;
+                objectLookVector3 = Vector3.Lerp(objectLookVector3, _objectToFollow.transform.forward * (objectPos - lastObjectPosition).magnitude, Time.deltaTime * 2f);
 
-                    if (Vector3.Distance(transform.position, positionAboveObject) > CameraToObjectDistance)
-                    {
-                        if (Vector3.Distance(transform.position, positionAboveObject) > CameraToObjectDistance * 2)
-                        {
-                            transform.position = Vector3.MoveTowards(transform.position, positionAboveObject, Time.deltaTime);
-                        }
-                        transform.position = Vector3.Lerp(transform.position, positionAboveObject, Time.deltaTime);
-                    }
-                }
+                float x = objectPos.x + CameraToObjectDistance * (_zoomFactor) * Mathf.Cos(_rotation);
+                float z = objectPos.z + CameraToObjectDistance * (_zoomFactor) * Mathf.Sin(_rotation);
 
-                //Locked CAMERA
-                if (_type == CameraType.Locked)
-                {
-                    objectLookVector3 = Vector3.Lerp(objectLookVector3, _objectToFollow.transform.forward * (objectPos - lastObjectPosition).magnitude, Time.deltaTime*2f);
-
-                    float x = objectPos.x + CameraToObjectDistance* (_zoomFactor) * Mathf.Cos(_rotation);
-                    float z = objectPos.z + CameraToObjectDistance * (_zoomFactor) * Mathf.Sin(_rotation);
-                    
-                    lookAtOffset = objectLookVector3;
-                    Vector3 _targetPos = new Vector3(x, objectPos.y + CameraY * (Input.GetMouseButton(2) ? 0.5f : 1f), z) + objectLookVector3;
-                    transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * 15);
-                    lastObjectPosition += (objectPos-lastObjectPosition) / 50;
-                }
-
-                //Follow CAMERA
-                if (_type == CameraType.Follow)
-                {
-                    transform.parent = _objectToFollow.transform;
-                    transform.localPosition = new Vector3(0, CameraY, CameraToObjectDistance);
-                    /*_rotation = _objectToFollow.transform.eulerAngles.y/16;
-                    float x = _objectToFollow.transform.DirecionVector.x + _cameraToObjectDistance * Mathf.Cos(_rotation);
-                    float z = _objectToFollow.transform.DirecionVector.z + _cameraToObjectDistance * Mathf.Sin(_rotation);
-                    Vector3 _targetPos = new Vector3(x, _objectToFollow.transform.DirecionVector.y + _cameraY, z);
-
-                    transform.DirecionVector = Vector3.Lerp(transform.DirecionVector, _targetPos, Time.deltaTime * 10);*/
-
-                }
+                Vector3 lookAtOffset = objectLookVector3;
+                Vector3 _targetPos = new Vector3(x, objectPos.y + CameraY * (Input.GetMouseButton(2) ? 0.5f : 1f), z) + objectLookVector3;
+                transform.position = Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * 50);
+                lastObjectPosition = objectPos;
 
                 transform.LookAt(objectPos + Vector3.up + lookAtOffset);
             }

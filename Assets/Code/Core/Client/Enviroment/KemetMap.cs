@@ -106,8 +106,6 @@ namespace Client.Enviroment
             if (walk)
             {
                 MovementArrow.SpawnArrow(point);
-                if (!UnitSelectionInterface.IsNull)
-                    UnitSelectionInterface.I.Unit = null;
             }
             SendPacket(point, walk);
         }

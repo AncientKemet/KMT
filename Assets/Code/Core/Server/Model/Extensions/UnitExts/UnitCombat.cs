@@ -33,6 +33,21 @@ namespace Server.Model.Extensions.UnitExts
 
         public new CapsuleCollider collider;
 
+        private bool _attributeUpdate;
+        private bool _fractionUpdate;
+        private Fraction _fraction;
+
+        public Fraction Fraction
+        {
+            get { return _fraction; }
+            set
+            {
+                _fraction = value;
+                _fractionUpdate = true;
+                _wasUpdate = true;
+            }
+        }
+
         #region Current HP & EN
 
         private bool _currentHpUpdate, _currentEnUpdate;
@@ -251,7 +266,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(new[] { true, true, true });
+            packet.AddFlag(new[] { true, true, true, true});
 
             packet.AddShort((int)CurrenHealth);
 
@@ -264,11 +279,13 @@ namespace Server.Model.Extensions.UnitExts
                 packet.AddByte((int)change.Key);
                 packet.AddShort((int)(change.Value * 100f));
             }
+
+            packet.AddByte((byte)_fraction);
         }
 
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(new[] { _currentHpUpdate, _currentEnUpdate, _attributeUpdate });
+            packet.AddFlag(new[] { _currentHpUpdate, _currentEnUpdate, _attributeUpdate, _fractionUpdate });
 
             if (_currentHpUpdate)
                 packet.AddShort((int)CurrenHealth);
@@ -290,9 +307,15 @@ namespace Server.Model.Extensions.UnitExts
                 _attrbuteChanges = new Dictionary<UnitAttributeProperty, float>();
             }
 
+            if (_fractionUpdate)
+            {
+                packet.AddByte((byte)_fraction);
+            }
+
             _currentHpUpdate = false;
             _currentEnUpdate = false;
             _attributeUpdate = false;
+            _fractionUpdate = false;
         }
 
         #endregion
@@ -318,12 +341,7 @@ namespace Server.Model.Extensions.UnitExts
         {
             if(Dead)
                 return;
-
-            if (Unit is Tree)
-            {
-                damage *= 1f + dealer.Unit.Attributes.Get(UnitAttributeProperty.DamageToTreePalm);
-            }
-
+            
             if (dmgType == Spell.DamageType.Physical)
             {
                 damage *= (1.0f + dealer.Unit.Attributes[UnitAttributeProperty.PhysicalDamage]) *
@@ -356,9 +374,7 @@ namespace Server.Model.Extensions.UnitExts
 
         private Dictionary<UnitAttributeProperty, float> _attrbuteChanges =
             new Dictionary<UnitAttributeProperty, float>();
-
-        private bool _attributeUpdate;
-
+        
         public void AttributeHasChanged(UnitAttributeProperty property, float value)
         {
             _attributeUpdate = true;

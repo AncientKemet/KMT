@@ -13,7 +13,7 @@ namespace Code.Core.Client.Units.Managed
 
         [SerializeField] private Face _facePrefab;
 
-        [SerializeField] private Projector _projector;
+        [SerializeField] private Projector _targetProjector, _enemeyProjector, _friendProjector;
 
         /// <summary>
         /// Creates an player in the scene.
@@ -27,13 +27,33 @@ namespace Code.Core.Client.Units.Managed
             return playerUnit;
         }
 
-        public Projector CreateProjector(PlayerUnit playerUnit)
+        public Projector CreateTargetProjector(PlayerUnit playerUnit)
         {
-            Projector p = ((GameObject) Instantiate(_projector.gameObject)).GetComponent<Projector>();
+            Projector p = ((GameObject)Instantiate(_targetProjector.gameObject)).GetComponent<Projector>();
             p.transform.parent = playerUnit.transform;
             p.transform.localPosition = Vector3.zero + new Vector3(0, 3f);
             p.transform.localScale = Vector3.one;
             p.gameObject.SetActive(false);
+            return p;
+        }
+
+        public Projector CreateEnemyProjector(PlayerUnit playerUnit)
+        {
+            Projector p = ((GameObject)Instantiate(_enemeyProjector.gameObject)).GetComponent<Projector>();
+            p.transform.parent = playerUnit.transform;
+            p.transform.localPosition = Vector3.zero + new Vector3(0, 3f);
+            p.transform.localScale = Vector3.one;
+            p.gameObject.SetActive(true);
+            return p;
+        }
+
+        public Projector CreateFriendProjector(PlayerUnit playerUnit)
+        {
+            Projector p = ((GameObject)Instantiate(_friendProjector.gameObject)).GetComponent<Projector>();
+            p.transform.parent = playerUnit.transform;
+            p.transform.localPosition = Vector3.zero + new Vector3(0, 3f);
+            p.transform.localScale = Vector3.one;
+            p.gameObject.SetActive(true);
             return p;
         }
 
@@ -45,6 +65,19 @@ namespace Code.Core.Client.Units.Managed
             p.transform.localEulerAngles = new Vector3(3.201651e-06f, 356.2337f, 90.00001f);
             p.transform.localScale = Vector3.one;
             return p;
+        }
+
+        public Projector CreateFractionProjector(PlayerUnit playerUnit)
+        {
+            switch (playerUnit.Fraction)
+            {
+                case Fraction.Enemy:
+                    return CreateEnemyProjector(playerUnit);
+                case Fraction.Friend:
+                    return CreateFriendProjector(playerUnit);
+                default:
+                    return null;
+            }
         }
     }
 }

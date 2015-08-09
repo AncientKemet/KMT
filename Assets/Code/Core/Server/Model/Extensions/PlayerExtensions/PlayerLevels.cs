@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Libaries.IO;
+using Shared.SharedTypes;
 using Shared.StructClasses;
 
 namespace Server.Model.Extensions.PlayerExtensions
@@ -97,6 +98,11 @@ namespace Server.Model.Extensions.PlayerExtensions
                 levels.AddField(i.Key.ToString(), i.Value + "");
             }
             return levels;
+        }
+
+        public bool MeetsRequirement(LevelRequirement requirement)
+        {
+            return _currentLevels[requirement.Skill] >= requirement.Val;
         }
     }
 }

@@ -1,12 +1,7 @@
 using Shared.Content.Types;
 #if SERVER
-
 using UnityEngine;
-
 using Code.Libaries.Generic.Managers;
-using Server.Model.ContentHandling;
-using Server.Model.Entities.Animals.Birds;
-using Server.Model.Entities.Human.Mythical;
 using Code.Libaries.Net.Packets.ForServer;
 using Server.Model.Entities.Human;
 
@@ -36,18 +31,6 @@ namespace Server.Model.Extensions.PlayerExtensions
                     {
                         Player.Inventory.AddItem(new Item.ItemInstance(ContentManager.I.Items[int.Parse(p.text.Split("."[0])[2])], int.Parse(p.text.Split("."[0])[3])));
                     }
-                    if (p.text.Contains("chick"))
-                    {
-                        for (int i = 0; i < int.Parse(p.text.Split("."[0])[2]); i++)
-                        {
-                            ServerSpawnManager.Instance(Player.CurrentWorld).SpawnAnimal<Chicken>(Player.Movement.Position);
-                        }
-                        
-                    }
-                    if (p.text.Contains("zombie"))
-                    {
-                        ServerSpawnManager.Instance(Player.CurrentWorld).Spawn<Zombie>(Player.Movement.Position);
-                    }
                     if (p.text.Contains("kill"))
                     {
                         if (Player.Focus.FocusedUnit != null)
@@ -70,7 +53,7 @@ namespace Server.Model.Extensions.PlayerExtensions
                     }
                 }
                 else
-                    Say(p.text);
+                    Player.Speak(p.text);
             }else if (p.type == ChatPacket.ChatType.Party)
             {
                 SendPartyMessage(Player.name + ": " + p.text);
@@ -119,27 +102,7 @@ namespace Server.Model.Extensions.PlayerExtensions
             packet.text = text;
             Client.ConnectionHandler.SendPacket(packet);
         }
-
-        private void Say(string message)
-        {
-
-            ChatPacket p = new ChatPacket();
-
-            p.FROM_SERVER_UnitID = Player.ID;
-            p.type = ChatPacket.ChatType.Public;
-            p.text = Player.name+": "+message;
-
-            foreach (var e in Player.CurrentBranch.ObjectsVisible)
-            {
-                if(e is Player)
-                {
-                    Player other = e as Player;
-
-                    other.Client.ConnectionHandler.SendPacket(p);
-                }
-            }
-        }
-
+        
         public void RecievePartyMessage(string message)
         {
             ChatPacket p = new ChatPacket();

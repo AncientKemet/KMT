@@ -197,6 +197,7 @@ namespace Server.Model.Extensions.UnitExts
                 }
 
                 Destroy = false;
+                Unit.CurrentBranch.RemoveObject(Unit);
                 Object.Destroy(entity.gameObject);
             }
 

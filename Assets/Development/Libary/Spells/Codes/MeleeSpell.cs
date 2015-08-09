@@ -112,10 +112,9 @@ namespace Development.Libary.Spells.Codes
                 ? HitStrenght.Weak
                 : strenght > 0.66f ? HitStrenght.Strong : HitStrenght.Normal;
             unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "");
-
-            unit.Movement.PushForward(strenght*2, () =>
+            unit.Movement.DiscardPath();
+            unit.Movement.PushForward(strenght/2, () =>
             {
-
                 if (strenght > 0.66f)
                     unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 1f);
 

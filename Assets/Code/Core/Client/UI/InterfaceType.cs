@@ -17,6 +17,8 @@
         LobbyInterface,
         CreateCharacterInterface,
         Description,
-        Minimap
+        Minimap,
+        Crafting,
+        Looting,
     }
 }
