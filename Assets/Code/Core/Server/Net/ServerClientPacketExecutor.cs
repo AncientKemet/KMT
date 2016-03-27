@@ -140,6 +140,20 @@ namespace Server.Net
 
             if (client.Server is WorldServer)
             {
+                if (packet is SpellCastPacket)
+                {
+                    var p = packet as SpellCastPacket;
+                    if (p.Action == SpellCastPacket.CastAction.StartCasting)
+                    {
+                        client.Player.Spells.StartSpell(p.buttonIndex);
+                    }
+                    else if (p.Action == SpellCastPacket.CastAction.FinishCasting)
+                    {
+                        client.Player.Spells.TargetPosition = p.TargetPosition;
+                        client.Player.Spells.FinishSpell(p.buttonIndex);
+                    }
+                    return;
+                }
                 if (packet is CharacterChangePacket)
                 {
                     CharacterChangePacket p = packet as CharacterChangePacket;

@@ -32,7 +32,7 @@ namespace Server.Model
             set { _id = value; }
         }
 
-        private SortedDictionary<Type, EntityExtension> extensions = new SortedDictionary<Type, EntityExtension>();
+        private Dictionary<Type, EntityExtension> extensions = new Dictionary<Type, EntityExtension>();
 
         [SerializeField]
         private ushort _id;

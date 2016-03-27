@@ -17,7 +17,7 @@ namespace Code.Libaries.Generic.Managers
         public List<UnitPrefab> Models;
         public List<Spell> Spells;
         public List<Buff> Buffs;
-        public List<GameObject> Effects;
+        public List<Effect> Effects;
         public List<ASpellRadius> SpellRadiuses;
         public List<NPCSpawn> Npcs; 
         public List<ItemRecipe> Recipes; 
@@ -55,13 +55,6 @@ namespace Code.Libaries.Generic.Managers
         }
 
 #endif
-
-        public void CreateEffect(int i, Vector3 position)
-        {
-            Instantiate(Effects[i], position, Quaternion.identity);
-        }
-
-        
     }
 }
 

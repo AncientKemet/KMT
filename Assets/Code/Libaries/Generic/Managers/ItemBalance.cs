@@ -43,6 +43,7 @@ namespace Code.Libaries.Generic.Managers
         {
             public Class Class;
             public List<UnitAttributePropertySerializable> MaxLevel;
+            public List<UnitAttributePropertySerializable> Base;
         }
 
         [Serializable]

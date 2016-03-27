@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 272b4f797b9b97541a1d70d5c1355cc1
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 18
   fileIDToRecycleName:
     100000: Armature
     100002: Boar
@@ -97,6 +97,7 @@ ModelImporter:
     7400020: HitBack
     7400022: HitFront
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Boar
   materials:
     importMaterials: 1
@@ -113,7 +114,919 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Default Take
+      takeName: Default Take
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Attack
+      takeName: Attack
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: AttackPower
+      takeName: AttackPower
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: AttackStrong
+      takeName: AttackStrong
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: AttackWeak
+      takeName: AttackWeak
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Death
+      takeName: Death
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Eat
+      takeName: Eat
+      firstFrame: 0
+      lastFrame: 50
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: HitBack
+      takeName: HitBack
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: HitFront
+      takeName: HitFront
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 50
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Run
+      takeName: Run
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Walk
+      takeName: Walk
+      firstFrame: 0
+      lastFrame: 14
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Bone
+        weight: 1
+      - path: Armature/Bone/Bone_009
+        weight: 1
+      - path: Armature/Bone/Chest
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/aaBone_020/Bone_022/Bone_024
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Bone_021/Bone_023/Bone_025
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0
+        weight: 1
+      - path: Armature/Bone/Chest/ChestLow/Tail0/Tail1
+        weight: 1
+      - path: Armature/Bone/ChestUp
+        weight: 1
+      - path: Armature/Bone/ChestUp/Bone_010
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarLeft
+        weight: 1
+      - path: Armature/Bone/ChestUp/EarRight
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/LeftShoulder/LeftHand
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck
+        weight: 1
+      - path: Armature/Bone/ChestUp/Neck/Throat
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder
+        weight: 1
+      - path: Armature/Bone/ChestUp/RightShoulder/RightHand
+        weight: 1
+      - path: Boar
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -125,11 +1038,13 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -149,6 +1064,8 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -42,9 +42,9 @@ namespace Client.Units.SpellRadiuses
             }
             //range
             Normal.orthographicSize = (_range - (_range * _criticalArea)) * OneSize;
-            Normal.transform.localPosition = new Vector3(0, 0, Strenght / 2);
+            Normal.transform.localPosition = new Vector3(0, 0, Strenght);
             Crit.orthographicSize = (_range) * OneSize;
-            Crit.transform.localPosition = new Vector3( 0,0,  Strenght / 2 );
+            Crit.transform.localPosition = new Vector3( 0,0,  Strenght);
         }
     }
 }

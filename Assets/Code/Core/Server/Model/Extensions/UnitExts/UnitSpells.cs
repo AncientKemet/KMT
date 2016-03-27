@@ -22,6 +22,7 @@ namespace Server.Model.Extensions.UnitExts
         /// 6 = crafting spell
         /// </summary>
         private readonly List<Spell> _spells = new List<Spell>(8);
+        private readonly bool[] _spellsEnabled = new bool[8];
 
         private int _currentCastingSpellId = -1;
         private float _currentSpellTime;
@@ -30,7 +31,9 @@ namespace Server.Model.Extensions.UnitExts
         private float _craftingSpeedModifier = 1f;
 
         private bool _forceFinish = false;
-        
+
+        public Vector3 TargetPosition { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,7 +43,7 @@ namespace Server.Model.Extensions.UnitExts
             //Basically if the cooldown is > 0 we reduce it, and if after thre reducement its < 0 then we start casting the queued spell
             if (_globalCooldown > 0)
             {
-                _globalCooldown -= time*(1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
+                _globalCooldown -= time * (1f + Unit.Attributes[UnitAttributeProperty.ChargeSpeed]);
                 if (_globalCooldown < 0)
                 {
                     if (_startQueuedSpell != -1)
@@ -66,9 +69,9 @@ namespace Server.Model.Extensions.UnitExts
                 {
                     if (CurrentCastingSpell.HasEnergyCost)
                     {
-                        Unit.Combat.ReduceEnergy(time*CurrentCastingSpell.ChargeEnergyCost);
+                        Unit.Combat.ReduceEnergy(time * CurrentCastingSpell.ChargeEnergyCost);
                     }
-                    _currentSpellTime += time*(1f + (Unit.Attributes[UnitAttributeProperty.ChargeSpeed]));
+                    _currentSpellTime += time * (1f + (Unit.Attributes[UnitAttributeProperty.ChargeSpeed]));
                     CurrentCastingSpell.StrenghtChanged(Unit, CurrentCastStrenght);
                 }
 
@@ -164,6 +167,15 @@ namespace Server.Model.Extensions.UnitExts
 
                 p.Client.ConnectionHandler.SendPacket(packet);
             }
+
+            if (spell.Validate(Unit))
+            {
+                EnableSpell(i);
+            }
+            else
+            {
+                DisableSpell(i);
+            }
         }
 
         public void StartSpell(int id)
@@ -175,7 +187,7 @@ namespace Server.Model.Extensions.UnitExts
             else
             {
                 if (CurrentCastingSpell == null)
-                    if (_spells[id] != null)
+                    if (_spells[id] != null && _spellsEnabled[id])
                     {
                         _currentCastingSpellId = id;
                         _spells[id].StartCasting(Unit);
@@ -231,7 +243,7 @@ namespace Server.Model.Extensions.UnitExts
                     if (CurrentCastingSpell.ActivableDuration < _currentSpellTime)
                     {
                         _forceFinish = false;
-                        
+
                         _globalCooldown = 1f;
                         CurrentCastingSpell.FinishCasting(Unit, CurrentCastStrenght);
                         if (Unit is Player)
@@ -291,21 +303,21 @@ namespace Server.Model.Extensions.UnitExts
         //This is being called whenever the crafting should be interrupted
         public void CraftInterupt()
         {
-            if(CurrentCastingSpell != null)
-            if (CurrentCastingSpell is CraftingSpell)
-            {
-                CancelCurrentSpell();
-                _onFinishCraftinAction = null;
-            }
+            if (CurrentCastingSpell != null)
+                if (CurrentCastingSpell is CraftingSpell)
+                {
+                    CancelCurrentSpell();
+                    _onFinishCraftinAction = null;
+                }
         }
 
         public void StartCrafting(ItemRecipe itemRecipe, Action OnFinish)
         {
-            if(CurrentCastingSpell != null)
+            if (CurrentCastingSpell != null)
                 CancelCurrentSpell();
             EquipSpell(itemRecipe.CraftingSpell, 6);
             StartSpell(6);
-            _craftingSpeedModifier = 1f/itemRecipe.CraftTime;
+            _craftingSpeedModifier = 1f / itemRecipe.CraftTime;
             _onFinishCraftinAction = OnFinish;
         }
 
@@ -322,6 +334,45 @@ namespace Server.Model.Extensions.UnitExts
         }
 
         #endregion
+
+        public void DisableMainHandSpells()
+        {
+            DisableSpell(0);
+            DisableSpell(1);
+        }
+
+        public void DisableSpell(int id)
+        {
+            _spellsEnabled[id] = false;
+
+            if (Unit is Player)
+            {
+                Player p = Unit as Player;
+
+                SpellUpdatePacket packet = new SpellUpdatePacket();
+                packet.Index = id;
+                packet.UpdateState = SpellUpdateState.Disable;
+
+                p.Client.ConnectionHandler.SendPacket(packet);
+            }
+        }
+
+        public void EnableSpell(int id)
+        {
+            _spellsEnabled[id] = true;
+
+            if (Unit is Player)
+            {
+                Player p = Unit as Player;
+
+                SpellUpdatePacket packet = new SpellUpdatePacket();
+                packet.Index = id;
+                packet.UpdateState = SpellUpdateState.Enable;
+
+                p.Client.ConnectionHandler.SendPacket(packet);
+            }
+        }
+
     }
 }
 #endif

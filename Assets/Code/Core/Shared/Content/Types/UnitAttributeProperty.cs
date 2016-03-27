@@ -22,6 +22,7 @@ namespace Shared.Content.Types
         WeaponReach = 13,
         ArmorPenetration = 14,
         MagicResistPenetration = 15,
+        WeaponRange = 16,
         Offence = 125,
         Toughtness = 126
     }

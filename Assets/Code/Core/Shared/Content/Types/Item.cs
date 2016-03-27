@@ -72,9 +72,6 @@ namespace Shared.Content.Types
                     transform.localScale = startScale * (1f - t / time) + (Vector3.zero) * (t / time);
                 }
             }
-
-            ContentManager.I.CreateEffect(0, transform.position);
-
             Destroy(gameObject);
         }
 

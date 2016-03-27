@@ -17,6 +17,7 @@ namespace Server.Model.Entities.Human
         public override void Progress(float time)
         {
             base.Progress(time);
+            if(Combat == null || !Combat.Dead)
             _behaviourTime += time;
             if (_behaviourTime > 1f)
             {

@@ -36,8 +36,6 @@ namespace Server.Model.Entities.Human
             Spells = AddExt<UnitSpells>();
             Focus = AddExt<UnitFocus>();
 
-            AddExt<CollisionExt>();
-
             Inventory.Width = 3;
             Inventory.Height = 5;
 

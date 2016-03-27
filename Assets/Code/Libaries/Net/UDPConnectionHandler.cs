@@ -22,6 +22,8 @@ namespace Libaries.Net
         private UdpClient listener;
         private IPEndPoint groupEP;
 
+        ByteStream _in = new ByteStream();
+
         public UDPConnectionHandler(Socket socket, int Port, bool recieve, bool send)
         {
             this.socket = socket;
@@ -48,26 +50,25 @@ namespace Libaries.Net
 
         public void ReadAndExecute()
         {
-            if (!socket.Connected)
-            {
-                Debug.LogError("Socket not connected");
-                return;
-            }
             int available = listener.Available;
-            if (available > 0 && available % _packetSize == 0)
+            if (available > 0)
             {
-                byte[] bytes = listener.Receive(ref ep);
+                byte[] bytes = listener.Receive(ref groupEP);
 
                 BytesRecieved += bytes.Length;
+                _in.AddBytes(bytes);
+                int amoutOfPacketsExecuted = 0;
 
-                ByteStream _in = new ByteStream(bytes);
-                _in.Offset = 0;
-                for (int i = 0; _in.Offset < _in.Length + 1 - _packetSize; i++)
+                for (int i = 0; _in.Offset + _packetSize <= _in.Length; i++)
                 {
                     DatagramPacket packet = PacketManager.UDPPacketForPort(port);
                     packet.Deserialize(_in);
                     packet.Execute();
+                    amoutOfPacketsExecuted++;
                 }
+
+                _in.Offset = 0;
+                _in.RemoveFirstBytes(_packetSize*amoutOfPacketsExecuted);
             }
         }
 

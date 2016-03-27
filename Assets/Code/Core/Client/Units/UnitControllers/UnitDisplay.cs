@@ -15,10 +15,10 @@ namespace Client.Units.UnitControllers
 {
     public class UnitDisplay : MonoBehaviour
     {
-        private const float MinWalkSpeed = 0.02f;
+        private const float MinWalkSpeed = 0.04f;
         private const float MaxRunSpeed = 1f;
 
-        const float FadeOutTime = 0.25f;
+        const float FadeOutTime = 0.1f;
 
         private PlayerUnit _unit;
         private Animation _animation;
@@ -271,6 +271,7 @@ namespace Client.Units.UnitControllers
 
         public virtual void LateUpdate()
         {
+            if(false)
             if (_animation != null)
             {
                 ProcessLookAtRotation();
@@ -285,7 +286,7 @@ namespace Client.Units.UnitControllers
             if (!_updateWalkRunStand)
                 return;
 
-            float speed = _unit.VisualSpeed;
+            float speed = _unit.VisualSpeed * 2f;
 
             float weightStand = speed < MinWalkSpeed ? 1f : 0f;
             float weightWalk = (speed > MinWalkSpeed ? 1f - (speed / MaxRunSpeed) : 0f) * 1.3f;
@@ -343,8 +344,7 @@ namespace Client.Units.UnitControllers
         {
             if (bone != null)
             {
-                Vector3 euler = Quaternion.LookRotation(_lookAtPositionLerped - bone.position, Vector3.up).eulerAngles;
-                euler.z -= 90;
+                Vector3 euler = Quaternion.LookRotation(_lookAtPositionLerped - bone.position, bone.up).eulerAngles;
                 Quaternion rot = Quaternion.Lerp(Quaternion.Euler(euler), bone.rotation, strenght);
                 bone.rotation = rot;
             }
@@ -371,7 +371,6 @@ namespace Client.Units.UnitControllers
 
             NeckBone = TransformHelper.FindTraverseChildren("Neck", model.Visual.transform);
             BodyBone = TransformHelper.FindTraverseChildren("Body", model.Visual.transform);
-
             
             LeftShoulder = TransformHelper.FindTraverseChildren("LeftShoulder", model.Visual.transform);
             RightShoulder = TransformHelper.FindTraverseChildren("RightShoulder", model.Visual.transform);
@@ -535,68 +534,77 @@ namespace Client.Units.UnitControllers
             /*EquipItemUnit(head, NeckBone);
             EquipItemUnit(mainHand, Mainhand);
             EquipItemUnit(offHand, Offhand);*/
-            if(mainHand == -1)
-                _animation.Play("HandRightHold");
-            else
-                _animation.Stop("HandRightHold");
-
-            if (BootsId == -1)
+            if (_model <= 1)
             {
-                _bootsRenderer.enabled = false;
-            }
-            else
-            {
-                _bootsRenderer.enabled = true;
-                try
-                {
-                    _boots.mainTexture = ContentManager.I.Items[BootsId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    Debug.LogError("un existing boots item id: " + BootsId);
-                }
-            }
+                if (mainHand == -1)
+                    _animation.Play("HandRightHold");
+                else
+                    _animation.Stop("HandRightHold");
 
-            if (ChestId == -1)
-            {
-                _chestRenderer.enabled = false;
-            }
-            else
-            {
-                _chestRenderer.enabled = true;
-
-                try
+                if (BootsId == -1)
                 {
-                    _chest.mainTexture = ContentManager.I.Items[ChestId].transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial.mainTexture;
+                    _bootsRenderer.enabled = false;
                 }
-                catch (ArgumentOutOfRangeException)
+                else
                 {
-                    Debug.LogError("un existing chest item id: " + ChestId);
+                    _bootsRenderer.enabled = true;
+                    try
+                    {
+                        _boots.mainTexture =
+                            ContentManager.I.Items[BootsId].transform.GetChild(0)
+                                .GetComponent<MeshRenderer>()
+                                .sharedMaterial.mainTexture;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Debug.LogError("un existing boots item id: " + BootsId);
+                    }
                 }
-            }
 
-            if (LegsId == -1)
-            {
-                _skirtRenderer.enabled = false;
-            }
-            else
-            {
-
-                Item item = null;
-                try
+                if (ChestId == -1)
                 {
-                    item = ContentManager.I.Items[LegsId];
+                    _chestRenderer.enabled = false;
                 }
-                catch (ArgumentOutOfRangeException)
+                else
                 {
-                    Debug.LogError("un existing legs item id: " + LegsId);
-                }
-                // ReSharper disable once PossibleNullReferenceException
-                var meshRenderer = item.transform.GetChild(0).GetComponent<MeshRenderer>();
-                Material material = meshRenderer.material;
+                    _chestRenderer.enabled = true;
 
-                _skirtRenderer.enabled = true;
-                _skirt.mainTexture = material.GetTexture(0);
+                    try
+                    {
+                        _chest.mainTexture =
+                            ContentManager.I.Items[ChestId].transform.GetChild(0)
+                                .GetComponent<MeshRenderer>()
+                                .sharedMaterial.mainTexture;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Debug.LogError("un existing chest item id: " + ChestId);
+                    }
+                }
+
+                if (LegsId == -1)
+                {
+                    _skirtRenderer.enabled = false;
+                }
+                else
+                {
+
+                    Item item = null;
+                    try
+                    {
+                        item = ContentManager.I.Items[LegsId];
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Debug.LogError("un existing legs item id: " + LegsId);
+                    }
+                    // ReSharper disable once PossibleNullReferenceException
+                    var meshRenderer = item.transform.GetChild(0).GetComponent<MeshRenderer>();
+                    Material material = meshRenderer.material;
+
+                    _skirtRenderer.enabled = true;
+                    _skirt.mainTexture = material.GetTexture(0);
+                }
             }
         }
 

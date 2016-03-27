@@ -160,6 +160,7 @@
      <Compile Include="Assets\Code\Core\Client\Units\PlayerUnitAttributes.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\AngleConeRadius90.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\MeleeLineRadius.cs" />
+     <Compile Include="Assets\Code\Core\Client\Units\SpellRadiuses\RangeLineRadius.cs" />
      <Compile Include="Assets\Code\Core\Client\Units\UnitControllers\UnitDisplay.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\Encryption\AES.cs" />
      <Compile Include="Assets\Code\Core\Server\IO\File\FileDataProvider.cs" />
@@ -189,6 +190,7 @@
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Behaviours\DefaultNpcBehaviour.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Job.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Guard.cs" />
+     <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\HerbivoreJob.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Idle.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\Troll.cs" />
      <Compile Include="Assets\Code\Core\Server\Model\Entities\Human\Npcs\Jobs\WalkJob.cs" />
@@ -246,6 +248,7 @@
      <Compile Include="Assets\Code\Core\Shared\Content\AnimationHelper.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\ContentItem.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Buff.cs" />
+     <Compile Include="Assets\Code\Core\Shared\Content\Types\Effect.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\Item.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\Class.cs" />
      <Compile Include="Assets\Code\Core\Shared\Content\Types\ItemExtensions\EquipmentItem.cs" />
@@ -424,6 +427,7 @@
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\InputEvent.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\ItemDragPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\SecuredDataPacket.cs" />
+     <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\SpellCastPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\UnitActionPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\ForServer\WalkRequestPacket.cs" />
      <Compile Include="Assets\Code\Libaries\Net\Packets\InGame\TargetUpdatePacket.cs" />

@@ -30,6 +30,7 @@ namespace Client.Units
         private UnitDisplay _display;
         private Vector3 _movementTargetPosition, _smoothedTargetPosition;
         private float _targetRotation, _distanceToTarget, _visualSpeed = 0.2f;
+        public bool _rotateTowardsMovement = false;
         private Projector _projector,_fractionProjector;
         private Item item;
         private readonly PlayerUnitAttributes _playerUnitAttributes = new PlayerUnitAttributes();
@@ -162,22 +163,26 @@ namespace Client.Units
         }
         protected virtual void Update()
         {
-
-            if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f)
+            var pos = transform.position;
+            var difference = _movementTargetPosition - transform.position;
+            var doRotateTowardsMovement = _rotateTowardsMovement && difference != Vector3.zero;
+            if (Mathf.Abs(_targetRotation - transform.localEulerAngles.y) > 1f || doRotateTowardsMovement)
             {
-                var calculatedRotation = Quaternion.Euler(new Vector3(0, _targetRotation, 0));
+                var calculatedRotation = Quaternion.Euler(new Vector3(0, _targetRotation, doRotateTowardsMovement ? Quaternion.LookRotation(difference).eulerAngles.x : 0));
                 calculatedRotation = Quaternion.Lerp(transform.localRotation, calculatedRotation, Time.deltaTime * 30);
                 transform.localRotation = calculatedRotation;
             }
+
             if (_parentId != -1)
                 return;
-            _distanceToTarget = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(_movementTargetPosition.x, _movementTargetPosition.z));
+
+            _distanceToTarget = difference.magnitude;
             _visualSpeed = Mathf.Clamp(_distanceToTarget, 0f, 1f);
             _smoothedTargetPosition = Vector3.Lerp(_smoothedTargetPosition, _movementTargetPosition, 1.3f);
             Vector3 calculatedPosition = transform.position;
             if (_distanceToTarget > 0.017f)
             {// Process DirecionVector
-                calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 7.5f);
+                calculatedPosition = Vector3.Lerp(calculatedPosition, _smoothedTargetPosition, Time.deltaTime * 15f);
                 transform.position = calculatedPosition;
             }
         }
@@ -209,6 +214,7 @@ namespace Client.Units
 
                 bool teleported = movementMask[0];
                 bool parentUpdate = movementMask[1];
+                _rotateTowardsMovement = movementMask[2];
 
                 Vector3 pos = b.GetPosition12B();
                 if (!teleported)
@@ -289,15 +295,6 @@ namespace Client.Units
                         item.transform.parent = transform;
                         item.transform.localPosition = Vector3.zero;
                         item.transform.localRotation = Quaternion.identity;
-
-
-                        if (_parentId == -1)
-                        {
-                            var rigid = item.GetComponent<ItemRigid>();
-
-                            rigid.ForwardClicksToParent();
-                            rigid.PhysicsEnabled = true;
-                        }
 
                         if (GetComponent<Collider>() != null)
                             GetComponent<Collider>().enabled = false;
@@ -468,7 +465,7 @@ namespace Client.Units
         private void JoinParent()
         {
             var parent = UnitManager.Instance[_parentId];
-            var plane = _parentPlaneId == -1 ? parent.transform : parent.Display.UnitPrefab.Planes[_parentPlaneId];
+            var plane = _parentPlaneId == -1 && parent.Display.UnitPrefab.Planes.Count <= _parentPlaneId ? parent.transform : parent.Display.UnitPrefab.Planes[_parentPlaneId];
 
             gameObject.SetActive(true);
             ClientCommunicator.Instance.StartCoroutine(Ease.Join(

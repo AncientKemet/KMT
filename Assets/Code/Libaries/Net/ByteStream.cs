@@ -388,6 +388,11 @@ namespace Code.Code.Libaries.Net
         {
             return shortValue & 4095;
         }
+
+        public void RemoveFirstBytes(int amountOfBytesToRemove)
+        {
+            stream = stream.GetRange(amountOfBytesToRemove, stream.Count - amountOfBytesToRemove);
+        }
     }
 }
 

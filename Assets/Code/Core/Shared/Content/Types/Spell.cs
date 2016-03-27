@@ -116,6 +116,12 @@ namespace Shared.Content.Types
         /// <param name="unit"></param>
         [System.Obsolete("Use Unit.Spells.CancelSpell")]
         public abstract void CancelCasting(ServerUnit unit);
+        
+
+        public virtual bool Validate(ServerUnit unit)
+        {
+            return true;
+        }
 #endif
 #if UNITY_EDITOR
         public static void CreateSpell<T>() where T : Spell

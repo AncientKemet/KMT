@@ -30,7 +30,7 @@ namespace Libaries.Net.Packets.ForClient
         {
             UnitID = b.GetUnsignedShort();
             Face = b.GetAngle2B();
-            sbyte x = (sbyte) b.GetShort(), y = (sbyte) b.GetShort(), z = (sbyte) b.GetShort();
+            short x = b.GetShort(), y = b.GetShort(), z = b.GetShort();
             Difference = new Vector3((float)x / floatPrecision, (float)y / floatPrecision, (float)z / floatPrecision);
         }
         public override void Serialize(ByteStream b)

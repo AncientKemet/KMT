@@ -6,6 +6,7 @@ using Code.Core.Client.UI.Controls;
 using Code.Core.Client.UI.Scripts;
 using Code.Libaries.Generic.Managers;
 using Code.Libaries.Net.Packets.ForServer;
+using Libaries.Net.Packets.ForServer;
 using Shared.Content.Types;
 using UnityEngine;
 
@@ -59,15 +60,8 @@ namespace Client.UI.Controls
                 }
             };
             OnMouseOff += () => DescriptionInterface.I.Hide();
-            OnLeftDown += SendButtonDown;
-            OnLeftUp += () =>
-            {
-                if (KemetMap.Instance != null)
-                {
-                    KemetMap.Instance.WalkOrTurn(KemetMap.Instance.MouseAt.point, false);
-                }
-            };
-            OnLeftUp+= () => SendClickPacket("");
+            OnLeftDown += SendStartCasting;
+            OnLeftUp += SendFinishCasting;
         }
 
         protected virtual void Update()
@@ -97,14 +91,24 @@ namespace Client.UI.Controls
             }
         }
 
-        private void SendButtonDown()
+        private void SendStartCasting()
         {
-            UIInterfaceEvent p = new UIInterfaceEvent();
+            SpellCastPacket p = new SpellCastPacket();
 
-            p.interfaceId = InterfaceId;
-            p.controlID = Index;
+            p.buttonIndex = Index;
+            p.Action = SpellCastPacket.CastAction.StartCasting;
+            p.TargetPosition = KemetMap.Instance.MouseAt.point;
 
-            p._eventType = UIInterfaceEvent.EventType.Button_Down;
+            ClientCommunicator.Instance.SendToServer(p);
+        }
+
+        private void SendFinishCasting()
+        {
+            SpellCastPacket p = new SpellCastPacket();
+
+            p.buttonIndex = Index;
+            p.Action = SpellCastPacket.CastAction.FinishCasting;
+            p.TargetPosition = KemetMap.Instance.MouseAt.point;
 
             ClientCommunicator.Instance.SendToServer(p);
         }

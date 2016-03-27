@@ -121,10 +121,13 @@ namespace Server.Model.Extensions.UnitExts
             if (eq != null && eq.MainHand != null && eq.MainHand.Item.EQ != null)
             {
                 var ieq = eq.MainHand.Item.EQ;
-                StandAnimation = ieq.StandAnim;
-                WalkAnimation = ieq.WalkAnim;
-                RunAnimation = "Run";
-                return;
+                if (eq.MainHandUnit.Movement.Parent == Unit.Movement)
+                {
+                    StandAnimation = ieq.StandAnim;
+                    WalkAnimation = ieq.WalkAnim;
+                    RunAnimation = "Run";
+                    return;
+                }
             }
             StandAnimation = "Idle";
             WalkAnimation = "Walk";

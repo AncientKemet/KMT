@@ -40,6 +40,7 @@ namespace Server.Model.Extensions.UnitExts
         private bool _parentUpdate;
         private Action _pushAction;
         private float _pushLenght = -1;
+        private bool _rotateTowardsMovement = false;
 
         //destination variables
         private Vector3 destination;
@@ -47,7 +48,7 @@ namespace Server.Model.Extensions.UnitExts
         private bool _lookingForPath;
         private Action OnArrive;
         private Action OnInterrupt;
-        private LinkedList<Action> NextMovements = new LinkedList<Action>();
+        public LinkedList<Action<float>> NextMovements = new LinkedList<Action<float>>();
 
         public UnitMovement Parent
         {
@@ -74,7 +75,6 @@ namespace Server.Model.Extensions.UnitExts
 
         #region UnprecieseMovement
         private bool _smallUpdate = false;
-        private bool _isFlying;
         #endregion
 
         //property getters
@@ -88,11 +88,21 @@ namespace Server.Model.Extensions.UnitExts
             }
         }
 
+        public bool RotateTowardsMovement
+        {
+            get { return _rotateTowardsMovement; }
+            set
+            {
+                _rotateTowardsMovement = value;
+                _wasUpdate = true;
+            }
+        }
+
         private void CheckForSmallUpdate()
         {
             if (_smallUpdate)
             {
-                if (_correctionWasSent + _correctionRatio < Time.time || Teleported)
+                if (_wasUpdate || _correctionWasSent + _correctionRatio < Time.time || Teleported)
                     _wasUpdate = true;
                 else
                 {
@@ -157,7 +167,7 @@ namespace Server.Model.Extensions.UnitExts
             {
                 if (NextMovements.Count > 0)
                 {
-                    NextMovements.First()();
+                    NextMovements.First()(time);
                     NextMovements.RemoveFirst();
                 }
                 else
@@ -240,6 +250,10 @@ namespace Server.Model.Extensions.UnitExts
         {
             if (direcionVector != Vector3.zero)
                 Rotation = Quaternion.LookRotation(direcionVector).eulerAngles.y;
+            else
+            {
+                Debug.LogError("Directionvector == vector.zero");
+            }
         }
 
         public void Teleport(Vector3 location)
@@ -272,7 +286,7 @@ namespace Server.Model.Extensions.UnitExts
         private void OnPathWasFoundPush(Path path)
         {
             lock(NextMovements)
-            NextMovements.AddLast(() =>
+            NextMovements.AddLast((f) =>
             {
                 if (!path.error)
                     if (path.GetTotalLength() < _pushLenght * 2f)
@@ -300,7 +314,7 @@ namespace Server.Model.Extensions.UnitExts
         #region StateSerialization
         protected override void pSerializeState(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(true, true, _isFlying);
+            packet.AddFlag(true, true, _rotateTowardsMovement);
             packet.AddPosition12B(_position);
 
             packet.AddAngle2B(_rotation);
@@ -312,7 +326,7 @@ namespace Server.Model.Extensions.UnitExts
 
         protected override void pSerializeUpdate(Code.Code.Libaries.Net.ByteStream packet)
         {
-            packet.AddFlag(Teleported, _parentUpdate, _isFlying);
+            packet.AddFlag(Teleported, _parentUpdate, _rotateTowardsMovement);
             packet.AddPosition12B(_position);
 
             packet.AddAngle2B(_rotation);

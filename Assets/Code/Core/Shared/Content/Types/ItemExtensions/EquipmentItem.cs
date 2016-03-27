@@ -51,14 +51,24 @@ namespace Code.Core.Shared.Content.Types.ItemExtensions
 
             if (Class != Class.NONE)
             {
-
-
                 ItemBalance.ItemGrowth growth = ItemBalance.I.Growths.Find(itemGrowth => itemGrowth.Class == Class);
                 ItemBalance.RoleMultiplier multiplier = ItemBalance.I.Multipliers.Find(m => m.Role == Role);
                 if (growth == null)
                 {
                     Debug.LogError("Item "+name+" has missing class "+Class);
                     return;
+                }
+                foreach (var a in growth.Base)
+                {
+                    var find = Attributes.Find(serializable => serializable.Property == a.Property);
+                    if (find != null)
+                        find.Value += a.Value;
+                    else
+                        Attributes.Add(new UnitAttributePropertySerializable()
+                        {
+                            Property = a.Property,
+                            Value = a.Value
+                        });
                 }
                 foreach (var a in growth.MaxLevel)
                 {

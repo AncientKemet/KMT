@@ -34,7 +34,7 @@ namespace Development.Libary.Spells.Codes
         public string PowerAnim = "LeftHandSlashPower";
         public string AttackAnim = "LeftHandSlashAttack";
 
-        public float BaseDamage = 10;
+        public float BaseDamage = 2;
 
         public DamageType DamageType = DamageType.Physical;
 
@@ -109,27 +109,58 @@ namespace Development.Libary.Spells.Codes
         public override void OnFinishCasting(ServerUnit unit, float strenght)
         {
             var hitStrenght = strenght < 0.33f
-                ? HitStrenght.Weak
-                : strenght > 0.66f ? HitStrenght.Strong : HitStrenght.Normal;
-            unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "");
-            unit.Movement.DiscardPath();
-            unit.Movement.PushForward(strenght/2, () =>
+                    ? HitStrenght.Weak
+                    : strenght > 0.66f ? HitStrenght.Strong : HitStrenght.Normal;
+                Vector3 way = unit.Spells.TargetPosition - unit.Movement.Position;
+                way = way.normalized;
+                unit.Anim.ActionAnimation = AttackAnim + (strenght > 0.66 ? "Strong" : "");
+            unit.Movement.NextMovements.AddLast((f) =>
             {
-                if (strenght > 0.66f)
-                    unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 1f);
-
-                if (_radiusType != RadiusType.Line)
+                
+                unit.Movement.DiscardPath();
+                unit.Movement.RotateWay(way);
+                unit.Movement.Push(way, strenght, () =>
                 {
-                    float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
-                    float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
-                    float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
-                    Vector3 origin = unit.Movement.Position;
-                    Vector3 direction = unit.Movement.Forward;
-                    List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
+                    if (strenght > 0.66f)
+                        unit.Attributes.AddBuff(ContentManager.I.OverpowerDebuff, 1f);
 
-                    //critical
-                    if (critArea > 0.01f)
+                    if (_radiusType != RadiusType.Line)
                     {
+                        float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
+                        float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
+                        float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
+                        Vector3 origin = unit.Movement.Position;
+                        Vector3 direction = unit.Movement.Forward;
+                        List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
+
+                        //critical
+                        if (critArea > 0.01f)
+                        {
+                            foreach (var o in unit.CurrentBranch.ObjectsVisible)
+                            {
+                                ServerUnit u = o as ServerUnit;
+
+                                if (u == null)
+                                    continue;
+
+                                if (u == unit)
+                                    continue;
+
+                                UnitCombat com = u.Combat;
+
+                                if (com != null)
+                                {
+                                    if (!DoCritHitBoxTestAngle(unit, u.Movement.Position, reach, critArea))
+                                        continue;
+
+                                    com.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
+                                            BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
+                                    AlreadyHitUnits.Add(com);
+                                }
+                            }
+                        }
+
+                        //normal
                         foreach (var o in unit.CurrentBranch.ObjectsVisible)
                         {
                             ServerUnit u = o as ServerUnit;
@@ -144,93 +175,70 @@ namespace Development.Libary.Spells.Codes
 
                             if (com != null)
                             {
-                                if (!DoCritHitBoxTestAngle(unit, u.Movement.Position, reach, critArea))
+                                if (AlreadyHitUnits.Contains(com))
                                     continue;
 
-                                com.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
-                                        BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
-                                AlreadyHitUnits.Add(com);
+                                if (!DoNormalHitBoxTestAngle(unit, u.Movement.Position, reach))
+                                    continue;
+
+                                com.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
+                                        BaseDamage*GetStrenghtDamageRatio(strenght));
                             }
                         }
                     }
-
-                    //normal
-                    foreach (var o in unit.CurrentBranch.ObjectsVisible)
+                    else // for line radius we use unity physics
                     {
-                        ServerUnit u = o as ServerUnit;
+                        float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
+                        float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
+                        float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
+                        const int layer = 1 << 30;
+                        Vector3 origin = unit.Movement.Position;
+                        Vector3 direction = unit.Movement.Forward;
 
-                        if (u == null)
-                            continue;
-
-                        if (u == unit)
-                            continue;
-
-                        UnitCombat com = u.Combat;
-
-                        if (com != null)
+                        List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
+                        //critical
+                        if (critArea > 0.01f)
                         {
-                            if (AlreadyHitUnits.Contains(com))
-                                continue;
-
-                            if (!DoNormalHitBoxTestAngle(unit, u.Movement.Position, reach))
-                                continue;
-
-                            com.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
-                                    BaseDamage*GetStrenghtDamageRatio(strenght));
-                        }
-                    }
-                }
-                else // for line radius we use unity physics
-                {
-                    float reach = unit.Attributes.Get(UnitAttributeProperty.WeaponReach);
-                    float critArea = unit.Attributes.Get(UnitAttributeProperty.CriticalArea);
-                    float critDmg = unit.Attributes.Get(UnitAttributeProperty.CriticalDamage);
-                    const int layer = 1 << 30;
-                    Vector3 origin = unit.Movement.Position;
-                    Vector3 direction = unit.Movement.Forward;
-
-                    List<UnitCombat> AlreadyHitUnits = new List<UnitCombat>(8);
-                    //critical
-                    if (critArea > 0.01f)
-                    {
-                        foreach (
-                            var hit in
-                                Physics.SphereCastAll(
-                                    (origin + Vector3.up*0.5f) + (direction*LineWidth/2f) +
-                                    (direction*(reach - (reach*critArea) - (LineWidth/2f))), LineWidth,
-                                    direction,
-                                    reach - (reach*(1f - critArea)) - LineWidth/2f,
-                                    layer))
-                        {
-                            var combat = hit.collider.GetComponent<UnitCombat>();
-                            if (combat != null && combat != unit.Combat)
+                            foreach (
+                                var hit in
+                                    Physics.SphereCastAll(
+                                        (origin + Vector3.up*0.5f) + (direction*LineWidth/2f) +
+                                        (direction*(reach - (reach*critArea) - (LineWidth/2f))), LineWidth,
+                                        direction,
+                                        reach - (reach*(1f - critArea)) - LineWidth/2f,
+                                        layer))
                             {
-                                combat.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
-                                           BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
-                                AlreadyHitUnits.Add(combat);
+                                var combat = hit.collider.GetComponent<UnitCombat>();
+                                if (combat != null && combat != unit.Combat)
+                                {
+                                    combat.Hit(DamageType, HitType.Melee, HitStrenght.Critical, unit.Combat,
+                                               BaseDamage*GetStrenghtDamageRatio(strenght)*critDmg);
+                                    AlreadyHitUnits.Add(combat);
+                                }
                             }
                         }
-                    }
-                    //Normal hit
-                    {
-                        foreach (
-                            var hit in
-                                Physics.SphereCastAll((origin + Vector3.up*0.5f) + (direction*LineWidth/2f), LineWidth,
-                                                      direction,
-                                                      reach - LineWidth/2f,
-                                                      layer))
+                        //Normal hit
                         {
-                            var combat = hit.collider.GetComponent<UnitCombat>();
-                            if (combat != null && combat != unit.Combat)
+                            foreach (
+                                var hit in
+                                    Physics.SphereCastAll((origin + Vector3.up*0.5f) + (direction*LineWidth/2f),
+                                                          LineWidth,
+                                                          direction,
+                                                          reach - LineWidth/2f,
+                                                          layer))
                             {
-                                if (!AlreadyHitUnits.Contains(combat))
-                                    combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
-                                               BaseDamage*GetStrenghtDamageRatio(strenght));
+                                var combat = hit.collider.GetComponent<UnitCombat>();
+                                if (combat != null && combat != unit.Combat)
+                                {
+                                    if (!AlreadyHitUnits.Contains(combat))
+                                        combat.Hit(DamageType, HitType.Melee, hitStrenght, unit.Combat,
+                                                   BaseDamage*GetStrenghtDamageRatio(strenght));
+                                }
                             }
                         }
-                    }
 
-                }
+                    }
+                });
             });
         }
 

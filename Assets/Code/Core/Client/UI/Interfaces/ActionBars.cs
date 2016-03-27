@@ -71,6 +71,45 @@ namespace Code.Core.Client.UI.Interfaces
 
         public void OnPacket(SpellUpdatePacket p)
         {
+            if (p.UpdateState == SpellUpdateState.Disable)
+            {
+                if (p.Index == 0)
+                {
+                    Q.icon.gameObject.SetActive(false);
+                }
+                else if (p.Index == 1)
+                {
+                    W.icon.gameObject.SetActive(false);
+                }
+                else if (p.Index == 2)
+                {
+                    E.icon.gameObject.SetActive(false);
+                }
+                else if (p.Index == 3)
+                {
+                    R.icon.gameObject.SetActive(false);
+                }
+            }
+            if (p.UpdateState == SpellUpdateState.Enable)
+            {
+                if (p.Index == 0)
+                {
+                    Q.icon.gameObject.SetActive(true);
+                }
+                else if (p.Index == 1)
+                {
+                    W.icon.gameObject.SetActive(true);
+                }
+                else if (p.Index == 2)
+                {
+                    E.icon.gameObject.SetActive(true);
+                }
+                else if (p.Index == 3)
+                {
+                    R.icon.gameObject.SetActive(true);
+                }
+            }
+
             //Cast spell packets
             if (p.UpdateState == SpellUpdateState.StrenghtChange)
             {
